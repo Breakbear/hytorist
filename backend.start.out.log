@@ -1,0 +1,6 @@
+Server running on port 5000
+Allowed CORS origins: http://localhost:3000
+Warning: ADMIN_TOKEN is not set, admin APIs will return 503
+Connected to SQLite database
+Inquiries table ready
+CMS page overrides table ready

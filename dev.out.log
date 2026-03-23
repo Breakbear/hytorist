@@ -1,0 +1,4 @@
+
+> hytorist-website@1.0.0 dev
+> concurrently "npm run dev:frontend" "npm run dev:backend"
+

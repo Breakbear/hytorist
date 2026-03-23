@@ -1,0 +1,83 @@
+
+> hytorist-frontend@1.0.0 dev
+> vite
+
+Re-optimizing dependencies because vite config has changed
+
+  [32m[1mVITE[22m v5.4.21[39m  [2mready in [0m[1m1266[22m[2m[0m ms[22m
+
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m3000[22m/[39m
+[2m  [32m➜[39m  [1mNetwork[22m[2m: use [22m[1m--host[22m[2m to expose[22m
+[2m[32m  ➜[39m[22m[2m  press [22m[1mh + enter[22m[2m to show help[22m
+[2m12:51:39[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/D:/AI编程/1、公司网站/frontend/src/App.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/index.css, /@fs/D:/AI编程/1、公司网站/frontend/src/pages/zh/Home.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/pages/zh/Inquiry.tsx[22m
+[2m12:51:39[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/D:/AI编程/1、公司网站/frontend/src/App.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/index.css, /@fs/D:/AI编程/1、公司网站/frontend/src/pages/zh/Home.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/pages/zh/Inquiry.tsx[22m
+[2m12:51:39[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/D:/AI编程/1、公司网站/frontend/src/App.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/index.css, /@fs/D:/AI编程/1、公司网站/frontend/src/pages/en/Inquiry.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/pages/en/Home.tsx[22m
+[2m12:52:30[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/D:/AI编程/1、公司网站/frontend/src/pages/shared/PortalSectionView.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/index.css[22m
+[2m13:11:09[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/D:/AI编程/1、公司网站/frontend/src/App.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/index.css, /@fs/D:/AI编程/1、公司网站/frontend/src/pages/zh/Home.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/pages/zh/Inquiry.tsx[22m
+[2m13:11:23[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/D:/AI编程/1、公司网站/frontend/src/App.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/index.css, /@fs/D:/AI编程/1、公司网站/frontend/src/pages/en/Inquiry.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/pages/en/Home.tsx[22m
+[2m13:12:53[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/shared/HomeView.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/index.css[22m
+[2m13:13:05[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/shared/HomeView.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/index.css[22m
+[2m13:13:27[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/shared/HomeView.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/index.css[22m
+[2m13:13:46[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/shared/HomeView.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/index.css[22m
+[2m13:14:15[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/shared/HomeView.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/index.css[22m
+[2m13:14:45[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/shared/HomeView.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/index.css[22m
+[2m13:15:44[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/shared/HomeView.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/index.css[22m
+[2m13:16:44[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/D:/AI编程/1、公司网站/frontend/src/pages/Admin.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/index.css[22m
+[2m13:16:59[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/D:/AI编程/1、公司网站/frontend/src/pages/Admin.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/index.css[22m
+[2m13:17:15[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/D:/AI编程/1、公司网站/frontend/src/pages/Admin.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/index.css[22m
+[2m13:17:54[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/D:/AI编程/1、公司网站/frontend/src/pages/Admin.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/index.css[22m
+[2m13:19:02[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/D:/AI编程/1、公司网站/frontend/src/pages/Admin.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/index.css[22m
+[2m13:19:30[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/D:/AI编程/1、公司网站/frontend/src/pages/Admin.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/index.css[22m
+[2m13:19:40[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/D:/AI编程/1、公司网站/frontend/src/pages/Admin.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/index.css[22m
+[2m13:20:08[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/D:/AI编程/1、公司网站/frontend/src/pages/Admin.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/index.css[22m
+[2m13:43:49[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/shared/HomeView.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/index.css[22m
+[2m13:44:22[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/shared/HomeView.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/index.css[22m
+[2m13:44:59[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/D:/AI编程/1、公司网站/frontend/src/App.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/index.css, /@fs/D:/AI编程/1、公司网站/frontend/src/pages/zh/Home.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/pages/zh/Inquiry.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/pages/Admin.tsx[22m
+[2m13:45:09[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/D:/AI编程/1、公司网站/frontend/src/App.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/index.css, /@fs/D:/AI编程/1、公司网站/frontend/src/pages/en/Inquiry.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/pages/en/Home.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/pages/Admin.tsx[22m
+[2m13:45:20[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/D:/AI编程/1、公司网站/frontend/src/pages/Admin.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/index.css[22m
+[2m13:45:30[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/D:/AI编程/1、公司网站/frontend/src/index.css, /@fs/D:/AI编程/1、公司网站/frontend/src/pages/Admin.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/components/Header.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/pages/shared/PortalSectionView.tsx[22m
+[2m13:45:39[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/D:/AI编程/1、公司网站/frontend/src/pages/shared/PortalSectionView.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/index.css[22m
+[2m13:45:53[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/D:/AI编程/1、公司网站/frontend/src/index.css[22m
+[2m14:07:10[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/D:/AI编程/1、公司网站/frontend/src/index.css, /@fs/D:/AI编程/1、公司网站/frontend/src/pages/Admin.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/components/Header.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/pages/shared/PortalSectionView.tsx[22m
+[2m14:07:10[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/D:/AI编程/1、公司网站/frontend/src/App.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/index.css, /@fs/D:/AI编程/1、公司网站/frontend/src/pages/zh/Home.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/pages/zh/Inquiry.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/pages/Admin.tsx[22m
+[2m14:08:26[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/D:/AI编程/1、公司网站/frontend/src/index.css, /@fs/D:/AI编程/1、公司网站/frontend/src/pages/Admin.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/components/Header.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/pages/shared/PortalSectionView.tsx[22m
+[2m14:08:46[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/D:/AI编程/1、公司网站/frontend/src/components/Header.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/index.css[22m
+[2m14:09:04[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/shared/HomeView.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/index.css[22m
+[2m14:09:15[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/shared/HomeView.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/index.css[22m
+[2m14:15:28[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/D:/AI编程/1、公司网站/frontend/src/App.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/index.css, /@fs/D:/AI编程/1、公司网站/frontend/src/pages/zh/Home.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/pages/zh/Inquiry.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/pages/Admin.tsx[22m
+[2m14:16:07[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/D:/AI编程/1、公司网站/frontend/src/App.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/index.css, /@fs/D:/AI编程/1、公司网站/frontend/src/pages/en/Inquiry.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/pages/en/Home.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/pages/Admin.tsx[22m
+[2m14:31:33[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/D:/AI编程/1、公司网站/frontend/src/components/CadViewerSection.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/index.css[22m
+[2m14:32:06[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/shared/HomeView.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/index.css[22m
+[2m14:42:17[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/D:/AI编程/1、公司网站/frontend/src/index.css[22m
+[2m14:43:37[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/D:/AI编程/1、公司网站/frontend/src/components/Header.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/index.css[22m
+[2m14:44:19[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/D:/AI编程/1、公司网站/frontend/src/components/CadViewerSection.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/index.css[22m
+[2m14:44:45[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/shared/HomeView.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/index.css[22m
+[2m15:29:10[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/D:/AI编程/1、公司网站/frontend/src/App.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/index.css, /@fs/D:/AI编程/1、公司网站/frontend/src/pages/zh/Home.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/pages/zh/Inquiry.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/pages/Admin.tsx[22m
+[2m15:29:44[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/D:/AI编程/1、公司网站/frontend/src/App.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/index.css, /@fs/D:/AI编程/1、公司网站/frontend/src/pages/en/Inquiry.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/pages/en/Home.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/pages/Admin.tsx[22m
+[2m15:30:07[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/D:/AI编程/1、公司网站/frontend/src/components/CadViewerSection.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/index.css[22m
+[2m15:30:34[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/shared/HomeView.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/index.css[22m
+[2m15:30:53[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/D:/AI编程/1、公司网站/frontend/src/components/Header.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/index.css[22m
+[2m15:50:36[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/D:/AI编程/1、公司网站/frontend/src/index.css[22m
+[2m15:50:36[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/D:/AI编程/1、公司网站/frontend/src/index.css[22m
+[2m15:51:20[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/D:/AI编程/1、公司网站/frontend/src/components/Header.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/index.css[22m
+[2m15:51:38[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/D:/AI编程/1、公司网站/frontend/src/components/Header.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/index.css[22m
+[2m15:57:32[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/D:/AI编程/1、公司网站/frontend/src/components/Header.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/index.css[22m
+[2m15:58:05[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/D:/AI编程/1、公司网站/frontend/src/index.css[22m
+[2m16:09:14[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/D:/AI编程/1、公司网站/frontend/src/components/Header.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/index.css[22m
+[2m16:09:18[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/D:/AI编程/1、公司网站/frontend/src/index.css[22m
+[2m16:30:10[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/D:/AI编程/1、公司网站/frontend/src/components/Header.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/index.css[22m
+[2m16:30:40[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/D:/AI编程/1、公司网站/frontend/src/index.css[22m
+[2m16:33:30[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/D:/AI编程/1、公司网站/frontend/src/components/Header.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/index.css[22m
+[2m16:33:38[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/D:/AI编程/1、公司网站/frontend/src/index.css[22m
+[2m16:45:43[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/D:/AI编程/1、公司网站/frontend/src/components/Header.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/index.css[22m
+[2m16:45:51[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/D:/AI编程/1、公司网站/frontend/src/index.css[22m
+[2m16:53:12[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/D:/AI编程/1、公司网站/frontend/src/components/Header.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/index.css[22m
+[2m16:56:35[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/D:/AI编程/1、公司网站/frontend/src/components/Header.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/index.css[22m
+[2m16:56:44[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/D:/AI编程/1、公司网站/frontend/src/index.css[22m
+[2m16:59:42[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/D:/AI编程/1、公司网站/frontend/src/index.css[22m
+[2m16:59:56[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/shared/HomeView.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/index.css[22m
+[2m17:07:27[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/D:/AI编程/1、公司网站/frontend/src/index.css[22m
+[2m17:07:43[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/shared/HomeView.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/index.css[22m
+[2m17:33:17[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/D:/AI编程/1、公司网站/frontend/src/index.css[22m
+[2m17:34:00[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/shared/HomeView.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/index.css[22m
+[2m17:34:41[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/@fs/D:/AI编程/1、公司网站/frontend/src/pages/shared/PortalSectionView.tsx, /@fs/D:/AI编程/1、公司网站/frontend/src/index.css[22m
