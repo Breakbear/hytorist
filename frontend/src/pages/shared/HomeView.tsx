@@ -464,7 +464,7 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
 
   return (
     <div className="pb-16 sm:pb-20">
-      <section className="relative -mt-[7rem] min-h-[86svh] overflow-hidden bg-[#f6f1e8] sm:-mt-[7.6rem] sm:min-h-[92svh] xl:-mt-[10.4rem] xl:min-h-[100svh] 2xl:-mt-[10.8rem]">
+      <section className="relative -mt-[7rem] min-h-[100svh] overflow-hidden bg-[#f6f1e8] sm:-mt-[7.6rem] sm:min-h-[92svh] xl:-mt-[10.4rem] xl:min-h-[100svh] 2xl:-mt-[10.8rem]">
         {heroSlides.map((slide, index) => {
           const active = index === activeSlide
           return (
@@ -477,6 +477,7 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
               <ZoomableImage
                 src={slide.image}
                 alt={slide.title}
+                showHint={false}
                 hintVisibility="always"
                 previewLabel={imagePreviewLabel}
                 closeLabel={imageCloseLabel}
@@ -491,20 +492,20 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
 
         <div className="absolute inset-x-0 bottom-0 h-px bg-[#d7cfbf]" />
 
-        <div className="relative section-wrap grid min-h-[86svh] grid-rows-[1fr_auto] gap-6 pb-8 pt-[7.75rem] sm:min-h-[92svh] sm:gap-12 sm:pb-[4.5rem] sm:pt-40 lg:gap-14 lg:pb-16 lg:pt-56 xl:min-h-[100svh] xl:gap-16 xl:pb-20 xl:pt-64">
+        <div className="relative section-wrap grid min-h-[100svh] grid-rows-[1fr_auto] gap-6 pb-8 pt-[7.25rem] sm:min-h-[92svh] sm:gap-12 sm:pb-[4.5rem] sm:pt-40 lg:gap-14 lg:pb-16 lg:pt-56 xl:min-h-[100svh] xl:gap-16 xl:pb-20 xl:pt-64">
           <div className="flex items-center">
-            <div className="hero-panel max-w-[32rem] py-6 sm:max-w-[52rem] sm:py-12 lg:max-w-[54rem] xl:max-w-[58rem] xl:py-16">
+            <div className="hero-panel max-w-[20.5rem] py-6 sm:max-w-[52rem] sm:py-12 lg:max-w-[54rem] xl:max-w-[58rem] xl:py-16">
               <p className={heroLabelClass}>
                 {heroSlides[activeSlide]?.label}
               </p>
               <h1
-                className={`mt-6 hero-display hero-display-home text-[#1f252d] ${
+                className={`mt-6 max-w-[15.5rem] hero-display hero-display-home text-[#1f252d] sm:max-w-none ${
                   isZh ? 'hero-title-nowrap' : ''
                 }`}
               >
                 {heroSlides[activeSlide]?.title}
               </h1>
-              <p className="hero-copy mt-6 max-w-[26rem] text-[0.98rem] leading-7 text-[#4e5966] sm:mt-8 sm:max-w-[46rem] sm:text-[1.2rem] sm:leading-9 xl:max-w-[50rem] xl:text-[1.26rem]">
+              <p className="hero-copy mt-6 max-w-[17.5rem] text-[0.98rem] leading-7 text-[#4e5966] sm:mt-8 sm:max-w-[46rem] sm:text-[1.2rem] sm:leading-9 xl:max-w-[50rem] xl:text-[1.26rem]">
                 {heroSlides[activeSlide]?.description}
               </p>
               <p className="mt-5 hidden max-w-[48rem] text-[0.96rem] leading-8 text-[#5d6773] sm:block sm:text-[1.02rem] xl:max-w-[52rem]">
@@ -536,9 +537,12 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
           </div>
 
           <div className="grid gap-5 border-t border-[#d7cfbf] pt-5 sm:gap-8 sm:pt-6 lg:gap-9 lg:pt-7 xl:grid-cols-[1fr_auto] xl:items-end">
-            <div className="grid grid-cols-3 gap-3 sm:gap-6">
+            <div className="grid gap-4 sm:grid-cols-3 sm:gap-6">
               {heroMetrics.map((metric) => (
-                <div key={`${metric.label}-${metric.value}`}>
+                <div
+                  key={`${metric.label}-${metric.value}`}
+                  className="grid gap-1.5 border-b border-[#d7cfbf]/70 pb-3 last:border-b-0 last:pb-0 sm:block sm:border-b-0 sm:pb-0"
+                >
                   <p className="font-display text-[2.25rem] leading-none text-[#1f252d] sm:text-[3.7rem]">
                     {metric.value}
                   </p>
@@ -580,7 +584,7 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
             <h2 className="section-title-xl mt-4 max-w-[34rem]">
               {page.brandEssenceHeadline}
             </h2>
-            <p className="section-copy section-copy-compact mt-7 max-w-none copy-clamp-4 copy-unclamp-lg">
+            <p className="section-copy section-copy-compact mt-7 max-w-none copy-clamp-4 copy-unclamp-lg copy-unclamp-mobile">
               {brandOverviewText}
             </p>
           </div>
@@ -594,7 +598,7 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
                   </p>
                   <div>
                     <h3 className="subsection-title">{note.title}</h3>
-                    <p className="section-copy section-copy-wide mt-5 max-w-none copy-clamp-4 copy-unclamp-lg">
+                    <p className="section-copy section-copy-wide mt-5 max-w-none copy-clamp-4 copy-unclamp-lg copy-unclamp-mobile">
                       {getHeroLeadText(note.description, note.description)}
                     </p>
                   </div>
@@ -613,7 +617,7 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
                 previewLabel={imagePreviewLabel}
                 closeLabel={imageCloseLabel}
                 wrapperClassName="h-full w-full"
-                className="day-section-image h-full w-full object-cover"
+                className="day-section-image h-full w-full bg-[#efe6d7] object-contain p-3 sm:bg-transparent sm:p-0 sm:object-cover"
                 loading="lazy"
               />
             </div>
@@ -673,14 +677,14 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
                   }`}
                 >
                   <div className="art-image-frame">
-                    <div className="aspect-[15/10] min-h-[220px] xl:min-h-[420px]">
+                    <div className="aspect-[4/3] min-h-[240px] sm:aspect-[15/10] sm:min-h-[220px] xl:min-h-[420px]">
                       <ZoomableImage
                         src={product.image}
                         alt={product.name}
                         previewLabel={imagePreviewLabel}
                         closeLabel={imageCloseLabel}
                         wrapperClassName="h-full w-full"
-                        className="day-section-image h-full w-full object-cover"
+                        className="day-section-image h-full w-full bg-[#f1e9dc] object-contain p-3 sm:bg-transparent sm:p-0 sm:object-cover"
                         loading="lazy"
                       />
                     </div>
@@ -693,7 +697,7 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
                     <h3 className="subsection-title mt-4 max-w-[30rem]">
                       {product.name}
                     </h3>
-                    <p className="section-copy section-copy-compact mt-5 max-w-none copy-clamp-3">
+                    <p className="section-copy section-copy-compact mt-5 max-w-none copy-clamp-3 copy-unclamp-mobile">
                       {featuredProductNotes[index]}
                     </p>
                     <div className="mt-7 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:flex-wrap sm:gap-5">
@@ -741,7 +745,7 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
               {quickActions.map((action) => (
                 <Link key={action.title} to={action.to} className="info-card content-card block transition-colors hover:border-[#c89b45]/30">
                   <p className="meta-label">{action.title}</p>
-                  <p className="meta-copy mt-3 copy-clamp-3">{action.text}</p>
+                  <p className="meta-copy mt-3 copy-clamp-3 copy-unclamp-mobile">{action.text}</p>
                   <span className="cta-link cta-link-primary mt-5">
                     {isZh ? '继续进入' : 'Continue'}
                   </span>
@@ -775,7 +779,7 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
                     <p className="font-display text-[2.8rem] leading-none text-[#8f672b]">{step.step}</p>
                     <div>
                       <h3 className="subsection-title">{step.title}</h3>
-                      <p className="section-copy mt-5 max-w-none copy-clamp-4 copy-unclamp-lg">
+                      <p className="section-copy mt-5 max-w-none copy-clamp-4 copy-unclamp-lg copy-unclamp-mobile">
                         {getHeroLeadText(step.description, step.description)}
                       </p>
                     </div>
@@ -791,7 +795,7 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
                 previewLabel={imagePreviewLabel}
                 closeLabel={imageCloseLabel}
                 wrapperClassName="h-full w-full"
-                className="day-section-image h-full w-full object-cover"
+                className="day-section-image h-full w-full bg-[#efe6d7] object-contain p-3 sm:bg-transparent sm:p-0 sm:object-cover"
                 loading="lazy"
               />
             </div>
@@ -804,6 +808,7 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
           <ZoomableImage
             src={visualAssets.factoryFloor}
             alt={copy.header.brandName}
+            showHint={false}
             hintVisibility="always"
             previewLabel={imagePreviewLabel}
             closeLabel={imageCloseLabel}
@@ -820,7 +825,7 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
               <h2 className="section-title-xl mt-4 max-w-[42rem]">
                 {isZh ? '提交工况，进入技术或商务对接。' : 'Submit your operating condition for technical or commercial follow-up.'}
               </h2>
-              <p className="section-copy section-copy-compact mt-7 text-[#4e5966] copy-clamp-4 copy-unclamp-lg">
+              <p className="section-copy section-copy-compact mt-7 text-[#4e5966] copy-clamp-4 copy-unclamp-lg copy-unclamp-mobile">
                 {processSectionText}
               </p>
 
@@ -846,7 +851,7 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
                 ? homeNarrative?.resourceLeadZh || '围绕项目沟通、服务资质与能力信息统一整理。'
                 : homeNarrative?.resourceLeadEn || 'Project intake, service credentials, and capability notes organized in one place.'}
             </h2>
-            <p className="section-copy section-copy-compact mt-5 max-w-none copy-clamp-4 copy-unclamp-lg">
+            <p className="section-copy section-copy-compact mt-5 max-w-none copy-clamp-4 copy-unclamp-lg copy-unclamp-mobile">
               {isZh
                 ? homeNarrative?.resourceHintZh || '这组内容用于帮助访客快速理解沟通方式、资质说明和服务摘要。'
                 : homeNarrative?.resourceHintEn || 'This block helps visitors understand contact flow, qualification notes, and service highlights.'}
@@ -865,7 +870,7 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
               {compactResourceSummaryCards.map((card) => (
                 <article key={card.title} className="panel content-card">
                   <p className="eyebrow">{card.title}</p>
-                  <p className="section-copy mt-5 max-w-none copy-clamp-4 copy-unclamp-lg">{card.text}</p>
+                  <p className="section-copy mt-5 max-w-none copy-clamp-4 copy-unclamp-lg copy-unclamp-mobile">{card.text}</p>
                 </article>
               ))}
 

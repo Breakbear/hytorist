@@ -413,6 +413,13 @@ h6 {
 }
 
 @media (max-width: 767px) {
+  .copy-unclamp-mobile {
+    display: block;
+    -webkit-box-orient: initial;
+    -webkit-line-clamp: initial;
+    overflow: visible;
+  }
+
   .hero-display-home {
     font-size: clamp(2.75rem, 12vw, 4.35rem);
     line-height: 0.96;
@@ -466,6 +473,17 @@ h6 {
   }
 
   .hero-copy {
+    text-wrap: pretty;
+  }
+
+  .day-hero-image,
+  .day-hero-image-soft {
+    transform: none;
+  }
+
+  html[lang='zh-CN'] .hero-display {
+    word-break: normal;
+    overflow-wrap: anywhere;
     text-wrap: pretty;
   }
 
