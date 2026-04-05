@@ -7,6 +7,7 @@ import { enCopy } from '../i18n/en'
 
 type InquiryStatus = 'pending' | 'reviewed' | 'contacted' | 'completed' | 'rejected'
 type InquiryPrivacy = 'public' | 'confidential'
+type SiteResourceEditorTab = 'contacts' | 'message' | 'narratives' | 'verified' | 'raw'
 
 interface Inquiry {
   id: number
@@ -88,11 +89,19 @@ const siteResourceJsonHints = [
   'friendLinks[]',
   'verifiedPages'
 ]
+const siteResourceEditorTabs: Array<{ id: SiteResourceEditorTab; label: string }> = [
+  { id: 'contacts', label: '联系方式' },
+  { id: 'message', label: '留言规则' },
+  { id: 'narratives', label: 'UI 文案' },
+  { id: 'verified', label: '资料摘要' },
+  { id: 'raw', label: '原始 JSON' }
+]
 
 const formLabelClass = 'block text-sm font-semibold text-[#e7dbc7]'
 const formHintClass = 'mt-2 text-xs leading-6 text-[#a79b8c]'
 const inputClass = 'art-form-field mt-2'
 const textAreaClass = `${inputClass} min-h-[220px] font-mono text-xs sm:text-sm`
+const compactTextAreaClass = `${inputClass} min-h-[120px] text-sm`
 
 const isPortalPageData = (value: unknown): value is PortalPageData => {
   if (!value || typeof value !== 'object' || Array.isArray(value)) {
@@ -105,6 +114,28 @@ const isPortalPageData = (value: unknown): value is PortalPageData => {
 
 const isRecord = (value: unknown): value is Record<string, unknown> => {
   return !!value && typeof value === 'object' && !Array.isArray(value)
+}
+
+const toRecord = (value: unknown): Record<string, unknown> => (isRecord(value) ? value : {})
+
+const cloneRecord = (value: Record<string, unknown>) => JSON.parse(JSON.stringify(value)) as Record<string, unknown>
+
+const getTextValue = (record: Record<string, unknown>, key: string) => {
+  const value = record[key]
+  return typeof value === 'string' ? value : ''
+}
+
+const getStringArray = (value: unknown) =>
+  Array.isArray(value) ? value.filter((item): item is string => typeof item === 'string') : []
+
+const getOrCreateRecord = (record: Record<string, unknown>, key: string) => {
+  const current = record[key]
+  if (isRecord(current)) {
+    return current
+  }
+  const next: Record<string, unknown> = {}
+  record[key] = next
+  return next
 }
 
 const mergeHomeContent = (base: HomeCopy, override: unknown): HomeCopy => {
@@ -193,6 +224,7 @@ const Admin = () => {
   const [siteResourcesUpdatedAt, setSiteResourcesUpdatedAt] = useState<string | null>(null)
   const [siteResourcesHasOverride, setSiteResourcesHasOverride] = useState(false)
   const [siteResourcesLoading, setSiteResourcesLoading] = useState(false)
+  const [siteResourceEditorTab, setSiteResourceEditorTab] = useState<SiteResourceEditorTab>('contacts')
 
   const authHeaders = adminToken ? { Authorization: `Bearer ${adminToken}` } : {}
 
@@ -246,6 +278,122 @@ const Admin = () => {
     () => inquiries.filter((item) => item.status === 'pending').length,
     [inquiries]
   )
+  const parsedSiteResourcesResult = useMemo(() => {
+    if (!siteResourcesJson.trim()) {
+      return {
+        value: null as Record<string, unknown> | null,
+        error: null as string | null
+      }
+    }
+
+    try {
+      const parsed = JSON.parse(siteResourcesJson)
+      if (!isRecord(parsed)) {
+        return {
+          value: null,
+          error: '共享资料 JSON 必须是对象。'
+        }
+      }
+
+      return {
+        value: parsed as Record<string, unknown>,
+        error: null
+      }
+    } catch {
+      return {
+        value: null,
+        error: '共享资料 JSON 格式不正确，模块化编辑暂不可用。'
+      }
+    }
+  }, [siteResourcesJson])
+  const parsedSiteResources = parsedSiteResourcesResult.value
+  const siteResourcesJsonError = parsedSiteResourcesResult.error
+  const contactResource = toRecord(parsedSiteResources?.contacts)
+  const messageFormResource = toRecord(parsedSiteResources?.messageForm)
+  const uiNarrativesResource = toRecord(parsedSiteResources?.uiNarratives)
+  const verifiedPagesResource = toRecord(parsedSiteResources?.verifiedPages)
+  const homeNarrativeResource = toRecord(uiNarrativesResource.home)
+  const portalNarrativeResource = toRecord(uiNarrativesResource.portal)
+  const inquiryNarrativeResource = toRecord(uiNarrativesResource.inquiry)
+  const footerNarrativeResource = toRecord(uiNarrativesResource.footer)
+  const companyProfileVerified = toRecord(verifiedPagesResource.companyProfile)
+  const contactInfoVerified = toRecord(verifiedPagesResource.contactInfo)
+  const messagePageVerified = toRecord(verifiedPagesResource.messagePage)
+
+  const applySiteResourceDraft = (mutator: (draft: Record<string, unknown>) => void) => {
+    if (!parsedSiteResources) {
+      setSiteResourcesError('共享资料 JSON 格式不正确，无法执行模块化编辑。')
+      return
+    }
+
+    const draft = cloneRecord(parsedSiteResources)
+    mutator(draft)
+    setSiteResourcesJson(JSON.stringify(draft, null, 2))
+    setSiteResourcesMessage(null)
+    setSiteResourcesError(null)
+  }
+
+  const updateContactField = (field: string, value: string) => {
+    applySiteResourceDraft((draft) => {
+      const contacts = getOrCreateRecord(draft, 'contacts')
+      contacts[field] = value
+    })
+  }
+
+  const updateMessageFormField = (field: string, value: string) => {
+    applySiteResourceDraft((draft) => {
+      const messageForm = getOrCreateRecord(draft, 'messageForm')
+      messageForm[field] = value
+    })
+  }
+
+  const updateMessageRequiredFields = (value: string) => {
+    const fields = value
+      .split(',')
+      .map((item) => item.trim())
+      .filter(Boolean)
+
+    applySiteResourceDraft((draft) => {
+      const messageForm = getOrCreateRecord(draft, 'messageForm')
+      messageForm.requiredFields = fields
+    })
+  }
+
+  const updateNarrativeField = (
+    group: 'home' | 'portal' | 'inquiry' | 'footer',
+    field: string,
+    value: string
+  ) => {
+    applySiteResourceDraft((draft) => {
+      const uiNarratives = getOrCreateRecord(draft, 'uiNarratives')
+      const groupRecord = getOrCreateRecord(uiNarratives, group)
+      groupRecord[field] = value
+    })
+  }
+
+  const updateVerifiedSummary = (
+    key: 'companyProfile' | 'contactInfo' | 'messagePage',
+    field: 'summary' | 'summaryEn',
+    value: string
+  ) => {
+    applySiteResourceDraft((draft) => {
+      const verifiedPages = getOrCreateRecord(draft, 'verifiedPages')
+      const page = getOrCreateRecord(verifiedPages, key)
+      if (!getTextValue(page, 'title')) {
+        page.title = key
+      }
+      if (!getTextValue(page, 'sourcePageUrl')) {
+        page.sourcePageUrl = ''
+      }
+      page[field] = value
+    })
+  }
+
+  const contactMailboxCount = Array.isArray(contactResource.mailboxes) ? contactResource.mailboxes.length : 0
+  const messageCategoryCount = Array.isArray(messageFormResource.categoryOptions)
+    ? messageFormResource.categoryOptions.length
+    : 0
+  const requiredFieldsText = getStringArray(messageFormResource.requiredFields).join(', ')
 
   useEffect(() => {
     if (!adminToken) {
@@ -562,6 +710,7 @@ const Admin = () => {
     setSiteResourcesUpdatedAt(null)
     setSiteResourcesHasOverride(false)
     setSiteResourcesLoading(false)
+    setSiteResourceEditorTab('contacts')
   }
 
   if (!adminToken) {
@@ -716,12 +865,12 @@ const Admin = () => {
             <table className="w-full min-w-[820px]">
               <thead className="bg-white/[0.03]">
                 <tr>
-                  <th className="px-6 py-4 text-left text-[11px] font-semibold uppercase tracking-[0.28em] text-[#9f9588] sm:px-8">ID</th>
-                  <th className="px-6 py-4 text-left text-[11px] font-semibold uppercase tracking-[0.28em] text-[#9f9588] sm:px-8">姓名</th>
-                  <th className="px-6 py-4 text-left text-[11px] font-semibold uppercase tracking-[0.28em] text-[#9f9588] sm:px-8">邮箱</th>
-                  <th className="px-6 py-4 text-left text-[11px] font-semibold uppercase tracking-[0.28em] text-[#9f9588] sm:px-8">状态</th>
-                  <th className="px-6 py-4 text-left text-[11px] font-semibold uppercase tracking-[0.28em] text-[#9f9588] sm:px-8">创建时间</th>
-                  <th className="px-6 py-4 text-left text-[11px] font-semibold uppercase tracking-[0.28em] text-[#9f9588] sm:px-8">操作</th>
+                  <th className="label-muted px-6 py-4 text-left text-[11px] sm:px-8">ID</th>
+                  <th className="label-muted px-6 py-4 text-left text-[11px] sm:px-8">姓名</th>
+                  <th className="label-muted px-6 py-4 text-left text-[11px] sm:px-8">邮箱</th>
+                  <th className="label-muted px-6 py-4 text-left text-[11px] sm:px-8">状态</th>
+                  <th className="label-muted px-6 py-4 text-left text-[11px] sm:px-8">创建时间</th>
+                  <th className="label-muted px-6 py-4 text-left text-[11px] sm:px-8">操作</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/6">
@@ -794,7 +943,7 @@ const Admin = () => {
                   <span className={`inline-flex rounded-full border px-3 py-1 text-xs font-semibold ${getStatusBadgeClass(selectedInquiry.status)}`}>
                     {statusLabels[selectedInquiry.status]}
                   </span>
-                  <span className="text-xs tracking-[0.24em] text-[#9f9588]">
+                  <span className="label-muted text-xs">
                     {formatDate(selectedInquiry.created_at)}
                   </span>
                 </div>
@@ -1091,21 +1240,244 @@ const Admin = () => {
               </div>
             )}
 
-            <div className="mt-6 grid gap-6 xl:grid-cols-[0.82fr_1.18fr]">
+            <div className="mt-6 grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
               <div className="space-y-5">
                 <div className="art-card px-5 py-5">
                   <p className="eyebrow">Current Status</p>
                   <div className="mt-4 space-y-3 text-sm leading-7 text-[#d7ccbd]">
                     <p><span className="text-[#9f9588]">状态：</span>{siteResourcesHasOverride ? '已启用资源覆盖' : '使用默认共享资料'}</p>
                     <p><span className="text-[#9f9588]">最近更新：</span>{formatDate(siteResourcesUpdatedAt || undefined)}</p>
+                    <p><span className="text-[#9f9588]">留言分类：</span>{messageCategoryCount} 项</p>
+                    <p><span className="text-[#9f9588]">联系人邮箱路由：</span>{contactMailboxCount} 项</p>
                     <p><span className="text-[#9f9588]">影响范围：</span>首页摘要、栏目页摘要、产品分类、应用分类、新闻列表、询盘页留言字段与联系信息</p>
                   </div>
                 </div>
 
                 <div className="art-card px-5 py-5">
+                  <p className="eyebrow">Module Editor</p>
+                  <p className="mt-3 text-xs leading-6 text-[#9f9588]">
+                    先按模块维护高频字段，复杂结构仍可在右侧原始 JSON 区域编辑。
+                  </p>
+
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {siteResourceEditorTabs.map((tab) => (
+                      <button
+                        key={tab.id}
+                        type="button"
+                        onClick={() => setSiteResourceEditorTab(tab.id)}
+                        className={
+                          siteResourceEditorTab === tab.id
+                            ? 'rounded-full border border-[#d7b66c]/35 bg-[#d7b66c]/18 px-3 py-1.5 text-xs font-semibold text-[#f0dfb0]'
+                            : 'rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs font-semibold text-[#c8bcae] transition-colors hover:border-[#d7b66c]/28 hover:text-white'
+                        }
+                      >
+                        {tab.label}
+                      </button>
+                    ))}
+                  </div>
+
+                  {siteResourcesJsonError ? (
+                    <div className="mt-4 rounded-[16px] border border-[#ef7b7b]/22 bg-[#ef7b7b]/10 px-4 py-3 text-sm text-[#ffd6d6]">
+                      {siteResourcesJsonError}
+                    </div>
+                  ) : (
+                    <div className="mt-5 space-y-4">
+                      {siteResourceEditorTab === 'contacts' && (
+                        <div className="grid gap-3 sm:grid-cols-2">
+                          <label className={formLabelClass}>
+                            公司名称
+                            <input
+                              value={getTextValue(contactResource, 'company')}
+                              onChange={(event) => updateContactField('company', event.target.value)}
+                              className={inputClass}
+                            />
+                          </label>
+                          <label className={formLabelClass}>
+                            联系电话
+                            <input
+                              value={getTextValue(contactResource, 'phone')}
+                              onChange={(event) => updateContactField('phone', event.target.value)}
+                              className={inputClass}
+                            />
+                          </label>
+                          <label className={formLabelClass}>
+                            主邮箱
+                            <input
+                              value={getTextValue(contactResource, 'email')}
+                              onChange={(event) => updateContactField('email', event.target.value)}
+                              className={inputClass}
+                            />
+                          </label>
+                          <label className={formLabelClass}>
+                            热线
+                            <input
+                              value={getTextValue(contactResource, 'hotline')}
+                              onChange={(event) => updateContactField('hotline', event.target.value)}
+                              className={inputClass}
+                            />
+                          </label>
+                          <label className={formLabelClass}>
+                            网站
+                            <input
+                              value={getTextValue(contactResource, 'website')}
+                              onChange={(event) => updateContactField('website', event.target.value)}
+                              className={inputClass}
+                            />
+                          </label>
+                          <label className={formLabelClass}>
+                            地址
+                            <input
+                              value={getTextValue(contactResource, 'address')}
+                              onChange={(event) => updateContactField('address', event.target.value)}
+                              className={inputClass}
+                            />
+                          </label>
+                        </div>
+                      )}
+
+                      {siteResourceEditorTab === 'message' && (
+                        <div className="space-y-4">
+                          <label className={formLabelClass}>
+                            必填字段（逗号分隔）
+                            <input
+                              value={requiredFieldsText}
+                              onChange={(event) => updateMessageRequiredFields(event.target.value)}
+                              className={inputClass}
+                            />
+                            <p className={formHintClass}>示例：name, phone, email, message</p>
+                          </label>
+                          <label className={formLabelClass}>
+                            中文留言说明
+                            <textarea
+                              value={getTextValue(messageFormResource, 'noteZh')}
+                              onChange={(event) => updateMessageFormField('noteZh', event.target.value)}
+                              className={compactTextAreaClass}
+                            />
+                          </label>
+                          <label className={formLabelClass}>
+                            英文留言说明
+                            <textarea
+                              value={getTextValue(messageFormResource, 'noteEn')}
+                              onChange={(event) => updateMessageFormField('noteEn', event.target.value)}
+                              className={compactTextAreaClass}
+                            />
+                          </label>
+                        </div>
+                      )}
+
+                      {siteResourceEditorTab === 'narratives' && (
+                        <div className="space-y-4">
+                          <label className={formLabelClass}>
+                            首页路径说明（中文）
+                            <textarea
+                              value={getTextValue(homeNarrativeResource, 'sitePathLeadZh')}
+                              onChange={(event) =>
+                                updateNarrativeField('home', 'sitePathLeadZh', event.target.value)
+                              }
+                              className={compactTextAreaClass}
+                            />
+                          </label>
+                          <label className={formLabelClass}>
+                            首页路径说明（英文）
+                            <textarea
+                              value={getTextValue(homeNarrativeResource, 'sitePathLeadEn')}
+                              onChange={(event) =>
+                                updateNarrativeField('home', 'sitePathLeadEn', event.target.value)
+                              }
+                              className={compactTextAreaClass}
+                            />
+                          </label>
+                          <label className={formLabelClass}>
+                            栏目摘要说明（中文）
+                            <textarea
+                              value={getTextValue(portalNarrativeResource, 'sectionSummaryLeadZh')}
+                              onChange={(event) =>
+                                updateNarrativeField('portal', 'sectionSummaryLeadZh', event.target.value)
+                              }
+                              className={compactTextAreaClass}
+                            />
+                          </label>
+                          <label className={formLabelClass}>
+                            询盘首屏说明（中文）
+                            <textarea
+                              value={getTextValue(inquiryNarrativeResource, 'heroLeadZh')}
+                              onChange={(event) =>
+                                updateNarrativeField('inquiry', 'heroLeadZh', event.target.value)
+                              }
+                              className={compactTextAreaClass}
+                            />
+                          </label>
+                          <label className={formLabelClass}>
+                            页脚声明（中文）
+                            <textarea
+                              value={getTextValue(footerNarrativeResource, 'statementZh')}
+                              onChange={(event) =>
+                                updateNarrativeField('footer', 'statementZh', event.target.value)
+                              }
+                              className={compactTextAreaClass}
+                            />
+                          </label>
+                        </div>
+                      )}
+
+                      {siteResourceEditorTab === 'verified' && (
+                        <div className="space-y-4">
+                          <label className={formLabelClass}>
+                            企业简介摘要（中文）
+                            <textarea
+                              value={getTextValue(companyProfileVerified, 'summary')}
+                              onChange={(event) =>
+                                updateVerifiedSummary('companyProfile', 'summary', event.target.value)
+                              }
+                              className={compactTextAreaClass}
+                            />
+                          </label>
+                          <label className={formLabelClass}>
+                            企业简介摘要（英文）
+                            <textarea
+                              value={getTextValue(companyProfileVerified, 'summaryEn')}
+                              onChange={(event) =>
+                                updateVerifiedSummary('companyProfile', 'summaryEn', event.target.value)
+                              }
+                              className={compactTextAreaClass}
+                            />
+                          </label>
+                          <label className={formLabelClass}>
+                            联系信息摘要（中文）
+                            <textarea
+                              value={getTextValue(contactInfoVerified, 'summary')}
+                              onChange={(event) =>
+                                updateVerifiedSummary('contactInfo', 'summary', event.target.value)
+                              }
+                              className={compactTextAreaClass}
+                            />
+                          </label>
+                          <label className={formLabelClass}>
+                            留言页面摘要（中文）
+                            <textarea
+                              value={getTextValue(messagePageVerified, 'summary')}
+                              onChange={(event) =>
+                                updateVerifiedSummary('messagePage', 'summary', event.target.value)
+                              }
+                              className={compactTextAreaClass}
+                            />
+                          </label>
+                        </div>
+                      )}
+
+                      {siteResourceEditorTab === 'raw' && (
+                        <p className="rounded-[16px] border border-[#d7b66c]/22 bg-[#d7b66c]/8 px-4 py-3 text-sm leading-7 text-[#d7ccbd]">
+                          当前已切到原始 JSON 模式，请在右侧编辑器中直接维护完整结构。
+                        </p>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                <div className="art-card px-5 py-5">
                   <p className="eyebrow">Editing Note</p>
                   <p className="mt-4 text-sm leading-8 text-[#b8ad9e]">
-                    建议只写真实可核实资料。因为 `site-resources` 是全站共享资源层，前台会直接读取并渲染，不适合放占位信息或推测内容。`verifiedPages` 可用于维护首页和栏目页里的资料摘要。
+                    建议只写真实可核实资料。`site-resources` 是全站共享资源层，前台会直接读取并渲染，不适合放占位信息或推测内容。
                   </p>
                 </div>
 
@@ -1138,7 +1510,7 @@ const Admin = () => {
                   className={textAreaClass}
                 />
                 <p className={formHintClass}>
-                  当前支持维护 `source`、`contacts`、`messageForm`、`certificates`、`friendLinks`、`verifiedPages` 等字段，保存后前台共享资源会同步更新。
+                  当前支持维护 `source`、`contacts`、`messageForm`、`uiNarratives`、`certificates`、`friendLinks`、`verifiedPages` 等字段，保存后前台共享资源会同步更新。
                 </p>
               </label>
             </div>

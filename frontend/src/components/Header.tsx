@@ -42,14 +42,9 @@ const Header = ({ locale, copy }: HeaderProps) => {
     'hr',
     'contact'
   ]
-  const utilityNavKeys: string[] = []
   const primaryNavItems = useMemo(
     () => navItems.filter((item) => primaryNavKeys.includes(item.key)),
     [navItems, primaryNavKeys]
-  )
-  const utilityNavItems = useMemo(
-    () => navItems.filter((item) => utilityNavKeys.includes(item.key)),
-    [navItems, utilityNavKeys]
   )
   const mobileMainNavItems = useMemo(
     () => navItems.filter((item) => item.key === 'home' || primaryNavKeys.includes(item.key)),
@@ -58,13 +53,10 @@ const Header = ({ locale, copy }: HeaderProps) => {
 
   const phoneNumber =
     copy.footer.contactItems.find((item) => item.includes('+')) ?? '+86 13366668010'
-  const desktopNavTextClass =
-    locale === 'zh'
-      ? 'text-[13px] tracking-[0.01em] 2xl:text-[15px] 2xl:tracking-[0.03em]'
-      : 'text-[12px] tracking-[0.06em] 2xl:text-[13px] 2xl:tracking-[0.08em]'
-  const mobileNavTextClass =
-    locale === 'zh' ? 'text-[16px] tracking-[0.06em]' : 'text-[15px] tracking-[0.14em]'
-  const utilityTextClass = locale === 'zh' ? 'tracking-[0.08em]' : 'tracking-[0.16em]'
+  const desktopNavLocaleClass = locale === 'zh' ? 'header-nav-item-zh' : 'header-nav-item-en'
+  const mobileNavLocaleClass =
+    locale === 'zh' ? 'header-mobile-nav-item-zh' : 'header-mobile-nav-item-en'
+  const topBarClass = locale === 'zh' ? 'header-topbar header-topbar-zh' : 'header-topbar header-topbar-en'
 
   useEffect(() => {
     setMenuOpen(false)
@@ -111,12 +103,18 @@ const Header = ({ locale, copy }: HeaderProps) => {
     >
       <div className="border-b border-[#d7cfbf]">
         <div className="section-wrap hidden xl:block">
-          <div className="flex min-h-[42px] items-center justify-between gap-6 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#75808b]">
+          <div className={`flex ${topBarClass}`}>
             <div className="flex items-center gap-6">
-              <span className={`truncate text-[#7b838f] ${utilityTextClass}`}>{copy.header.brandTagline}</span>
+              <span className="brand-tagline truncate text-[12px]">{copy.header.brandTagline}</span>
+              <span className="hidden 2xl:inline-flex text-[#97a0aa]">
+                {locale === 'zh' ? '企业工业服务站' : 'Enterprise Service Desk'}
+              </span>
             </div>
 
             <div className="flex items-center gap-5">
+              <span className="text-[#8a939e]">
+                {locale === 'zh' ? '服务热线' : 'Service Line'}
+              </span>
               <a
                 href={`tel:${phoneNumber.replace(/\s+/g, '')}`}
                 className="text-[#6b7380] transition-colors hover:text-[#1f252d]"
@@ -137,45 +135,47 @@ const Header = ({ locale, copy }: HeaderProps) => {
 
       <div className="border-b border-[#d7cfbf]/90">
         <div className="section-wrap">
-          <div className="flex h-[90px] items-center justify-between gap-6 xl:h-[98px] 2xl:h-[102px]">
-            <Link to={`/${locale}`} className="flex min-w-0 items-center gap-4">
-              <div className="grid h-11 w-11 flex-shrink-0 place-items-center border border-[#d7cfbf] bg-[linear-gradient(145deg,rgba(255,255,255,0.96),rgba(238,230,215,0.88))] text-[#8f672b] shadow-[0_12px_24px_rgba(88,98,112,0.12)] sm:h-12 sm:w-12 2xl:h-14 2xl:w-14">
-                <span className="font-display text-[1.55rem] leading-none sm:text-[1.7rem] 2xl:text-[1.95rem]">H</span>
+          <div className="flex h-[98px] items-center justify-between gap-4 sm:h-[104px] xl:h-[112px] 2xl:h-[118px]">
+            <Link to={`/${locale}`} className="flex min-w-0 items-center gap-3 sm:gap-4">
+              <div className="grid h-11 w-11 flex-shrink-0 place-items-center border border-[#d7cfbf] bg-[linear-gradient(145deg,rgba(255,255,255,0.96),rgba(238,230,215,0.88))] text-[#8f672b] shadow-[0_10px_20px_rgba(88,98,112,0.12)] sm:h-12 sm:w-12 2xl:h-14 2xl:w-14">
+                <span className="font-display text-[1.52rem] leading-none sm:text-[1.66rem] 2xl:text-[1.92rem]">H</span>
               </div>
               <div className="min-w-0">
-                <p className="truncate font-display text-[1.62rem] leading-none text-[#1f252d] sm:text-[1.78rem] 2xl:text-[2.08rem]">
+                <p className="truncate font-display text-[1.58rem] leading-none text-[#1f252d] sm:text-[1.72rem] 2xl:text-[2.02rem]">
                   {copy.header.brandName}
                 </p>
-                <p className="mt-1.5 truncate text-[10px] uppercase tracking-[0.2em] text-[#6f7782] 2xl:text-[11px] 2xl:tracking-[0.24em]">
+                <p className="brand-tagline mt-1 truncate text-[11px] 2xl:text-[12px]">
                   {copy.header.brandTagline}
                 </p>
               </div>
             </Link>
 
             <nav className="hidden min-w-0 flex-1 items-center justify-center xl:flex">
-              <div className="machine-nav-shell max-w-[1040px] flex-1 justify-center gap-2.5 2xl:max-w-[1180px] 2xl:gap-4">
-                {primaryNavItems.map((item) => {
-                  const active = isActive(item.path)
-                  return (
-                    <Link
-                      key={item.path}
-                      to={item.path}
-                      aria-current={active ? 'page' : undefined}
-                      className={`machine-nav-item min-h-[48px] px-1 pb-3 2xl:min-h-[52px] ${desktopNavTextClass} ${
-                        active ? 'machine-nav-item-active' : ''
-                      }`}
-                    >
-                      {item.label}
-                    </Link>
-                  )
-                })}
+              <div className="nav-track max-w-[1220px] flex-1 2xl:max-w-[1320px]">
+                <div className="machine-nav-shell header-nav-shell min-w-max px-1">
+                  {primaryNavItems.map((item) => {
+                    const active = isActive(item.path)
+                    return (
+                      <Link
+                        key={item.path}
+                        to={item.path}
+                        aria-current={active ? 'page' : undefined}
+                        className={`machine-nav-item header-nav-item shrink-0 px-2 pb-3 2xl:min-h-[66px] ${desktopNavLocaleClass} ${
+                          active ? 'machine-nav-item-active' : ''
+                        }`}
+                      >
+                        {item.label}
+                      </Link>
+                    )
+                  })}
+                </div>
               </div>
             </nav>
 
-            <div className="hidden items-center gap-4 xl:flex">
+            <div className="hidden items-center gap-3 xl:flex">
               <Link
                 to={`/${locale}/inquiry`}
-                className="inline-flex min-h-[46px] items-center justify-center bg-[linear-gradient(135deg,#f0dfb0,#d7b66c_46%,#b9893d_100%)] px-5 py-3 text-[13px] font-semibold uppercase tracking-[0.1em] text-[#1a140a] shadow-[0_16px_32px_rgba(123,89,34,0.28)] transition-transform duration-300 hover:-translate-y-px 2xl:min-h-[50px] 2xl:px-6 2xl:text-[14px] 2xl:tracking-[0.12em]"
+                className="btn-primary min-h-[50px] px-5 text-[13px] 2xl:min-h-[54px] 2xl:px-6 2xl:text-[14px]"
               >
                 {copy.header.quoteButton}
               </Link>
@@ -185,7 +185,7 @@ const Header = ({ locale, copy }: HeaderProps) => {
               <Link
                 to={switchPath}
                 onClick={() => setStoredLocale(switchTo)}
-                className="machine-nav-utility min-h-[44px] px-3 text-[11px]"
+                className="machine-nav-utility min-h-[46px] px-3.5 text-[12px]"
               >
                 {copy.header.switchLanguageLabel}
               </Link>
@@ -224,42 +224,24 @@ const Header = ({ locale, copy }: HeaderProps) => {
 
       {menuOpen && (
         <div className="border-b border-[#d7cfbf] bg-[rgba(251,248,242,0.97)] xl:hidden">
-          <div className="section-wrap py-5">
-            <div className="flex flex-wrap items-center gap-4 border-b border-[#d7cfbf] pb-4 text-[12px] font-semibold uppercase tracking-[0.14em] text-[#6b7380]">
+          <div className="section-wrap py-6">
+            <div className="label-muted flex flex-wrap items-center gap-4 border-b border-[#d7cfbf] pb-4 text-[13px]">
               <a href={`tel:${phoneNumber.replace(/\s+/g, '')}`} className="transition-colors hover:text-[#1f252d]">
                 {phoneNumber}
               </a>
             </div>
+            <p className="brand-tagline mt-5 text-[12px]">
+              {copy.header.brandTagline}
+            </p>
 
-            {utilityNavItems.length > 0 && (
-              <div className="mt-4 flex flex-wrap gap-2 border-b border-[#d7cfbf] pb-4">
-                {utilityNavItems.map((item) => {
-                  const active = isActive(item.path)
-                  return (
-                    <Link
-                      key={item.path}
-                      to={item.path}
-                      className={`machine-nav-utility min-h-[40px] px-3 text-[11px] ${utilityTextClass} ${
-                        active
-                          ? 'border-[#c89b45]/50 text-[#8f672b]'
-                          : 'text-[#5e6874] hover:text-[#1f252d]'
-                      }`}
-                    >
-                      {item.label}
-                    </Link>
-                  )
-                })}
-              </div>
-            )}
-
-            <nav id="mobile-site-menu" className="mt-4 grid gap-3">
+            <nav id="mobile-site-menu" className="mt-5 grid gap-3.5">
               {mobileMainNavItems.map((item) => {
                 const active = isActive(item.path)
                 return (
                   <Link
                     key={item.path}
                     to={item.path}
-                    className={`border-b px-1 pb-3.5 pt-1.5 font-semibold uppercase transition-colors ${mobileNavTextClass} ${
+                    className={`header-mobile-nav-item border-b px-1 pb-4 pt-2 transition-colors ${mobileNavLocaleClass} ${
                       active
                         ? 'border-[#c89b45] text-[#8f672b]'
                         : 'border-[#d7cfbf] text-[#5e6874] hover:text-[#1f252d]'
@@ -273,7 +255,7 @@ const Header = ({ locale, copy }: HeaderProps) => {
 
             <Link
               to={`/${locale}/inquiry`}
-              className="mt-5 inline-flex min-h-[48px] w-full items-center justify-center bg-[linear-gradient(135deg,#f0dfb0,#d7b66c_46%,#b9893d_100%)] px-6 py-3 text-[13px] font-semibold uppercase tracking-[0.14em] text-[#1a140a] shadow-[0_16px_32px_rgba(123,89,34,0.28)]"
+              className="btn-primary mt-6 min-h-[54px] w-full px-6 text-[14px]"
             >
               {copy.header.quoteButton}
             </Link>

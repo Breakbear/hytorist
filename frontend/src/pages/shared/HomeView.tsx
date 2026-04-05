@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
+import ZoomableImage from '../../components/ZoomableImage'
 import { getPortalSections } from '../../content/portal'
 import { visualAssets } from '../../content/visualAssets'
+import useSiteResources from '../../hooks/useSiteResources'
 import { buildLocalizedPath } from '../../i18n/routes'
 import type { HomeCopy, Locale, SiteCopy } from '../../i18n/types'
 import { usePageSeo } from '../../i18n/usePageSeo'
@@ -52,6 +54,18 @@ interface SiteResourcesResponse {
     string,
     VerifiedPageNote
   >
+  uiNarratives?: {
+    home?: {
+      sitePathLeadZh?: string
+      sitePathLeadEn?: string
+      sitePathHintZh?: string
+      sitePathHintEn?: string
+      resourceLeadZh?: string
+      resourceLeadEn?: string
+      resourceHintZh?: string
+      resourceHintEn?: string
+    }
+  }
 }
 
 interface VerifiedPageNote {
@@ -162,7 +176,7 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
   const isZh = locale === 'zh'
   const [homeOverride, setHomeOverride] = useState<Partial<HomeCopy> | null>(null)
   const [activeSlide, setActiveSlide] = useState(0)
-  const [siteResources, setSiteResources] = useState<SiteResourcesResponse | null>(null)
+  const siteResources = useSiteResources<SiteResourcesResponse>()
 
   const page = useMemo(() => mergeHomeCopy(copy.home, homeOverride), [copy.home, homeOverride])
   const showcase = page.featuredProducts.slice(0, 3)
@@ -170,6 +184,7 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
   const companySummary = getVerifiedSummary(locale, siteResources?.verifiedPages?.companyProfile)
   const engineeringSummary = getVerifiedSummary(locale, siteResources?.verifiedPages?.engineeringService)
   const messageSummary = getVerifiedSummary(locale, siteResources?.verifiedPages?.messagePage)
+  const homeNarrative = siteResources?.uiNarratives?.home
 
   const heroMetrics =
     page.heroMetrics && page.heroMetrics.length > 0
@@ -191,6 +206,7 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
       {
         id: 'overview',
         image: visualAssets.digitalScene,
+        focusClass: 'hero-focus-overview',
         label: isZh ? '工业装配与检修' : 'Industrial Assembly and Maintenance',
         title: isZh ? '液压紧固与工业检修' : page.heroTitle,
         description:
@@ -205,6 +221,7 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
       {
         id: 'capability',
         image: showcase[0]?.image ?? visualAssets.windAssembly,
+        focusClass: 'hero-focus-capability',
         label: page.brandFrameEyebrow,
         title: isZh ? '液压工具与工程交付' : page.brandFrameTitle,
         description:
@@ -219,6 +236,7 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
       {
         id: 'delivery',
         image: visualAssets.factoryFloor,
+        focusClass: 'hero-focus-delivery',
         label: page.nextMoveEyebrow,
         title: isZh ? '提交工况进入对接' : page.nextMoveTitle,
         description:
@@ -226,7 +244,7 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
           getHeroLeadText(
             page.nextMoveText,
             isZh
-              ? '提交工况、交付时间与服务范围后，站内统一进入技术或商务对接。'
+              ? '提交工况、交付时间与服务范围后，将快速进入技术或商务对接。'
               : 'After you submit operating conditions, timing, and service scope, the site routes the request into technical or commercial follow-up.'
           )
       }
@@ -276,29 +294,6 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
   }, [locale])
 
   useEffect(() => {
-    let cancelled = false
-
-    const fetchSiteResources = async () => {
-      try {
-        const response = await axios.get<SiteResourcesResponse>('/api/site-resources')
-        if (!cancelled) {
-          setSiteResources(response.data)
-        }
-      } catch {
-        if (!cancelled) {
-          setSiteResources(null)
-        }
-      }
-    }
-
-    void fetchSiteResources()
-
-    return () => {
-      cancelled = true
-    }
-  }, [])
-
-  useEffect(() => {
     if (heroSlides.length <= 1) {
       return
     }
@@ -329,22 +324,25 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
   const certificate = siteResources?.certificates?.[0] ?? null
   const productCategoryCount = siteResources?.productCategories?.length || 0
   const caseCategoryCount = siteResources?.caseCategories?.length || 0
-  const productCategoryText =
-    productCategoryCount > 0
+  const categoryCoverageText =
+    productCategoryCount > 0 || caseCategoryCount > 0
       ? isZh
-        ? `已整理 ${productCategoryCount} 个设备分类，目录按工程方向展示。`
-        : `The site currently organizes ${productCategoryCount} equipment categories by engineering direction.`
+        ? `已覆盖 ${productCategoryCount} 个设备分类和 ${caseCategoryCount} 个应用分类，可按工程方向与应用场景快速查找。`
+        : `The site now organizes ${productCategoryCount} equipment categories and ${caseCategoryCount} application categories by engineering direction and scenario entry.`
       : isZh
-        ? '设备分类正在按已核实资料整理。'
-        : 'Equipment categories are being organized from verified materials.'
-  const caseCategoryText =
-    caseCategoryCount > 0
-      ? isZh
-        ? `已整理 ${caseCategoryCount} 个应用分类，内容按场景入口展示。`
-        : `The site currently organizes ${caseCategoryCount} application categories by scenario entry.`
+        ? '设备与应用分类持续更新中，欢迎按场景浏览或直接提交需求。'
+        : 'Equipment and application categories are being continuously updated. You can browse by scenario or submit a requirement directly.'
+  const serviceCommitmentText =
+    getVerifiedSummary(locale, siteResources?.verifiedPages?.afterSales) ||
+    (isZh
+      ? '售后响应、现场支持与项目沟通由专人连续跟进。'
+      : 'After-sales response, on-site support, and project communication are continuously handled by our team.')
+  const credentialNoteText =
+    certificate
+      ? certificate.title
       : isZh
-        ? '应用分类正在按已核实资料整理。'
-        : 'Application categories are being organized from verified materials.'
+        ? '相关资质文件可在项目沟通阶段提供。'
+        : 'Qualification documents can be provided during project communication.'
   const verifiedHighlights = [
     siteResources?.verifiedPages?.companyProfile,
     siteResources?.verifiedPages?.engineeringService
@@ -370,7 +368,7 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
     getHeroLeadText(
       page.nextMoveText,
       isZh
-        ? '提交工况、交付时间与服务范围后，站内统一进入技术或商务对接。'
+        ? '提交工况、交付时间与服务范围后，将快速进入技术或商务对接。'
         : 'After you submit operating conditions, timing, and service scope, the site routes the request into technical or commercial follow-up.'
     )
   const featuredProductNotes = showcase.map((product, index) => {
@@ -383,8 +381,51 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
     return getHeroLeadText(note, note)
   })
   const summaryTags = isZh
-    ? ['项目沟通', '服务资质', '能力摘要']
-    : ['Project Intake', 'Service Notes', 'Capability Summary']
+    ? ['项目沟通', '分类覆盖', '服务承接']
+    : ['Project Intake', 'Category Coverage', 'Service Delivery']
+  const imagePreviewLabel = isZh ? '查看原图' : 'View Full Image'
+  const imageCloseLabel = isZh ? '关闭原图' : 'Close Image'
+  const heroLabelClass = 'label-accent text-[13px] sm:text-[14px]'
+  const heroPrimaryButtonClass = 'btn-primary min-h-[60px] w-full px-9 text-[15px] sm:min-h-[64px] sm:w-auto sm:text-[16px]'
+  const heroSecondaryButtonClass = 'btn-secondary min-h-[60px] w-full px-9 text-[15px] sm:min-h-[64px] sm:w-auto sm:text-[16px]'
+  const activeHeroGuide = (() => {
+    const activeHeroId = heroSlides[activeSlide]?.id
+    if (activeHeroId === 'capability') {
+      return isZh
+        ? '本屏重点展示设备能力与工程交付范围，便于快速判断是否匹配当前工况。'
+        : 'This section highlights equipment capability and delivery scope for quick fit evaluation.'
+    }
+    if (activeHeroId === 'delivery') {
+      return isZh
+        ? '本屏重点展示需求提交流程，帮助您从工况输入快速进入技术或商务对接。'
+        : 'This section highlights the intake path from requirement input to technical or commercial follow-up.'
+    }
+
+    return isZh
+      ? '本屏重点展示液压紧固、现场检修和工业装配三类核心能力。'
+      : 'This section highlights hydraulic fastening, field maintenance, and industrial assembly capabilities.'
+  })()
+  const activeHeroTags = isZh
+    ? ['液压紧固', '现场检修', '项目对接']
+    : ['Hydraulic Bolting', 'Field Maintenance', 'Project Intake']
+  const resourceSummaryCards = [
+    {
+      title: isZh ? '留言规则' : 'Message Rules',
+      text: messageSummary || messageRuleText
+    },
+    {
+      title: isZh ? '分类覆盖' : 'Category Coverage',
+      text: categoryCoverageText
+    },
+    {
+      title: isZh ? '服务与资质' : 'Service and Credentials',
+      text: `${serviceCommitmentText} ${credentialNoteText}`.trim()
+    }
+  ]
+  const compactResourceSummaryCards = resourceSummaryCards.map((card) => ({
+    ...card,
+    text: getHeroLeadText(card.text, card.text)
+  }))
   const quickActions = isZh
     ? [
         {
@@ -422,8 +463,8 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
       ]
 
   return (
-    <div className="pb-16">
-      <section className="relative -mt-24 min-h-[100svh] overflow-hidden bg-[#f6f1e8] sm:-mt-32 xl:-mt-[8.9rem]">
+    <div className="pb-20">
+      <section className="relative -mt-[8.8rem] min-h-[100svh] overflow-hidden bg-[#f6f1e8] sm:-mt-[9.4rem] xl:-mt-[10.4rem] 2xl:-mt-[10.8rem]">
         {heroSlides.map((slide, index) => {
           const active = index === activeSlide
           return (
@@ -433,23 +474,27 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
                 active ? 'opacity-100' : 'pointer-events-none opacity-0'
               }`}
             >
-              <img
+              <ZoomableImage
                 src={slide.image}
                 alt={slide.title}
-                className="day-hero-image h-full w-full object-cover"
+                hintVisibility="always"
+                previewLabel={imagePreviewLabel}
+                closeLabel={imageCloseLabel}
+                wrapperClassName="h-full w-full"
+                className={`day-hero-image h-full w-full object-cover ${slide.focusClass}`}
               />
-              <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(251,248,242,0.94)_0%,rgba(251,248,242,0.78)_42%,rgba(251,248,242,0.22)_100%)]" />
-              <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(251,248,242,0.22)_0%,rgba(251,248,242,0)_28%,rgba(251,248,242,0.56)_100%)]" />
+              <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(251,248,242,0.94)_0%,rgba(251,248,242,0.78)_42%,rgba(251,248,242,0.22)_100%)]" />
+              <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(251,248,242,0.22)_0%,rgba(251,248,242,0)_28%,rgba(251,248,242,0.56)_100%)]" />
             </div>
           )
         })}
 
         <div className="absolute inset-x-0 bottom-0 h-px bg-[#d7cfbf]" />
 
-        <div className="relative section-wrap grid min-h-[100svh] grid-rows-[1fr_auto] gap-8 pb-12 pt-32 sm:gap-12 sm:pb-[4.5rem] sm:pt-44 xl:gap-16 xl:pb-20 xl:pt-60">
+        <div className="relative section-wrap grid min-h-[100svh] grid-rows-[1fr_auto] gap-8 pb-12 pt-36 sm:gap-12 sm:pb-[4.5rem] sm:pt-48 lg:gap-14 lg:pb-16 lg:pt-56 xl:gap-16 xl:pb-20 xl:pt-64">
           <div className="flex items-center">
-            <div className="hero-panel max-w-[54rem] py-10 sm:py-12 xl:py-16">
-              <p className="text-[13px] font-semibold uppercase tracking-[0.2em] text-[#8f672b] sm:text-[14px]">
+            <div className="hero-panel max-w-[52rem] py-10 sm:py-14 lg:max-w-[54rem] xl:max-w-[58rem] xl:py-16">
+              <p className={heroLabelClass}>
                 {heroSlides[activeSlide]?.label}
               </p>
               <h1
@@ -459,20 +504,30 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
               >
                 {heroSlides[activeSlide]?.title}
               </h1>
-              <p className="hero-copy mt-8 max-w-[48rem] text-[1.04rem] leading-8 text-[#4e5966] sm:text-[1.16rem] sm:leading-9 xl:text-[1.2rem]">
+              <p className="hero-copy mt-8 max-w-[46rem] text-[1.08rem] leading-8 text-[#4e5966] sm:text-[1.2rem] sm:leading-9 xl:max-w-[50rem] xl:text-[1.26rem]">
                 {heroSlides[activeSlide]?.description}
               </p>
+              <p className="mt-5 max-w-[48rem] text-[0.96rem] leading-8 text-[#5d6773] sm:text-[1.02rem] xl:max-w-[52rem]">
+                {activeHeroGuide}
+              </p>
+              <div className="mt-5 flex flex-wrap gap-2.5">
+                {activeHeroTags.map((item) => (
+                  <span key={item} className="summary-chip">
+                    {item}
+                  </span>
+                ))}
+              </div>
 
               <div className="mt-10 flex flex-col gap-3 sm:mt-12 sm:flex-row sm:flex-wrap sm:gap-6">
                 <Link
                   to={buildLocalizedPath(locale, 'inquiry')}
-                  className="inline-flex min-h-[56px] w-full items-center justify-center bg-[linear-gradient(135deg,#f0dfb0,#d7b66c_46%,#b9893d_100%)] px-8 py-4 text-[14px] font-semibold uppercase tracking-[0.1em] text-[#1a140a] shadow-[0_20px_40px_rgba(123,89,34,0.3)] transition-transform duration-300 hover:-translate-y-px sm:min-h-[60px] sm:w-auto sm:text-[15px]"
+                  className={heroPrimaryButtonClass}
                 >
                   {page.requestQuoteButton}
                 </Link>
                 <Link
                   to={`/${locale}/${portalSections.products.segment}`}
-                  className="btn-secondary min-h-[56px] w-full px-8 text-[14px] tracking-[0.1em] sm:min-h-[60px] sm:w-auto sm:text-[15px]"
+                  className={heroSecondaryButtonClass}
                 >
                   {page.viewProductsButton}
                 </Link>
@@ -480,14 +535,14 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
             </div>
           </div>
 
-          <div className="grid gap-8 border-t border-[#d7cfbf] pt-6 xl:grid-cols-[1fr_auto] xl:items-end">
+          <div className="grid gap-8 border-t border-[#d7cfbf] pt-6 lg:gap-9 lg:pt-7 xl:grid-cols-[1fr_auto] xl:items-end">
             <div className="grid gap-6 sm:grid-cols-3">
               {heroMetrics.map((metric) => (
                 <div key={`${metric.label}-${metric.value}`}>
-                  <p className="font-display text-[3.15rem] leading-none text-[#1f252d] sm:text-[3.5rem]">
+                  <p className="font-display text-[3.35rem] leading-none text-[#1f252d] sm:text-[3.7rem]">
                     {metric.value}
                   </p>
-                  <p className="mt-2 text-[12px] uppercase tracking-[0.12em] text-[#68717d] sm:text-[13px]">
+                  <p className="metric-label mt-2 text-[12px] sm:text-[13px]">
                     {metric.label}
                   </p>
                 </div>
@@ -518,14 +573,14 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
         </div>
       </section>
 
-      <section className="py-20 sm:py-24 xl:py-32">
-        <div className="section-wrap grid gap-12 xl:grid-cols-[0.4fr_0.6fr]">
+      <section className="border-t border-[#d7cfbf]/75 py-20 sm:py-24 xl:py-32">
+        <div className="section-wrap grid gap-12 xl:grid-cols-[0.42fr_0.58fr] 2xl:grid-cols-[0.4fr_0.6fr]">
           <div>
             <p className="eyebrow">{page.brandEssenceTitle}</p>
             <h2 className="section-title-xl mt-4 max-w-[34rem]">
               {page.brandEssenceHeadline}
             </h2>
-            <p className="section-copy section-copy-compact mt-7 max-w-none copy-clamp-4">
+            <p className="section-copy section-copy-compact mt-7 max-w-none copy-clamp-4 copy-unclamp-lg">
               {brandOverviewText}
             </p>
           </div>
@@ -534,12 +589,12 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
             {page.designNotes.slice(0, 3).map((note, index) => (
               <article key={note.code} className={`${index > 0 ? 'border-t border-[#d7cfbf] pt-8' : ''}`}>
                 <div className="grid gap-4 sm:grid-cols-[92px_1fr]">
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#7b838f]">
+                  <p className="label-muted text-[11px]">
                     {note.code}
                   </p>
                   <div>
-                    <h3 className="section-title-lg">{note.title}</h3>
-                    <p className="section-copy section-copy-wide mt-5 max-w-none copy-clamp-4">
+                    <h3 className="subsection-title">{note.title}</h3>
+                    <p className="section-copy section-copy-wide mt-5 max-w-none copy-clamp-4 copy-unclamp-lg">
                       {getHeroLeadText(note.description, note.description)}
                     </p>
                   </div>
@@ -552,9 +607,12 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
         <div className="-mx-4 mt-16 overflow-hidden bg-[#ebe4d7] sm:-mx-6 xl:-mx-8 2xl:-mx-10">
           <div className="section-wrap grid gap-10 xl:grid-cols-[1.06fr_0.94fr] xl:items-center">
             <div className="min-h-[240px] xl:min-h-[520px]">
-              <img
+              <ZoomableImage
                 src={featureSpotlight}
                 alt={page.brandFrameTitle}
+                previewLabel={imagePreviewLabel}
+                closeLabel={imageCloseLabel}
+                wrapperClassName="h-full w-full"
                 className="day-section-image h-full w-full object-cover"
                 loading="lazy"
               />
@@ -562,7 +620,7 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
 
             <div className="py-10 sm:py-12 xl:py-16">
               <p className="eyebrow">{page.brandFrameEyebrow}</p>
-              <h3 className="section-title-xl mt-4 max-w-[34rem]">
+              <h3 className="subsection-title mt-4 max-w-[34rem]">
                 {page.brandFrameTitle}
               </h3>
               <p className="section-copy section-copy-compact mt-6 max-w-none">
@@ -587,7 +645,7 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
         </div>
       </section>
 
-      <section className="py-20 sm:py-24 xl:py-32">
+      <section className="border-t border-[#d7cfbf]/75 py-20 sm:py-24 xl:py-32">
         <div className="section-wrap">
           <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
             <div>
@@ -598,7 +656,7 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
             </div>
             <Link
               to={`/${locale}/${portalSections.products.segment}`}
-              className="inline-flex self-start border-b border-[#aeb7c1] pb-2 text-[13px] font-semibold uppercase tracking-[0.12em] text-[#475260] transition-colors hover:border-[#c89b45] hover:text-[#1f252d] xl:self-auto"
+              className="inline-kicker-link self-start xl:self-auto"
             >
               {page.viewAllProductsButton}
             </Link>
@@ -616,9 +674,12 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
                 >
                   <div className="art-image-frame">
                     <div className="aspect-[15/10] xl:min-h-[420px]">
-                      <img
+                      <ZoomableImage
                         src={product.image}
                         alt={product.name}
+                        previewLabel={imagePreviewLabel}
+                        closeLabel={imageCloseLabel}
+                        wrapperClassName="h-full w-full"
                         className="day-section-image h-full w-full object-cover"
                         loading="lazy"
                       />
@@ -626,13 +687,13 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
                   </div>
 
                   <div className="max-w-2xl">
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#7b838f]">
+                    <p className="label-muted text-[11px]">
                       {product.category}
                     </p>
-                    <h3 className="section-title-xl mt-4 max-w-[30rem]">
+                    <h3 className="subsection-title mt-4 max-w-[30rem]">
                       {product.name}
                     </h3>
-                    <p className="section-copy section-copy-compact mt-6 max-w-none copy-clamp-3">
+                    <p className="section-copy section-copy-compact mt-5 max-w-none copy-clamp-3">
                       {featuredProductNotes[index]}
                     </p>
                     <div className="mt-8 flex flex-wrap gap-5">
@@ -657,26 +718,28 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
         </div>
       </section>
 
-      <section className="py-8 sm:py-10 xl:py-12">
+      <section className="border-t border-[#d7cfbf]/75 py-14 sm:py-16 xl:py-20">
         <div className="section-wrap">
-          <div className="action-panel px-6 py-7 sm:px-8 sm:py-8 xl:px-10">
+          <div className="action-panel px-6 py-8 sm:px-8 sm:py-9 xl:px-10">
             <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
               <div>
-                <p className="eyebrow">{isZh ? '站内路径' : 'Site Path'}</p>
-                <h2 className="section-title-lg mt-4 max-w-[34rem]">
-                  {isZh ? '从查看能力到发起项目对接，用一条站内路径完成。' : 'Move from capability review to project intake in one on-site flow.'}
+                <p className="eyebrow">{isZh ? '服务路径' : 'Service Path'}</p>
+                <h2 className="subsection-title mt-4 max-w-[34rem]">
+                  {isZh
+                    ? homeNarrative?.sitePathLeadZh || '从能力了解、方案判断到项目沟通，一条路径即可完成。'
+                    : homeNarrative?.sitePathLeadEn || 'From capability review to project communication, everything flows in one clear path.'}
                 </h2>
               </div>
               <p className="section-copy section-copy-compact max-w-none xl:text-right">
                 {isZh
-                  ? '把设备目录、应用场景和需求提交整合在同一条链路里，减少来回跳转。'
-                  : 'Equipment review, application scenarios, and requirement submission are kept in one chain with fewer detours.'}
+                  ? homeNarrative?.sitePathHintZh || '可先查看设备与应用案例，再提交需求进入对接。'
+                  : homeNarrative?.sitePathHintEn || 'Review equipment and applications first, then submit requirements for follow-up.'}
               </p>
             </div>
 
-            <div className="mt-8 grid gap-4 xl:grid-cols-3">
+            <div className="mt-8 grid gap-5 sm:gap-6 xl:grid-cols-3">
               {quickActions.map((action) => (
-                <Link key={action.title} to={action.to} className="info-card block px-5 py-5 transition-colors hover:border-[#c89b45]/30">
+                <Link key={action.title} to={action.to} className="info-card content-card block transition-colors hover:border-[#c89b45]/30">
                   <p className="meta-label">{action.title}</p>
                   <p className="meta-copy mt-3 copy-clamp-3">{action.text}</p>
                   <span className="cta-link cta-link-primary mt-5">
@@ -689,7 +752,7 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
         </div>
       </section>
 
-      <section className="py-20 sm:py-24 xl:py-32">
+      <section className="border-t border-[#d7cfbf]/75 py-20 sm:py-24 xl:py-32">
         <div className="-mx-4 overflow-hidden bg-[#ece4d7] sm:-mx-6 xl:-mx-8 2xl:-mx-10">
           <div className="section-wrap grid gap-10 xl:grid-cols-[0.92fr_1.08fr] xl:items-stretch">
             <div className="py-8 sm:py-12 xl:py-16">
@@ -711,9 +774,9 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
                   >
                     <p className="font-display text-[2.8rem] leading-none text-[#8f672b]">{step.step}</p>
                     <div>
-                      <h3 className="section-title-lg">{step.title}</h3>
-                      <p className="section-copy mt-5 max-w-none">
-                        {step.description}
+                      <h3 className="subsection-title">{step.title}</h3>
+                      <p className="section-copy mt-5 max-w-none copy-clamp-4 copy-unclamp-lg">
+                        {getHeroLeadText(step.description, step.description)}
                       </p>
                     </div>
                   </article>
@@ -722,9 +785,12 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
             </div>
 
             <div className="min-h-[240px] xl:min-h-[620px]">
-              <img
+              <ZoomableImage
                 src={processSpotlight}
                 alt={page.nextMoveTitle}
+                previewLabel={imagePreviewLabel}
+                closeLabel={imageCloseLabel}
+                wrapperClassName="h-full w-full"
                 className="day-section-image h-full w-full object-cover"
                 loading="lazy"
               />
@@ -733,24 +799,28 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
         </div>
       </section>
 
-      <section className="pt-20 sm:pt-24 xl:pt-32">
+      <section className="border-t border-[#d7cfbf]/75 pt-20 sm:pt-24 xl:pt-32">
         <div className="relative -mx-4 overflow-hidden sm:-mx-6 xl:-mx-8 2xl:-mx-10">
-          <img
+          <ZoomableImage
             src={visualAssets.factoryFloor}
             alt={copy.header.brandName}
-            className="day-hero-image-soft absolute inset-0 h-full w-full object-cover"
+            hintVisibility="always"
+            previewLabel={imagePreviewLabel}
+            closeLabel={imageCloseLabel}
+            wrapperClassName="absolute inset-0 h-full w-full"
+            className="day-hero-image-soft hero-focus-footer absolute inset-0 h-full w-full object-cover"
             loading="lazy"
           />
-          <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(251,248,242,0.94)_0%,rgba(251,248,242,0.8)_42%,rgba(251,248,242,0.42)_100%)]" />
-          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(251,248,242,0.16)_0%,rgba(251,248,242,0.08)_30%,rgba(251,248,242,0.58)_100%)]" />
+          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(251,248,242,0.94)_0%,rgba(251,248,242,0.8)_42%,rgba(251,248,242,0.42)_100%)]" />
+          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(251,248,242,0.16)_0%,rgba(251,248,242,0.08)_30%,rgba(251,248,242,0.58)_100%)]" />
 
-          <div className="section-wrap relative py-20 sm:py-28 xl:py-32">
+          <div className="section-wrap relative py-16 sm:py-[5.5rem] xl:py-24">
             <div className="max-w-3xl">
               <p className="eyebrow">{isZh ? '项目沟通' : 'Project Contact'}</p>
-              <h2 className="mt-4 hero-display hero-display-compact text-[#1f252d] xl:text-[4.45rem]">
+              <h2 className="section-title-xl mt-4 max-w-[42rem]">
                 {isZh ? '提交工况，进入技术或商务对接。' : 'Submit your operating condition for technical or commercial follow-up.'}
               </h2>
-              <p className="section-copy section-copy-compact mt-7 text-[#4e5966]">
+              <p className="section-copy section-copy-compact mt-7 text-[#4e5966] copy-clamp-4 copy-unclamp-lg">
                 {processSectionText}
               </p>
 
@@ -767,19 +837,19 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
         </div>
       </section>
 
-      <section className="py-[4.5rem] sm:py-[5.5rem] xl:py-28">
+      <section className="border-t border-[#d7cfbf]/75 py-[4.5rem] sm:py-[5.5rem] xl:py-28">
         <div className="section-wrap grid gap-6 xl:grid-cols-[0.92fr_1.08fr]">
-          <div className="panel px-6 py-7 sm:px-8 sm:py-8">
+          <div className="panel content-card">
             <p className="eyebrow">{isZh ? '资料摘要' : 'Resource Summary'}</p>
             <h2 className="section-title-lg mt-4">
               {isZh
-                ? '围绕项目沟通、服务资质与能力信息统一整理。'
-                : 'Project intake, service credentials, and capability notes organized in one place.'}
+                ? homeNarrative?.resourceLeadZh || '围绕项目沟通、服务资质与能力信息统一整理。'
+                : homeNarrative?.resourceLeadEn || 'Project intake, service credentials, and capability notes organized in one place.'}
             </h2>
-            <p className="section-copy section-copy-compact mt-5 max-w-none">
+            <p className="section-copy section-copy-compact mt-5 max-w-none copy-clamp-4 copy-unclamp-lg">
               {isZh
-                ? '这组内容用于帮助访客快速理解沟通方式、资质说明和服务摘要，不再展示外部网站入口。'
-                : 'This block helps visitors understand contact flow, qualification notes, and service highlights without exposing external site links.'}
+                ? homeNarrative?.resourceHintZh || '这组内容用于帮助访客快速理解沟通方式、资质说明和服务摘要。'
+                : homeNarrative?.resourceHintEn || 'This block helps visitors understand contact flow, qualification notes, and service highlights.'}
             </p>
 
             <div className="mt-8 flex flex-wrap gap-3">
@@ -791,48 +861,27 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
             </div>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2">
-            <article className="panel px-6 py-7 sm:px-8">
-              <p className="eyebrow">{isZh ? '留言规则' : 'Message Rules'}</p>
-              <p className="section-copy mt-5 max-w-none copy-clamp-4">
-                {messageSummary || messageRuleText}
-              </p>
-            </article>
+            <div className="grid gap-6 md:grid-cols-2">
+              {compactResourceSummaryCards.map((card) => (
+                <article key={card.title} className="panel content-card">
+                  <p className="eyebrow">{card.title}</p>
+                  <p className="section-copy mt-5 max-w-none copy-clamp-4 copy-unclamp-lg">{card.text}</p>
+                </article>
+              ))}
 
-            <article className="panel px-6 py-7 sm:px-8">
-              <p className="eyebrow">{isZh ? '设备分类' : 'Equipment Categories'}</p>
-              <p className="section-copy mt-5 max-w-none copy-clamp-4">{productCategoryText}</p>
-            </article>
-
-            <article className="panel px-6 py-7 sm:px-8">
-              <p className="eyebrow">{isZh ? '应用分类' : 'Application Categories'}</p>
-              <p className="section-copy mt-5 max-w-none copy-clamp-4">{caseCategoryText}</p>
-            </article>
-
-            <article className="panel px-6 py-7 sm:px-8">
-              <p className="eyebrow">{isZh ? '资质资料' : 'Certificate Reference'}</p>
-              <p className="section-copy mt-5 max-w-none copy-clamp-4">
-                {certificate
-                  ? certificate.title
-                  : isZh
-                    ? '证书资料已纳入统一资料池，可在联系页与后台资料池中统一维护。'
-                    : 'Certificate notes are included in the shared resource pool and maintained consistently across the site.'}
-              </p>
-            </article>
-
-            {verifiedHighlights.length > 0 && (
-              <article className="panel px-6 py-7 sm:px-8 md:col-span-2">
-                <p className="eyebrow">{isZh ? '能力摘要' : 'Capability Notes'}</p>
-                <div className="mt-5 grid gap-6">
-                  {verifiedHighlights.map((item) => (
-                    <div key={`${item.title}-${item.sourcePageUrl}`} className="border-t border-[#d7cfbf] pt-5 first:border-t-0 first:pt-0">
-                      <h3 className="text-[1.12rem] font-semibold text-[#1f252d] sm:text-[1.18rem]">
-                        {item.title}
-                      </h3>
-                      <p className="section-copy mt-3 max-w-none copy-clamp-4">
-                        {getVerifiedSummary(locale, item)}
-                      </p>
-                    </div>
+              {verifiedHighlights.length > 0 && (
+                <article className="panel content-card md:col-span-2">
+                  <p className="eyebrow">{isZh ? '能力摘要' : 'Capability Notes'}</p>
+                  <div className="mt-5 grid gap-6">
+                    {verifiedHighlights.map((item) => (
+                      <div key={`${item.title}-${item.sourcePageUrl}`} className="border-t border-[#d7cfbf] pt-5 first:border-t-0 first:pt-0">
+                        <h3 className="text-[1.12rem] font-semibold text-[#1f252d] sm:text-[1.18rem]">
+                          {item.title}
+                        </h3>
+                        <p className="section-copy mt-3 max-w-none copy-clamp-4 copy-unclamp-lg">
+                          {getVerifiedSummary(locale, item)}
+                        </p>
+                      </div>
                   ))}
                 </div>
               </article>

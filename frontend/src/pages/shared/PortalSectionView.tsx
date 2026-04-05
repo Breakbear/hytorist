@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import axios from 'axios'
 import { Link, useLocation, useParams } from 'react-router-dom'
 import DetailCardList from '../../components/DetailCardList'
+import ZoomableImage from '../../components/ZoomableImage'
 import {
   getPortalSections,
   type PortalHeroData,
@@ -9,6 +10,7 @@ import {
   type PortalSectionKey
 } from '../../content/portal'
 import { portalHeroVisuals } from '../../content/visualAssets'
+import useSiteResources from '../../hooks/useSiteResources'
 import { buildLocalizedPath } from '../../i18n/routes'
 import type { Locale, SeoEntry } from '../../i18n/types'
 import { usePageSeo } from '../../i18n/usePageSeo'
@@ -117,6 +119,20 @@ interface SiteResourcesResponse {
       summaryEn?: string
     }
   >
+  uiNarratives?: {
+    portal?: {
+      referenceNoteZh?: string
+      referenceNoteEn?: string
+      communicationNoteZh?: string
+      communicationNoteEn?: string
+      asideLeadZh?: string
+      asideLeadEn?: string
+      sectionSummaryTitleZh?: string
+      sectionSummaryTitleEn?: string
+      sectionSummaryLeadZh?: string
+      sectionSummaryLeadEn?: string
+    }
+  }
 }
 
 const isRecord = (value: unknown): value is Record<string, unknown> => {
@@ -232,6 +248,14 @@ const getMailboxLabel = (locale: Locale, item: SiteResourceMailbox) => {
   return item.labelEn || item.label || ''
 }
 
+const getImagePreviewLabel = (locale: Locale) => {
+  return locale === 'zh' ? '查看原图' : 'View Full Image'
+}
+
+const getImageCloseLabel = (locale: Locale) => {
+  return locale === 'zh' ? '关闭原图' : 'Close Image'
+}
+
 const buildResourceOverviewSummary = (
   locale: Locale,
   sectionKey: 'products' | 'cases',
@@ -241,13 +265,13 @@ const buildResourceOverviewSummary = (
 
   if (locale === 'zh') {
     return sectionKey === 'products'
-      ? `当前页面按 ${count} 个已核实公开产品分类组织，完整保留液压动力、液压紧固、管道法兰、现场机加与风电运维等方向。`
-      : `当前页面按 ${count} 个已核实公开应用分类组织，完整保留螺栓紧固、顶升平移、管道法兰、现场机加与风电运维等场景入口。`
+      ? `当前页面按 ${count} 个产品分类组织，覆盖液压动力、液压紧固、管道法兰、现场机加与风电运维等方向。`
+      : `当前页面按 ${count} 个应用分类组织，覆盖螺栓紧固、顶升平移、管道法兰、现场机加与风电运维等场景入口。`
   }
 
   return sectionKey === 'products'
-    ? `This page is organized around ${count} verified public product categories, covering hydraulic power, bolting, pipeline and flange service, on-site machining, wind O&M, and related directions.`
-    : `This page is organized around ${count} verified public application categories, covering bolting, lifting and positioning, pipeline and flange service, on-site machining, wind O&M, and related scenario entries.`
+    ? `This page is organized around ${count} product categories, covering hydraulic power, bolting, pipeline and flange service, on-site machining, wind O&M, and related directions.`
+    : `This page is organized around ${count} application categories, covering bolting, lifting and positioning, pipeline and flange service, on-site machining, wind O&M, and related scenarios.`
 }
 
 const buildResourcePager = (
@@ -263,13 +287,13 @@ const buildResourcePager = (
 
   if (locale === 'zh') {
     return typeof publicItemCount === 'number' && publicItemCount > 0
-      ? `${count} 个公开${labelZh}已接入，其中当前公开 ${publicItemCount} 条${detailZh}。`
-      : `${count} 个公开${labelZh}已接入，当前公开页面未显示具体${detailZh}。`
+      ? `${count} 个${labelZh}已上线，当前展示 ${publicItemCount} 条${detailZh}。`
+      : `${count} 个${labelZh}已上线，更多${detailZh}可联系团队获取。`
   }
 
   return typeof publicItemCount === 'number' && publicItemCount > 0
-    ? `All ${count} public ${labelEn} are connected, with ${publicItemCount} public ${detailEn} currently shown.`
-    : `All ${count} public ${labelEn} are connected, while the public pages currently do not expose ${detailEn}.`
+    ? `${count} ${labelEn} are online, with ${publicItemCount} ${detailEn} currently shown.`
+    : `${count} ${labelEn} are online, and more ${detailEn} are available on request.`
 }
 
 const getGridCategoryKey = (sectionKey: 'products' | 'cases', pageId: string) => {
@@ -384,9 +408,111 @@ const buildFallbackHero = (
         ]
 })
 
+const sectionHeroFocusClassMap: Record<PortalSectionKey, string> = {
+  about: 'hero-focus-about',
+  manufacturing: 'hero-focus-manufacturing',
+  products: 'hero-focus-products',
+  engineering: 'hero-focus-engineering',
+  cases: 'hero-focus-cases',
+  support: 'hero-focus-support',
+  news: 'hero-focus-news',
+  hr: 'hero-focus-hr',
+  contact: 'hero-focus-contact'
+}
+
+const buildSectionThemeGuide = (
+  locale: Locale,
+  sectionKey: PortalSectionKey,
+  pageTitle: string
+) => {
+  if (locale === 'zh') {
+    const zhThemes: Record<PortalSectionKey, { lead: string; tags: string[] }> = {
+      about: {
+        lead: `本页围绕「${pageTitle}」聚焦企业背景、组织能力与资质依据。`,
+        tags: ['企业背景', '组织能力', '资质依据']
+      },
+      manufacturing: {
+        lead: `本页围绕「${pageTitle}」聚焦研发流程、制造能力与测试验证。`,
+        tags: ['研发流程', '制造能力', '测试验证']
+      },
+      products: {
+        lead: `本页围绕「${pageTitle}」聚焦设备分类、适用工况与交付边界。`,
+        tags: ['设备分类', '适用工况', '交付边界']
+      },
+      engineering: {
+        lead: `本页围绕「${pageTitle}」聚焦现场服务、项目流程与资源配置。`,
+        tags: ['现场服务', '项目流程', '资源配置']
+      },
+      cases: {
+        lead: `本页围绕「${pageTitle}」聚焦应用场景、工况目标与实施路径。`,
+        tags: ['应用场景', '工况目标', '实施路径']
+      },
+      support: {
+        lead: `本页围绕「${pageTitle}」聚焦售后响应、培训机制与维护保障。`,
+        tags: ['售后响应', '培训机制', '维护保障']
+      },
+      news: {
+        lead: `本页围绕「${pageTitle}」聚焦发布时间、信息来源与业务动态。`,
+        tags: ['发布时间', '信息来源', '业务动态']
+      },
+      hr: {
+        lead: `本页围绕「${pageTitle}」聚焦人才体系、岗位方向与成长机制。`,
+        tags: ['人才体系', '岗位方向', '成长机制']
+      },
+      contact: {
+        lead: `本页围绕「${pageTitle}」聚焦联系方式、沟通字段与隐私设置。`,
+        tags: ['联系方式', '沟通字段', '隐私设置']
+      }
+    }
+
+    return zhThemes[sectionKey]
+  }
+
+  const enThemes: Record<PortalSectionKey, { lead: string; tags: string[] }> = {
+    about: {
+      lead: `This page centers on "${pageTitle}" with company background, organization capability, and qualification evidence.`,
+      tags: ['Company Profile', 'Org Capability', 'Credentials']
+    },
+    manufacturing: {
+      lead: `This page centers on "${pageTitle}" with R&D workflow, manufacturing capability, and test verification.`,
+      tags: ['R&D Workflow', 'Manufacturing', 'Verification']
+    },
+    products: {
+      lead: `This page centers on "${pageTitle}" with equipment categories, operating scenarios, and delivery scope.`,
+      tags: ['Equipment Scope', 'Operating Scenarios', 'Delivery Scope']
+    },
+    engineering: {
+      lead: `This page centers on "${pageTitle}" with field service steps, project flow, and resource setup.`,
+      tags: ['Field Service', 'Project Flow', 'Resource Setup']
+    },
+    cases: {
+      lead: `This page centers on "${pageTitle}" with application scenarios, operating targets, and execution routes.`,
+      tags: ['Application Scenarios', 'Operating Targets', 'Execution Route']
+    },
+    support: {
+      lead: `This page centers on "${pageTitle}" with response commitments, training, and maintenance support.`,
+      tags: ['Response', 'Training', 'Maintenance']
+    },
+    news: {
+      lead: `This page centers on "${pageTitle}" with publish timing, information source, and business updates.`,
+      tags: ['Publish Date', 'Source', 'Updates']
+    },
+    hr: {
+      lead: `This page centers on "${pageTitle}" with talent framework, role direction, and growth paths.`,
+      tags: ['Talent System', 'Role Direction', 'Growth Paths']
+    },
+    contact: {
+      lead: `This page centers on "${pageTitle}" with contact channels, intake fields, and privacy settings.`,
+      tags: ['Contact Channels', 'Intake Fields', 'Privacy']
+    }
+  }
+
+  return enThemes[sectionKey]
+}
+
 const renderPager = (summary: string) => (
   <div className="border-t border-[#d7cfbf] pt-6">
-    <p className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[#7b838f]">{summary}</p>
+    <p className="label-muted copy-clamp-3 text-[12px]">{summary}</p>
   </div>
 )
 
@@ -662,17 +788,27 @@ const getVerifiedHighlights = (
 
 const renderArticle = (locale: Locale, page: Extract<PortalPageData, { kind: 'article' }>) => {
   const chapter = locale === 'zh' ? '段落' : 'Section'
-  const leadParagraph = page.paragraphs[0] || ''
-  const detailParagraphs = leadParagraph ? page.paragraphs.slice(1) : page.paragraphs
+  const outlineLabel = locale === 'zh' ? '章节导读' : 'Quick Outline'
+  const paragraphEntries = page.paragraphs.map((paragraph, index) => ({
+    id: `article-section-${index + 1}`,
+    chapterLabel: `${chapter} ${String(index + 1).padStart(2, '0')}`,
+    paragraph,
+    summary: getHeroLeadText(paragraph, paragraph)
+  }))
+  const leadEntry = paragraphEntries[0]
+  const detailEntries = paragraphEntries.slice(1)
 
   return (
-    <div className="space-y-12">
+    <div className="space-y-9 sm:space-y-12">
       {page.image && (
         <div className="art-image-frame">
-          <div className="aspect-[16/8] xl:aspect-[21/8]">
-            <img
+          <div className="aspect-[16/10] sm:aspect-[16/8] xl:aspect-[21/8]">
+            <ZoomableImage
               src={page.image}
               alt={page.imageAlt || page.title}
+              previewLabel={getImagePreviewLabel(locale)}
+              closeLabel={getImageCloseLabel(locale)}
+              wrapperClassName="h-full w-full"
               className="day-section-image h-full w-full object-cover"
               loading="lazy"
             />
@@ -680,34 +816,60 @@ const renderArticle = (locale: Locale, page: Extract<PortalPageData, { kind: 'ar
         </div>
       )}
 
-      <div className="art-surface rounded-[28px] px-6 py-7 sm:px-8 sm:py-9">
-        <div className="flex flex-wrap gap-3">
-          {page.subtitle && <span className="pill">{page.subtitle}</span>}
-          <span className="pill">
-            {locale === 'zh' ? `${page.paragraphs.length} 段正文` : `${page.paragraphs.length} Paragraphs`}
-          </span>
-        </div>
-        {leadParagraph && (
-          <p className="mt-5 max-w-5xl text-[1.08rem] leading-9 text-[#44505d] sm:text-[1.18rem] sm:leading-10 xl:text-[1.24rem]">
-            {leadParagraph}
-          </p>
-        )}
-      </div>
+      {paragraphEntries.length > 1 && (
+        <nav className="art-card px-4 py-4 sm:px-6 sm:py-6" aria-label={outlineLabel}>
+          <p className="eyebrow">{outlineLabel}</p>
+          <div className="mt-4 grid gap-2.5 sm:mt-5 sm:grid-cols-2 sm:gap-3 xl:grid-cols-3">
+            {paragraphEntries.map((entry) => (
+              <a
+                key={entry.id}
+                href={`#${entry.id}`}
+                className="block rounded-[16px] border border-[#d7cfbf] bg-[rgba(255,255,255,0.58)] px-3.5 py-3.5 transition-colors hover:border-[#c89b45]/42 hover:bg-[rgba(255,255,255,0.9)] sm:px-4 sm:py-4"
+              >
+                <p className="label-muted text-[11px]">
+                  {entry.chapterLabel}
+                </p>
+                <p className="mt-2 text-[0.9rem] leading-7 text-[#4e5967] copy-clamp-2 sm:text-[0.95rem]">
+                  {entry.summary}
+                </p>
+              </a>
+            ))}
+          </div>
+        </nav>
+      )}
 
-      {detailParagraphs.length > 0 && (
-        <div className="space-y-10">
-          {detailParagraphs.map((paragraph, index) => (
+      {leadEntry && (
+        <article
+          id={leadEntry.id}
+          className="art-surface scroll-mt-[12.2rem] rounded-[24px] px-5 py-6 sm:rounded-[28px] sm:px-8 sm:py-9"
+        >
+          <div className="flex flex-wrap gap-3">
+            {page.subtitle && <span className="pill">{page.subtitle}</span>}
+            <span className="pill">
+              {locale === 'zh' ? `${page.paragraphs.length} 段正文` : `${page.paragraphs.length} Paragraphs`}
+            </span>
+          </div>
+          <p className="mt-5 max-w-5xl text-[1rem] leading-8 text-[#44505d] sm:text-[1.18rem] sm:leading-10 xl:text-[1.24rem]">
+            {leadEntry.paragraph}
+          </p>
+        </article>
+      )}
+
+      {detailEntries.length > 0 && (
+        <div className="space-y-8 sm:space-y-10">
+          {detailEntries.map((entry) => (
             <article
-              key={`${page.title}-${index + 2}`}
-              className="grid gap-5 border-t border-[#d7cfbf] pt-10 xl:grid-cols-[116px_1fr]"
+              key={`${page.title}-${entry.id}`}
+              id={entry.id}
+              className="grid scroll-mt-[12.2rem] gap-4 border-t border-[#d7cfbf] pt-7 sm:gap-5 sm:pt-10 xl:grid-cols-[116px_1fr]"
             >
               <div>
-                <p className="text-[12px] font-semibold uppercase tracking-[0.18em] text-[#7b838f]">
-                  {chapter} {String(index + 2).padStart(2, '0')}
+                <p className="label-muted text-[11px] sm:text-[12px]">
+                  {entry.chapterLabel}
                 </p>
               </div>
-              <p className="max-w-5xl text-base leading-9 text-[#58616d] sm:text-[1.08rem]">
-                {paragraph}
+              <p className="max-w-5xl text-[0.98rem] leading-8 text-[#58616d] sm:text-[1.08rem] sm:leading-9">
+                {entry.paragraph}
               </p>
             </article>
           ))}
@@ -715,12 +877,12 @@ const renderArticle = (locale: Locale, page: Extract<PortalPageData, { kind: 'ar
       )}
 
       {page.bullets && page.bullets.length > 0 && (
-        <div className="border-t border-[#d7cfbf] pt-8">
+        <div className="border-t border-[#d7cfbf] pt-7 sm:pt-8">
           <p className="eyebrow">{locale === 'zh' ? '能力要点' : 'Capability Points'}</p>
-          <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="mt-5 grid gap-3 sm:mt-6 sm:gap-4 sm:grid-cols-2 xl:grid-cols-4">
             {page.bullets.map((item, index) => (
-              <div key={item} className="art-card px-5 py-5 text-base leading-8 text-[#495461]">
-                <p className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[#7b838f]">
+              <div key={item} className="art-card px-4 py-4 text-[0.98rem] leading-7 text-[#495461] sm:px-5 sm:py-5 sm:text-base sm:leading-8">
+                <p className="label-muted text-[12px]">
                   {String(index + 1).padStart(2, '0')}
                 </p>
                 <p className="mt-3">{item}</p>
@@ -734,33 +896,36 @@ const renderArticle = (locale: Locale, page: Extract<PortalPageData, { kind: 'ar
 }
 
 const renderGrid = (locale: Locale, page: Extract<PortalPageData, { kind: 'grid' }>) => (
-  <div className="space-y-12">
+  <div className="space-y-8 sm:space-y-10">
     {page.summary && (
-      <div className="section-copy section-copy-wide max-w-none copy-clamp-4">
+      <div className="section-copy section-copy-wide max-w-none copy-clamp-4 copy-unclamp-lg">
         {page.summary}
       </div>
     )}
 
-    <div className="space-y-14">
+    <div className="space-y-8 sm:space-y-10">
       {page.items.map((item, index) => {
         const leadText =
           item.description ||
           (locale === 'zh'
-            ? '该条目按已公开业务资料整理，详细配置与交付范围可通过项目沟通进一步确认。'
-            : 'This entry is organized from public business materials. Detailed configuration and delivery scope can be confirmed during project coordination.')
+            ? '该条目聚焦当前业务方向，详细配置与交付范围可通过项目沟通进一步确认。'
+            : 'This entry focuses on the current business direction. Detailed configuration and delivery scope can be confirmed during project coordination.')
 
         return (
           <article
             key={item.id}
-            className={`grid gap-6 border-t border-[#d7cfbf] pt-8 xl:grid-cols-[1.04fr_0.96fr] xl:items-center ${
+            className={`grid gap-5 border-t border-[#d7cfbf] pt-7 sm:gap-6 sm:pt-8 xl:grid-cols-[1.04fr_0.96fr] xl:items-center ${
               index % 2 === 1 ? 'xl:[&>*:first-child]:order-2 xl:[&>*:last-child]:order-1' : ''
             }`}
           >
             <div className="art-image-frame">
-              <div className="aspect-[15/10] xl:min-h-[320px]">
-                <img
+              <div className="aspect-[16/10] sm:aspect-[15/10] xl:min-h-[320px]">
+                <ZoomableImage
                   src={item.image}
                   alt={item.title}
+                  previewLabel={getImagePreviewLabel(locale)}
+                  closeLabel={getImageCloseLabel(locale)}
+                  wrapperClassName="h-full w-full"
                   className="day-section-image h-full w-full object-cover transition-transform duration-700 hover:scale-105"
                   loading="lazy"
                 />
@@ -768,16 +933,16 @@ const renderGrid = (locale: Locale, page: Extract<PortalPageData, { kind: 'grid'
             </div>
 
             <div className="max-w-xl">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#7b838f]">
-                {locale === 'zh' ? '已核实分类' : 'Verified Category'}
+              <p className="label-muted text-[11px]">
+                {locale === 'zh' ? '分类标签' : 'Category'}
               </p>
-              <h3 className="mt-3 max-w-[32rem] font-display text-[2.2rem] leading-[0.98] text-[#1f252d] sm:text-[2.55rem] xl:text-[2.8rem]">
+              <h3 className="subsection-title mt-3 max-w-[32rem]">
                 {item.title}
               </h3>
-              <p className="mt-4 max-w-[34rem] text-[0.96rem] leading-8 text-[#58616d] sm:text-[1rem] sm:leading-[1.95rem] copy-clamp-3">
+              <p className="mt-4 max-w-[34rem] text-[0.95rem] leading-7 text-[#58616d] sm:text-[1rem] sm:leading-[1.86rem] copy-clamp-3">
                 {getHeroLeadText(leadText, leadText)}
               </p>
-              <div className="mt-6 flex flex-wrap gap-4">
+              <div className="mt-5 flex flex-wrap gap-3 sm:mt-6 sm:gap-4">
                 <Link
                   to={buildLocalizedPath(locale, 'inquiry')}
                   className="cta-link cta-link-primary"
@@ -807,38 +972,36 @@ const renderNews = (
   defaultPageId: string,
   page: Extract<PortalPageData, { kind: 'news' }>
 ) => (
-  <div className="space-y-8">
+  <div className="space-y-7 sm:space-y-8">
     {page.items.length > 0 ? (
-      <ul className="space-y-4">
+      <ul className="border-y border-[#d7cfbf]">
         {page.items.map((item) => (
-          <li key={item.id}>
-            <article className="art-card px-5 py-5 sm:px-7 sm:py-6">
-              <div className="grid gap-4 sm:grid-cols-[176px_1fr] sm:items-start">
-                <div>
-                  <p className="eyebrow">{locale === 'zh' ? '发布时间' : 'Published'}</p>
-                  <time className="mt-3 block text-[1rem] font-semibold text-[#8f672b] sm:text-[1.08rem]">
-                    {formatDisplayDate(locale, item.date)}
-                  </time>
-                </div>
-                <div className="flex items-start gap-4">
-                  <span className="mt-2 h-2.5 w-2.5 rounded-full bg-[#d7b66c]" aria-hidden="true" />
-                  <div className="flex-1">
-                    {item.pageId ? (
-                      <Link
-                        to={buildSectionPath(locale, sectionSegment, item.pageId, defaultPageId)}
-                        className="block text-[1.05rem] leading-9 text-[#34404d] transition-colors hover:text-[#1f252d] sm:text-[1.12rem]"
-                      >
-                        {item.title}
-                      </Link>
-                    ) : (
-                      <span className="block text-[1.05rem] leading-9 text-[#34404d] sm:text-[1.12rem]">{item.title}</span>
-                    )}
-                    {item.pageId && (
-                      <span className="cta-link cta-link-secondary mt-3">
-                        {locale === 'zh' ? '进入详情' : 'Read Article'}
-                      </span>
-                    )}
-                  </div>
+          <li key={item.id} className="border-t border-[#d7cfbf] first:border-t-0 transition-colors hover:bg-[rgba(255,255,255,0.26)]">
+            <article className="grid gap-3 px-1 py-4 sm:grid-cols-[188px_1fr] sm:items-start sm:gap-5 sm:py-6">
+              <div>
+                <p className="eyebrow">{locale === 'zh' ? '发布时间' : 'Published'}</p>
+                <time className="mt-2.5 block text-[0.92rem] font-semibold text-[#8f672b] sm:mt-3 sm:text-[1.02rem]">
+                  {formatDisplayDate(locale, item.date)}
+                </time>
+              </div>
+              <div className="flex items-start gap-3.5 sm:gap-4">
+                <span className="mt-2 h-2 w-2 rounded-full bg-[#d7b66c] sm:h-2.5 sm:w-2.5" aria-hidden="true" />
+                <div className="flex-1">
+                  {item.pageId ? (
+                    <Link
+                      to={buildSectionPath(locale, sectionSegment, item.pageId, defaultPageId)}
+                      className="copy-clamp-2 block text-[1.02rem] font-semibold leading-8 text-[#34404d] transition-colors hover:text-[#1f252d] sm:text-[1.14rem] sm:leading-[2rem]"
+                    >
+                      {item.title}
+                    </Link>
+                  ) : (
+                    <span className="copy-clamp-2 block text-[1.02rem] font-semibold leading-8 text-[#34404d] sm:text-[1.14rem] sm:leading-[2rem]">{item.title}</span>
+                  )}
+                  {item.pageId && (
+                    <span className="cta-link cta-link-secondary mt-2.5 sm:mt-3">
+                      {locale === 'zh' ? '进入详情' : 'Read Article'}
+                    </span>
+                  )}
                 </div>
               </div>
             </article>
@@ -857,16 +1020,16 @@ const renderNews = (
 )
 
 const renderContact = (locale: Locale, page: Extract<PortalPageData, { kind: 'contact' }>) => (
-  <div className="grid grid-cols-1 gap-6 xl:grid-cols-[0.82fr_1.18fr]">
-    <div className="space-y-6">
-      <article className="panel px-6 py-7 sm:px-8 sm:py-8">
+  <div className="grid grid-cols-1 gap-6 sm:gap-8 xl:grid-cols-[0.82fr_1.18fr]">
+    <div className="space-y-6 sm:space-y-7">
+      <article className="panel content-card">
         <p className="eyebrow">{locale === 'zh' ? '服务台账' : 'Service Contacts'}</p>
-        <h3 className="section-title-xl mt-4 max-w-[34rem]">{page.company}</h3>
-        <p className="section-copy section-copy-compact mt-6 max-w-none copy-clamp-4">
+        <h3 className="subsection-title mt-4 max-w-[34rem]">{page.company}</h3>
+        <p className="section-copy section-copy-compact mt-6 max-w-none copy-clamp-4 copy-unclamp-lg">
           {page.subtitle ||
             (locale === 'zh'
-              ? '联系方式、邮箱路由和项目对接入口已经在新站统一收口，便于企业客户直接进入沟通。'
-              : 'Contact records, mailbox routes, and project intake entries are organized in one place for direct enterprise coordination.')}
+              ? '联系方式、邮箱与项目沟通入口集中展示，便于快速联系。'
+              : 'Contact channels, mailboxes, and project communication entries are presented together for quick access.')}
         </p>
         {page.ctaLabel && (
           <div className="mt-8">
@@ -877,30 +1040,40 @@ const renderContact = (locale: Locale, page: Extract<PortalPageData, { kind: 'co
         )}
       </article>
 
-      <article className="panel px-6 py-7 sm:px-8 sm:py-8">
-        <p className="eyebrow">{page.qrLabel}</p>
-        <p className="section-copy section-copy-compact mt-5 max-w-none copy-clamp-4">
-          {locale === 'zh'
-            ? '如已明确工况、设备方向或交付窗口，可直接通过热线、邮箱或二维码继续沟通。'
-            : 'If the operating condition, equipment direction, or delivery window is clear, use hotline, email, or QR contact for direct follow-up.'}
-        </p>
-        {page.qrImage && (
+      {page.qrImage && (
+        <article className="panel content-card">
+          <p className="eyebrow">{page.qrLabel}</p>
+          <p className="section-copy section-copy-compact mt-5 max-w-none copy-clamp-4 copy-unclamp-lg">
+            {locale === 'zh'
+              ? '如已明确工况、设备方向或交付窗口，可通过热线、邮箱或二维码继续沟通。'
+              : 'If the operating condition, equipment direction, or delivery window is clear, use hotline, email, or QR contact for direct follow-up.'}
+          </p>
           <div className="mt-6 max-w-[180px] sm:max-w-[220px]">
             <div className="art-image-frame">
-              <img src={page.qrImage} alt={page.qrLabel} className="day-section-image h-full w-full object-cover" loading="lazy" />
+              <ZoomableImage
+                src={page.qrImage}
+                alt={page.qrLabel}
+                previewLabel={getImagePreviewLabel(locale)}
+                closeLabel={getImageCloseLabel(locale)}
+                wrapperClassName="h-full w-full"
+                className="day-section-image h-full w-full object-cover"
+                loading="lazy"
+              />
             </div>
           </div>
-        )}
-      </article>
+        </article>
+      )}
     </div>
 
-    <div className="panel px-6 py-7 sm:px-8 sm:py-8 xl:px-10">
-      <div className="grid gap-8 lg:grid-cols-2">
+    <div className="panel content-card">
+      <div className="grid gap-7 lg:grid-cols-2">
         <div>
           <p className="eyebrow">{locale === 'zh' ? '联系信息' : 'Contact Details'}</p>
           <DetailCardList
             items={page.details.map((item) => ({ label: item.label, value: item.value }))}
-            className="mt-6 grid gap-3"
+            className="mt-6 grid gap-4"
+            itemClassName="art-card content-card"
+            valueClassName="meta-copy meta-copy-compact mt-3"
           />
         </div>
 
@@ -908,7 +1081,9 @@ const renderContact = (locale: Locale, page: Extract<PortalPageData, { kind: 'co
           <p className="eyebrow">{locale === 'zh' ? '可直达邮箱' : 'Direct Mailbox'}</p>
           <DetailCardList
             items={page.mailboxes.map((box) => ({ label: box.label, value: box.email, href: `mailto:${box.email}` }))}
-            className="mt-6 grid gap-3"
+            className="mt-6 grid gap-4"
+            itemClassName="art-card content-card"
+            valueClassName="meta-copy meta-copy-compact mt-3"
           />
         </div>
       </div>
@@ -920,7 +1095,7 @@ const PortalSectionView = ({ locale, sectionKey }: PortalSectionViewProps) => {
   const location = useLocation()
   const params = useParams<{ '*': string }>()
   const [pageOverrides, setPageOverrides] = useState<CmsPageOverride[]>([])
-  const [siteResources, setSiteResources] = useState<SiteResourcesResponse | null>(null)
+  const siteResources = useSiteResources<SiteResourcesResponse>()
 
   const sections = getPortalSections(locale)
   const section = sections[sectionKey]
@@ -947,29 +1122,6 @@ const PortalSectionView = ({ locale, sectionKey }: PortalSectionViewProps) => {
       cancelled = true
     }
   }, [locale])
-
-  useEffect(() => {
-    let cancelled = false
-
-    const fetchSiteResources = async () => {
-      try {
-        const response = await axios.get<SiteResourcesResponse>('/api/site-resources')
-        if (!cancelled) {
-          setSiteResources(response.data)
-        }
-      } catch {
-        if (!cancelled) {
-          setSiteResources(null)
-        }
-      }
-    }
-
-    void fetchSiteResources()
-
-    return () => {
-      cancelled = true
-    }
-  }, [])
 
   const mergedPages = useMemo(() => {
     const merged: Record<string, PortalPageData> = { ...section.pages }
@@ -1013,6 +1165,9 @@ const PortalSectionView = ({ locale, sectionKey }: PortalSectionViewProps) => {
       : 'Information organized around project scenarios, equipment scope, and contact flow.'
   )
   const activeDescription = getPageDescription(activePage, section.navLabel)
+  const activeDescriptionLead = getHeroLeadText(activeDescription, activeDescription)
+  const activeHeroFocusClass = sectionHeroFocusClassMap[sectionKey]
+  const sectionThemeGuide = buildSectionThemeGuide(locale, sectionKey, activePage.title)
   const seo = useMemo<SeoEntry>(() => {
     const zhSection = getPortalSections('zh')[sectionKey]
     const enSection = getPortalSections('en')[sectionKey]
@@ -1080,10 +1235,31 @@ const PortalSectionView = ({ locale, sectionKey }: PortalSectionViewProps) => {
   const verifiedHighlights = getVerifiedHighlights(sectionKey, siteResources)
   const productCategoryCount = siteResources?.productCategories?.length || 0
   const caseCategoryCount = siteResources?.caseCategories?.length || 0
+  const portalNarrative = siteResources?.uiNarratives?.portal
   const referenceNote =
     locale === 'zh'
-      ? '栏目内容按已核实业务资料整理，用于帮助访客快速理解能力范围与沟通重点。'
-      : 'Section content is organized from verified business materials to clarify scope and communication priorities.'
+      ? portalNarrative?.referenceNoteZh ||
+        '栏目内容围绕企业能力、产品与服务场景梳理，帮助您快速定位所需信息。'
+      : portalNarrative?.referenceNoteEn ||
+        'Section content is organized around capability, products, and service scenarios so visitors can find key information quickly.'
+  const communicationNote =
+    locale === 'zh'
+      ? portalNarrative?.communicationNoteZh ||
+        '如需资质文件、服务说明或更细的项目资料，可通过询盘与联系入口与我们沟通。'
+      : portalNarrative?.communicationNoteEn ||
+        'If you need qualification files, service notes, or detailed project material, contact us through inquiry or direct channels.'
+  const asideLeadText =
+    locale === 'zh'
+      ? portalNarrative?.asideLeadZh || '从当前栏目继续查看相关内容，或直接进入需求与联系。'
+      : portalNarrative?.asideLeadEn || 'Continue within this section or move directly into inquiry and contact.'
+  const sectionSummaryTitle =
+    locale === 'zh'
+      ? portalNarrative?.sectionSummaryTitleZh || '栏目资料摘要'
+      : portalNarrative?.sectionSummaryTitleEn || 'Section Summary'
+  const sectionSummaryLead =
+    locale === 'zh'
+      ? portalNarrative?.sectionSummaryLeadZh || '汇总栏目重点信息，便于快速浏览与沟通。'
+      : portalNarrative?.sectionSummaryLeadEn || 'Key section information is summarized here for quick review and communication.'
   const summaryCards = (() => {
     if (sectionKey === 'products') {
       return [
@@ -1092,19 +1268,19 @@ const PortalSectionView = ({ locale, sectionKey }: PortalSectionViewProps) => {
           text:
             productCategoryCount > 0
               ? locale === 'zh'
-                ? `当前栏目已接入 ${productCategoryCount} 个设备分类，并按已核实工况方向组织说明。`
-                : `This section currently connects ${productCategoryCount} equipment categories and organizes them by verified operating direction.`
+                ? `当前栏目已接入 ${productCategoryCount} 个设备分类，可按工况方向快速查找。`
+                : `This section currently includes ${productCategoryCount} equipment categories for quick lookup by operating direction.`
               : locale === 'zh'
-                ? '设备分类正在按已核实资料整理。'
-                : 'Equipment categories are being organized from verified materials.'
+                ? '设备分类持续更新中，欢迎按应用方向浏览。'
+                : 'Equipment categories are continuously updated. Browse by application direction.'
         },
         {
           title: locale === 'zh' ? '租赁方向' : 'Rental Scope',
           text:
             getVerifiedSummary(locale, siteResources?.verifiedPages?.rentalService) ||
             (locale === 'zh'
-              ? '租赁方向正在按已公开资料整理。'
-              : 'Rental directions are being organized from public materials.')
+              ? '支持短期与长期租赁方案，可按工况配置。'
+              : 'Short-term and long-term rental options are available and can be configured by operating conditions.')
         }
       ]
     }
@@ -1116,19 +1292,19 @@ const PortalSectionView = ({ locale, sectionKey }: PortalSectionViewProps) => {
           text:
             caseCategoryCount > 0
               ? locale === 'zh'
-                ? `当前栏目已接入 ${caseCategoryCount} 个应用分类，并按已核实工况保留场景入口。`
-                : `This section currently connects ${caseCategoryCount} application categories and keeps them as verified scenario entries.`
+                ? `当前栏目已接入 ${caseCategoryCount} 个应用分类，可按场景入口快速检索。`
+                : `This section currently includes ${caseCategoryCount} application categories for quick scenario-based lookup.`
               : locale === 'zh'
-                ? '应用分类正在按已核实资料整理。'
-                : 'Application categories are being organized from verified materials.'
+                ? '应用分类持续更新中，欢迎按工况需求浏览。'
+                : 'Application categories are continuously updated for different operating needs.'
         },
         {
           title: locale === 'zh' ? '能力说明' : 'Capability Note',
           text:
             getVerifiedSummary(locale, siteResources?.verifiedPages?.companyProfile) ||
             (locale === 'zh'
-              ? '企业能力说明正在按已公开资料整理。'
-              : 'Company capability notes are being organized from public materials.')
+              ? '覆盖多类工业场景，可按项目需求组合方案。'
+              : 'The team supports diverse industrial scenarios with solutions tailored to project needs.')
         }
       ]
     }
@@ -1140,16 +1316,16 @@ const PortalSectionView = ({ locale, sectionKey }: PortalSectionViewProps) => {
           text:
             getVerifiedSummary(locale, siteResources?.verifiedPages?.contactInfo) ||
             (locale === 'zh'
-              ? '联系方式资料已纳入统一资源池。'
-              : 'Contact records are maintained in the shared resource pool.')
+              ? '联系方式与联络方式集中展示，便于快速沟通。'
+              : 'Contact channels are centralized here for quick communication.')
         },
         {
           title: locale === 'zh' ? '留言流程' : 'Message Flow',
           text:
             getVerifiedSummary(locale, siteResources?.verifiedPages?.messagePage) ||
             (locale === 'zh'
-              ? '留言字段和保密设置已并入站内询盘流程。'
-              : 'Message fields and privacy settings are merged into the site inquiry flow.')
+              ? '可按问题类别提交需求，并选择公开或保密设置。'
+              : 'You can submit requirements by category and choose public or confidential settings.')
         }
       ]
     }
@@ -1161,57 +1337,60 @@ const PortalSectionView = ({ locale, sectionKey }: PortalSectionViewProps) => {
           text:
             getVerifiedSummary(locale, siteResources?.verifiedPages?.afterSales) ||
             (locale === 'zh'
-              ? '售后说明正在按已公开资料整理。'
-              : 'After-sales notes are being organized from public materials.')
+              ? '提供售后响应、现场支持与持续维护服务。'
+              : 'After-sales response, on-site support, and continuous maintenance are available.')
         },
         {
           title: locale === 'zh' ? '培训机制' : 'Training',
           text:
             getVerifiedSummary(locale, siteResources?.verifiedPages?.training) ||
             (locale === 'zh'
-              ? '培训机制正在按已公开资料整理。'
-              : 'Training notes are being organized from public materials.')
+              ? '提供安装、操作与维护培训，支持现场与远程方式。'
+              : 'Installation, operation, and maintenance training is available both on-site and remotely.')
         }
       ]
     }
 
     return [
       {
-        title: locale === 'zh' ? '资料说明' : 'Reference Note',
+        title: locale === 'zh' ? '服务说明' : 'Service Notes',
         text: referenceNote
       },
       {
-        title: locale === 'zh' ? '沟通说明' : 'Communication Note',
-        text:
-          locale === 'zh'
-            ? '如果需要资质文件、服务说明或更细的项目资料，建议直接通过站内询盘和联系入口统一沟通。'
-            : 'If you need qualification files, service notes, or more detailed project material, use the site inquiry and contact flow directly.'
+        title: locale === 'zh' ? '沟通建议' : 'Contact Guidance',
+        text: communicationNote
       }
     ]
   })()
+  const compactSummaryCards = summaryCards.map((card) => ({
+    ...card,
+    text: getHeroLeadText(card.text, card.text)
+  }))
   const showVerifiedHighlights =
     verifiedHighlights.length > 0 && !['products', 'cases', 'contact', 'support'].includes(sectionKey)
-  const sectionSummaryTags = locale === 'zh'
-    ? [section.navLabel, newsArticlePage ? activeMenuLabel : activePage.title, '项目沟通']
-    : [section.navLabel, newsArticlePage ? activeMenuLabel : activePage.title, 'Project Coordination']
+  const sectionSummaryTags = [section.navLabel, newsArticlePage ? activeMenuLabel : activePage.title]
 
   return (
-    <div className="section-wrap pb-16 pt-4 sm:pt-6 sm:pb-20">
+    <div className="section-wrap pb-20 pt-5 sm:pt-7 sm:pb-24">
       <section className="space-y-8">
         <div className="-mx-4 overflow-hidden bg-[#f3eee4] sm:-mx-6 xl:-mx-8 2xl:-mx-10">
           <div className="relative min-h-[420px] sm:min-h-[560px] xl:min-h-[640px]">
-            <img
+            <ZoomableImage
               src={activeHero.image}
               alt={activeHero.title}
-              className="day-hero-image absolute inset-0 h-full w-full object-cover"
+              hintVisibility="always"
+              previewLabel={getImagePreviewLabel(locale)}
+              closeLabel={getImageCloseLabel(locale)}
+              wrapperClassName="absolute inset-0 h-full w-full"
+              className={`day-hero-image absolute inset-0 h-full w-full object-cover ${activeHeroFocusClass}`}
               loading="lazy"
             />
-            <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(251,248,242,0.95)_0%,rgba(251,248,242,0.8)_40%,rgba(251,248,242,0.36)_100%)]" />
-            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(251,248,242,0.18)_0%,rgba(251,248,242,0)_28%,rgba(251,248,242,0.62)_100%)]" />
+            <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(251,248,242,0.95)_0%,rgba(251,248,242,0.8)_40%,rgba(251,248,242,0.36)_100%)]" />
+            <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(251,248,242,0.18)_0%,rgba(251,248,242,0)_28%,rgba(251,248,242,0.62)_100%)]" />
 
-            <div className="section-wrap relative grid min-h-[420px] grid-rows-[1fr_auto] gap-8 pb-10 pt-32 text-[#1f252d] sm:min-h-[560px] sm:gap-12 sm:pb-14 sm:pt-44 xl:min-h-[640px] xl:gap-14 xl:pb-16 xl:pt-52">
+            <div className="section-wrap relative grid min-h-[420px] grid-rows-[1fr_auto] gap-8 pb-10 pt-36 text-[#1f252d] sm:min-h-[560px] sm:gap-12 sm:pb-14 sm:pt-48 lg:min-h-[600px] lg:gap-[3.25rem] lg:pb-[3.75rem] lg:pt-52 xl:min-h-[640px] xl:gap-14 xl:pb-16 xl:pt-56">
               <div className="flex items-center">
-                <div className="hero-panel max-w-[56rem]">
+                <div className="hero-panel max-w-[52rem] lg:max-w-[54rem] xl:max-w-[60rem]">
                   <p className="eyebrow">{section.navLabel}</p>
                   <h1
                     className={`mt-6 hero-display hero-display-section text-[#1f252d] ${
@@ -1220,11 +1399,11 @@ const PortalSectionView = ({ locale, sectionKey }: PortalSectionViewProps) => {
                   >
                     {activeHero.title}
                   </h1>
-                  <p className="hero-copy mt-7 max-w-[52rem] text-[1rem] leading-8 text-[#4f5a67] sm:text-[1.12rem] sm:leading-9 xl:text-[1.16rem]">
+                  <p className="hero-copy mt-7 max-w-[54rem] text-[1.08rem] leading-8 text-[#4f5a67] sm:text-[1.2rem] sm:leading-9 xl:text-[1.24rem]">
                     {activeHeroSubtitle}
                   </p>
 
-                  <div className="mt-8 flex flex-col gap-3 sm:mt-10 sm:flex-row sm:flex-wrap sm:gap-5">
+                  <div className="mt-9 flex flex-col gap-3 sm:mt-11 sm:flex-row sm:flex-wrap sm:gap-5">
                     <Link to={buildLocalizedPath(locale, 'inquiry')} className="btn-primary w-full sm:w-auto">
                       {locale === 'zh' ? '提交项目需求' : 'Submit Requirement'}
                     </Link>
@@ -1239,7 +1418,7 @@ const PortalSectionView = ({ locale, sectionKey }: PortalSectionViewProps) => {
                 {activeHero.metrics.slice(0, 3).map((metric) => (
                   <div key={`${metric.label}-${metric.value}`}>
                     <p className="font-display text-[2.9rem] leading-none text-[#1f252d] sm:text-[3.2rem]">{metric.value}</p>
-                    <p className="mt-2 text-[12px] uppercase tracking-[0.12em] text-[#68717d]">
+                    <p className="metric-label mt-2 text-[12px]">
                       {metric.label}
                     </p>
                   </div>
@@ -1249,7 +1428,7 @@ const PortalSectionView = ({ locale, sectionKey }: PortalSectionViewProps) => {
           </div>
         </div>
 
-        <div className="-mx-4 overflow-x-auto border-y border-[#d7cfbf] px-4 py-3 sm:-mx-6 sm:px-6 xl:-mx-8 xl:px-8 2xl:-mx-10 2xl:px-10">
+        <div className="-mx-4 overflow-x-auto border-y border-[#d7cfbf] px-4 py-4 sm:-mx-6 sm:px-6 xl:-mx-8 xl:px-8 2xl:-mx-10 2xl:px-10">
           <nav>
             <div className="machine-nav-shell min-w-max">
               {section.menu.map((menuItem) => {
@@ -1269,14 +1448,28 @@ const PortalSectionView = ({ locale, sectionKey }: PortalSectionViewProps) => {
           </nav>
         </div>
 
-        <div className="grid gap-8 sm:gap-12 xl:grid-cols-[minmax(0,1fr)_280px] 2xl:grid-cols-[minmax(0,1fr)_300px]">
+        <div className="grid gap-10 sm:gap-12 xl:grid-cols-[minmax(0,1fr)_280px] 2xl:grid-cols-[minmax(0,1fr)_320px]">
           <div key={location.pathname} className="animate-fade-up">
-            <div className="grid gap-6 border-b border-[#d7cfbf] pb-10 sm:gap-7 sm:pb-12 xl:grid-cols-[0.34fr_0.66fr] xl:items-start">
+            <div className="grid gap-6 border-b border-[#d7cfbf] pb-10 sm:gap-7 sm:pb-12 xl:grid-cols-[0.38fr_0.62fr] xl:items-start 2xl:grid-cols-[0.34fr_0.66fr]">
               <div>
                 <p className="eyebrow">{section.navLabel}</p>
-                <h2 className="section-title-xl mt-4">{activePage.title}</h2>
+                <h2 className="section-title-lg mt-4">{activePage.title}</h2>
               </div>
-              <p className="section-copy section-copy-wide max-w-none">{activeDescription}</p>
+              <div className="space-y-4">
+                <p className="section-copy section-copy-wide max-w-none">
+                  {activeDescriptionLead}
+                </p>
+                <p className="text-[0.98rem] leading-8 text-[#5a6572] sm:text-[1.04rem]">
+                  {sectionThemeGuide.lead}
+                </p>
+                <div className="flex flex-wrap gap-2.5">
+                  {sectionThemeGuide.tags.map((item) => (
+                    <span key={item} className="summary-chip">
+                      {item}
+                    </span>
+                  ))}
+                </div>
+              </div>
             </div>
 
             <div className="mt-10 sm:mt-12">
@@ -1287,40 +1480,38 @@ const PortalSectionView = ({ locale, sectionKey }: PortalSectionViewProps) => {
             </div>
           </div>
 
-          <aside className="xl:sticky xl:top-28 xl:h-fit">
+          <aside className="xl:sticky xl:top-[10.1rem] 2xl:top-[10.8rem] xl:h-fit">
             <div className="space-y-5">
-              <div className="action-panel px-5 py-6 sm:px-6">
-                <p className="eyebrow">{locale === 'zh' ? '站内流转' : 'Site Actions'}</p>
+              <div className="action-panel px-6 py-7 sm:px-7">
+                <p className="eyebrow">{locale === 'zh' ? '快速操作' : 'Quick Actions'}</p>
                 <p className="section-copy section-copy-compact mt-4 max-w-none text-[0.98rem]">
-                  {locale === 'zh'
-                    ? '从当前栏目继续查看相关内容，或直接进入需求与联系。'
-                    : 'Continue within this section or move directly into inquiry and contact.'}
+                  {asideLeadText}
                 </p>
-                <div className="mt-6 grid gap-3">
+                <div className="mt-6 grid gap-5">
                   <Link
                     to={primaryAsideLink.to}
-                    className="info-card block px-4 py-4 transition-colors hover:border-[#c89b45]/30"
+                    className="info-card content-card block transition-colors hover:border-[#c89b45]/30"
                   >
                     <p className="meta-label">{primaryAsideLink.label}</p>
-                    <p className="meta-copy mt-3">
+                    <p className="meta-copy meta-copy-compact mt-3 copy-clamp-3">
                       {locale === 'zh' ? '回到当前主题继续查看。' : 'Return to the current topic.'}
                     </p>
                   </Link>
                   <Link
                     to={contextualAsideLink.to}
-                    className="info-card block px-4 py-4 transition-colors hover:border-[#c89b45]/30"
+                    className="info-card content-card block transition-colors hover:border-[#c89b45]/30"
                   >
                     <p className="meta-label">{contextualAsideLink.label}</p>
-                    <p className="meta-copy mt-3">
+                    <p className="meta-copy meta-copy-compact mt-3 copy-clamp-3">
                       {locale === 'zh' ? '切换到相关栏目继续查看。' : 'Switch to the related section.'}
                     </p>
                   </Link>
                   <Link
                     to={buildLocalizedPath(locale, 'inquiry')}
-                    className="info-card block px-4 py-4 transition-colors hover:border-[#c89b45]/30"
+                    className="info-card content-card block transition-colors hover:border-[#c89b45]/30"
                   >
                     <p className="meta-label">{locale === 'zh' ? '提交项目需求' : 'Submit Requirement'}</p>
-                    <p className="meta-copy mt-3">
+                    <p className="meta-copy meta-copy-compact mt-3 copy-clamp-3">
                       {locale === 'zh' ? '条件明确后可直接发起项目对接。' : 'Start project intake when scope is clear.'}
                     </p>
                   </Link>
@@ -1330,9 +1521,9 @@ const PortalSectionView = ({ locale, sectionKey }: PortalSectionViewProps) => {
                 </Link>
               </div>
 
-              <div className="info-card px-5 py-5 sm:px-6">
-                <p className="eyebrow">{locale === 'zh' ? '当前页面' : 'Current View'}</p>
-                <p className="meta-copy mt-4">
+              <div className="info-card content-card">
+                <p className="eyebrow">{locale === 'zh' ? '当前浏览' : 'Now Viewing'}</p>
+                <p className="meta-copy meta-copy-compact mt-4">
                   {locale === 'zh'
                     ? `${section.navLabel} / ${newsArticlePage ? activeMenuLabel : activePage.title}`
                     : `${section.navLabel} / ${newsArticlePage ? activeMenuLabel : activePage.title}`}
@@ -1350,18 +1541,16 @@ const PortalSectionView = ({ locale, sectionKey }: PortalSectionViewProps) => {
         </div>
 
         <div className="border-t border-[#d7cfbf] pt-10 sm:pt-12">
-          <div className="grid gap-6 xl:grid-cols-[0.92fr_1.08fr]">
-            <div className="panel px-6 py-7 sm:px-8 sm:py-8">
-              <p className="eyebrow">{locale === 'zh' ? '栏目资料摘要' : 'Section Summary'}</p>
-              <h2 className="section-title-lg mt-4">
-                {locale === 'zh'
-                  ? '栏目重点与沟通说明统一收口。'
-                  : 'Section notes and communication points organized in one place.'}
+          <div className="grid gap-6 xl:grid-cols-[0.96fr_1.04fr] 2xl:grid-cols-[0.92fr_1.08fr]">
+            <div className="panel content-card">
+              <p className="eyebrow">{sectionSummaryTitle}</p>
+              <h2 className="subsection-title mt-4">
+                {sectionSummaryLead}
               </h2>
-              <p className="section-copy section-copy-compact mt-5 max-w-none copy-clamp-4">
+              <p className="section-copy section-copy-compact mt-5 max-w-none copy-clamp-4 copy-unclamp-lg">
                 {locale === 'zh'
-                  ? '这样可以保证栏目页在新站里保持一致的信息语气，不再暴露外部站点入口。'
-                  : 'This keeps the new site consistent without exposing external-site entry points.'}
+                  ? '我们将栏目关键信息集中展示，便于快速了解与沟通。'
+                  : 'Key section information is concentrated here for quick understanding and communication.'}
               </p>
 
               <div className="mt-8 flex flex-wrap gap-3">
@@ -1373,23 +1562,23 @@ const PortalSectionView = ({ locale, sectionKey }: PortalSectionViewProps) => {
               </div>
             </div>
 
-            <div className="grid gap-6 md:grid-cols-2">
-              {summaryCards.map((card) => (
-                <article key={card.title} className="panel px-6 py-7 sm:px-8">
+            <div className="grid gap-6 md:grid-cols-2 xl:gap-7">
+              {compactSummaryCards.map((card) => (
+                <article key={card.title} className="panel content-card">
                   <p className="eyebrow">{card.title}</p>
-                  <p className="section-copy mt-5 max-w-none copy-clamp-4">{card.text}</p>
-                  {card.title === (locale === 'zh' ? '资料说明' : 'Reference Note') && highlightedCertificate && (
+                  <p className="section-copy section-copy-compact mt-5 max-w-none copy-clamp-4 copy-unclamp-lg">{card.text}</p>
+                  {card.title === (locale === 'zh' ? '服务说明' : 'Service Notes') && highlightedCertificate && (
                     <p className="mt-4 text-sm leading-7 text-[#58616d]">
                       {locale === 'zh'
-                        ? `当前资料池包含：${highlightedCertificate.title}`
-                        : `Current resource note: ${highlightedCertificate.title}`}
+                        ? `可提供资质文件：${highlightedCertificate.title}`
+                        : `Available qualification document: ${highlightedCertificate.title}`}
                     </p>
                   )}
                 </article>
               ))}
 
               {showVerifiedHighlights && (
-                <article className="panel px-6 py-7 sm:px-8 md:col-span-2">
+                <article className="panel content-card md:col-span-2">
                   <p className="eyebrow">{locale === 'zh' ? '栏目摘要' : 'Section Notes'}</p>
                   <div className="mt-5 grid gap-6">
                     {verifiedHighlights.map((item) => (
@@ -1400,7 +1589,7 @@ const PortalSectionView = ({ locale, sectionKey }: PortalSectionViewProps) => {
                         <h3 className="text-[1.12rem] font-semibold text-[#1f252d] sm:text-[1.18rem]">
                           {item.title}
                         </h3>
-                        <p className="section-copy mt-3 max-w-none copy-clamp-4">
+                        <p className="section-copy mt-3 max-w-none copy-clamp-4 copy-unclamp-lg">
                           {getVerifiedSummary(locale, item)}
                         </p>
                       </div>

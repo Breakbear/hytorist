@@ -1,5 +1,5 @@
-﻿import AboutView from '../shared/AboutView'
-import { zhCopy } from '../../i18n/zh'
+import AboutView from '../AboutView'
+import { zhCopy } from '../../../i18n/zh'
 
 const ZhAbout = () => <AboutView locale="zh" copy={zhCopy} />
 

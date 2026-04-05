@@ -8,16 +8,24 @@ interface DetailCardListProps {
   items: DetailCardItem[]
   className?: string
   itemClassName?: string
+  labelClassName?: string
+  valueClassName?: string
 }
 
-const DetailCardList = ({ items, className = 'grid gap-3', itemClassName = 'art-card px-5 py-5' }: DetailCardListProps) => {
+const DetailCardList = ({
+  items,
+  className = 'grid gap-4',
+  itemClassName = 'art-card px-5 py-5',
+  labelClassName = 'meta-label',
+  valueClassName = 'meta-copy mt-3'
+}: DetailCardListProps) => {
   return (
     <div className={className}>
       {items.map((item) => {
         const content = (
           <>
-            <p className="meta-label">{item.label}</p>
-            <p className="meta-copy mt-3">{item.value}</p>
+            <p className={labelClassName}>{item.label}</p>
+            <p className={valueClassName}>{item.value}</p>
           </>
         )
 

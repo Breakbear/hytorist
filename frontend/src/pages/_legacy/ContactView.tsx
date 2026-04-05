@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { visualAssets } from '../../content/visualAssets'
+import ZoomableImage from '../../components/ZoomableImage'
 import { buildLocalizedPath } from '../../i18n/routes'
 import type { Locale, SiteCopy } from '../../i18n/types'
 import { usePageSeo } from '../../i18n/usePageSeo'
@@ -19,6 +20,8 @@ const iconMap: Record<string, string> = {
 const ContactView = ({ locale, copy }: ContactViewProps) => {
   const page = copy.contact
   const isZh = locale === 'zh'
+  const imagePreviewLabel = isZh ? '查看原图' : 'View Full Image'
+  const imageCloseLabel = isZh ? '关闭原图' : 'Close Image'
   usePageSeo(locale, copy.seo.contact)
 
   return (
@@ -39,9 +42,12 @@ const ContactView = ({ locale, copy }: ContactViewProps) => {
             <div className="grid gap-6 md:grid-cols-[1.04fr_0.96fr] md:items-center">
               <div className="art-image-frame">
                 <div className="aspect-[4/5]">
-                  <img
+                  <ZoomableImage
                     src={visualAssets.pipeline}
                     alt={page.mapPlaceholder}
+                    previewLabel={imagePreviewLabel}
+                    closeLabel={imageCloseLabel}
+                    wrapperClassName="h-full w-full"
                     className="h-full w-full object-cover"
                   />
                 </div>

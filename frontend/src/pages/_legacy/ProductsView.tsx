@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { visualAssets } from '../../content/visualAssets'
+import ZoomableImage from '../../components/ZoomableImage'
 import { buildLocalizedPath } from '../../i18n/routes'
 import type { Locale, SiteCopy } from '../../i18n/types'
 import { usePageSeo } from '../../i18n/usePageSeo'
@@ -9,9 +10,11 @@ interface ProductsViewProps {
   copy: SiteCopy
 }
 
-  const ProductsView = ({ locale, copy }: ProductsViewProps) => {
+const ProductsView = ({ locale, copy }: ProductsViewProps) => {
   const page = copy.products
   const isZh = locale === 'zh'
+  const imagePreviewLabel = isZh ? '查看原图' : 'View Full Image'
+  const imageCloseLabel = isZh ? '关闭原图' : 'Close Image'
   const categories = Array.from(new Set(page.items.map((item) => item.category)))
 
   usePageSeo(locale, copy.seo.products)
@@ -42,9 +45,12 @@ interface ProductsViewProps {
             <div className="grid gap-6 md:grid-cols-[0.92fr_1.08fr] md:items-center">
               <div className="art-image-frame">
                 <div className="aspect-[4/5]">
-                  <img
+                  <ZoomableImage
                     src={visualAssets.pump}
                     alt={page.title}
+                    previewLabel={imagePreviewLabel}
+                    closeLabel={imageCloseLabel}
+                    wrapperClassName="h-full w-full"
                     className="h-full w-full object-cover"
                   />
                 </div>
@@ -74,9 +80,12 @@ interface ProductsViewProps {
               <article key={product.id} className={`panel p-4 sm:p-5 ${spanClass}`}>
                 <div className="art-image-frame">
                   <div className={index === 2 ? 'aspect-[21/9]' : 'aspect-[5/4]'}>
-                    <img
+                    <ZoomableImage
                       src={product.image}
                       alt={product.name}
+                      previewLabel={imagePreviewLabel}
+                      closeLabel={imageCloseLabel}
+                      wrapperClassName="h-full w-full"
                       className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
                       loading="lazy"
                     />

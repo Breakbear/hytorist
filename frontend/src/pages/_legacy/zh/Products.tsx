@@ -1,5 +1,5 @@
-﻿import ProductsView from '../shared/ProductsView'
-import { zhCopy } from '../../i18n/zh'
+import ProductsView from '../ProductsView'
+import { zhCopy } from '../../../i18n/zh'
 
 const ZhProducts = () => <ProductsView locale="zh" copy={zhCopy} />
 

@@ -24,7 +24,7 @@ const LocalizedLayout = ({ locale, copy }: LocalizedLayoutProps) => {
   return (
     <div className="page-shell flex min-h-screen flex-col overflow-x-hidden">
       <Header locale={locale} copy={copy} />
-      <main className="flex-grow pt-28 sm:pt-32 xl:pt-[8.9rem]">
+      <main className="flex-grow pt-[8.8rem] sm:pt-[9.4rem] xl:pt-[10.4rem] 2xl:pt-[10.8rem]">
         <Outlet />
       </main>
       <Footer locale={locale} copy={copy} />

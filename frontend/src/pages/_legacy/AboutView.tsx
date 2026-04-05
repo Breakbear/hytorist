@@ -1,4 +1,5 @@
 import { visualAssets } from '../../content/visualAssets'
+import ZoomableImage from '../../components/ZoomableImage'
 import type { Locale, SiteCopy } from '../../i18n/types'
 import { usePageSeo } from '../../i18n/usePageSeo'
 
@@ -10,6 +11,8 @@ interface AboutViewProps {
 const AboutView = ({ locale, copy }: AboutViewProps) => {
   const page = copy.about
   const isZh = locale === 'zh'
+  const imagePreviewLabel = isZh ? '查看原图' : 'View Full Image'
+  const imageCloseLabel = isZh ? '关闭原图' : 'Close Image'
   const highlights = isZh
     ? [
         {
@@ -60,9 +63,12 @@ const AboutView = ({ locale, copy }: AboutViewProps) => {
             <div className="grid gap-6 md:grid-cols-[1.04fr_0.96fr] md:items-center">
               <div className="art-image-frame">
                 <div className="aspect-[4/5]">
-                  <img
+                  <ZoomableImage
                     src={visualAssets.office}
                     alt={page.imagePlaceholder}
+                    previewLabel={imagePreviewLabel}
+                    closeLabel={imageCloseLabel}
+                    wrapperClassName="h-full w-full"
                     className="h-full w-full object-cover"
                   />
                 </div>
@@ -119,9 +125,12 @@ const AboutView = ({ locale, copy }: AboutViewProps) => {
             <div className="max-w-[420px]">
               <div className="art-image-frame">
                 <div className="aspect-[4/5]">
-                  <img
+                  <ZoomableImage
                     src={visualAssets.team}
                     alt={page.imagePlaceholder}
+                    previewLabel={imagePreviewLabel}
+                    closeLabel={imageCloseLabel}
+                    wrapperClassName="h-full w-full"
                     className="h-full w-full object-cover"
                   />
                 </div>

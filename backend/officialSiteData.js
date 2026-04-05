@@ -414,89 +414,89 @@ const officialSiteData = {
       title: '企业简介',
       sourcePageUrl: 'http://www.hytorist.com/about.asp?id=3',
       summary:
-        '已公开企业资料明确了工业装配与工业检修方案、服务行业范围、ISO9001 认证、专利证书、实验室、售后服务和工程租赁等核心信息。',
+        '聚焦工业装配与工业检修场景，覆盖多行业应用，并配套质量体系、实验测试、售后支持与工程租赁能力。',
       summaryEn:
-        'Public company materials confirm industrial assembly and maintenance solutions, served industries, ISO9001 certification, patent records, laboratory capability, after-sales support, and engineering rental directions.'
+        'Focused on industrial assembly and maintenance, the company supports multiple industries with quality systems, testing capability, after-sales support, and engineering rental services.'
     },
     culture: {
       title: '企业文化',
       sourcePageUrl: 'http://www.hytorist.com/about.asp?id=5',
       summary:
-        '已公开企业文化资料展示了管理理念、经营理念、发展理念、服务理念和人才理念，强调服务第一、诚信为本与持续创新。',
+        '坚持服务第一、诚信为本与持续创新，以用户价值、团队协作和长期发展为核心。',
       summaryEn:
-        'Public culture materials cover management values, business principles, development philosophy, service philosophy, and talent philosophy with emphasis on service, integrity, and continuous innovation.'
+        'Its culture emphasizes service, integrity, continuous innovation, customer value, teamwork, and long-term growth.'
     },
     manufacturing: {
       title: '制造能力',
       sourcePageUrl: 'http://www.hytorist.com/about.asp?id=12',
       summary:
-        '已公开制造资料展示了非标机械配件、OEM 定向加工、约 1000 平方米协同生产场地和 50 余台套加工设备等核心制造条件。',
+        '具备非标机械配件与 OEM 配套加工能力，配套约 1000 平方米协同生产场地和 50 余台套加工设备。',
       summaryEn:
-        'Public manufacturing materials describe non-standard mechanical parts, OEM-oriented production, roughly 1,000 square meters of coordinated production area, and more than 50 sets of machining equipment.'
+        'Manufacturing capability includes non-standard mechanical parts, OEM-oriented production, roughly 1,000 square meters of coordinated production area, and more than 50 sets of machining equipment.'
     },
     testing: {
       title: '检测手段',
       sourcePageUrl: 'http://www.hytorist.com/about.asp?id=27',
       summary:
-        '已公开检测资料展示了实验测试室、扭力试验仪、液压拉伸试验台、压力标定仪和法兰管道加工试验台等检测与验证设备。',
+        '配备实验测试室、扭力试验仪、液压拉伸试验台、压力标定仪等设备，用于关键参数验证与现场适配性测试。',
       summaryEn:
-        'Public testing materials list a laboratory, torque testers, hydraulic tensile benches, pressure calibration rigs, and flange-processing test equipment for verification work.'
+        'Testing capability includes a laboratory, torque testers, hydraulic tensile benches, pressure calibration rigs, and flange-processing equipment for validation work.'
     },
     engineeringService: {
       title: '工程服务',
       sourcePageUrl: 'http://www.hytorist.com/about.asp?id=13',
       summary:
-        '已公开工程服务资料强调工程服务部、现场检维修能力、标准化服务流程与可定制解决方案。',
+        '工程服务团队具备现场检维修能力，提供标准化服务流程与可定制解决方案。',
       summaryEn:
-        'Public engineering-service materials emphasize the field-service department, on-site repair capability, standardized workflows, and customizable solutions.'
+        'The engineering service team provides on-site maintenance capability, standardized service workflows, and customizable solutions.'
     },
     rentalService: {
       title: '产品租赁',
       sourcePageUrl: 'http://www.hytorist.com/about.asp?id=14',
       summary:
-        '已公开产品租赁资料展示了螺栓、顶升平移、管道法兰、现场机加和风电运维等租赁方向。',
+        '提供螺栓、顶升平移、管道法兰、现场机加和风电运维等方向的设备租赁与项目支持。',
       summaryEn:
-        'Public rental materials list bolting, lifting and positioning, pipeline and flange service, on-site machining, and wind-power maintenance as rental directions.'
+        'Rental services cover bolting, lifting and positioning, pipeline and flange work, on-site machining, and wind-power maintenance.'
     },
     afterSales: {
       title: '售后服务',
       sourcePageUrl: 'http://www.hytorist.com/about.asp?id=17',
       summary:
-        '已公开售后服务资料展示了 1 年质保、2 小时响应、24 小时到场和替代产品等服务承诺。',
+        '提供 1 年质保、2 小时响应、24 小时到场及替代产品等售后服务支持。',
       summaryEn:
-        'Public after-sales materials state a one-year warranty together with 2-hour response, 24-hour on-site service, and replacement-product commitments.'
+        'After-sales support includes a one-year warranty, 2-hour response, 24-hour on-site service, and replacement-product commitments.'
     },
     training: {
       title: '技术培训',
       sourcePageUrl: 'http://www.hytorist.com/about.asp?id=18',
       summary:
-        '已公开技术培训资料展示了理论培训、操作培训、维保培训以及培训考核与证书发放机制。',
+        '提供理论培训、操作培训、维保培训及培训考核与证书发放服务。',
       summaryEn:
-        'Public training materials describe theory, operation, and maintenance training together with assessment and certificate issuance.'
+        'Training services include theory, operation, and maintenance modules together with assessment and certificate issuance.'
     },
     jobs: {
       title: '招聘职位',
       sourcePageUrl: 'http://www.hytorist.com/about.asp?id=21',
       summary:
-        '已公开招聘资料展示了机械设计/研发、技术服务/维修、销售工程师/经理等岗位及简历投递方式。',
+        '开放机械设计研发、技术服务维修、销售工程等岗位，并提供明确的简历投递方式。',
       summaryEn:
-        'Public recruitment materials list positions in mechanical design and R&D, service and maintenance, and sales, together with resume submission instructions.'
+        'Recruitment includes roles in mechanical design and R&D, service and maintenance, and sales together with clear resume-submission instructions.'
     },
     contactInfo: {
       title: '联系方式',
       sourcePageUrl: 'http://www.hytorist.com/about.asp?id=2',
       summary:
-        '已公开联系资料展示了北京市丰台区地址、电话传真、主邮箱、24 小时热线和微信公众号等联络信息。',
+        '提供北京市丰台区地址、电话传真、主邮箱、24 小时热线和微信公众号等联络方式。',
       summaryEn:
-        'Public contact materials provide the Fengtai District address in Beijing, phone and fax, main mailbox, 24-hour hotline, and WeChat contact details.'
+        'Contact details include the Fengtai District address in Beijing, phone and fax, main mailbox, 24-hour hotline, and WeChat access.'
     },
     messagePage: {
       title: '客户留言',
       sourcePageUrl: 'http://www.hytorist.com/about.asp?id=4',
       summary:
-        '已公开留言资料展示了姓名、电话、邮箱、问题类别以及公开或保密选项等字段，现已并入新版站点统一询盘流程。',
+        '新版站点已将留言需求整合到统一询盘流程，便于提交姓名、电话、邮箱与需求类别等信息。',
       summaryEn:
-        'Public message materials list fields such as name, phone, email, category, and public or confidential settings, which are now merged into the new-site inquiry flow.'
+        'The new site merges customer messages into one inquiry flow for submitting name, phone, email, and requirement category.'
     }
   },
   contacts: {
@@ -531,6 +531,56 @@ const officialSiteData = {
     noteZh: '询盘表单包含问题类别与公开/保密选项，便于项目沟通统一处理。',
     noteEn:
       'The inquiry form includes question categories together with public/confidential options so the site can handle project communication in one flow.'
+  },
+  uiNarratives: {
+    home: {
+      sitePathLeadZh: '从查看能力到发起项目对接，用一条站内路径完成。',
+      sitePathLeadEn: 'Move from capability review to project intake in one on-site flow.',
+      sitePathHintZh: '设备目录、应用入口和需求提交在同一条链路内完成。',
+      sitePathHintEn: 'Equipment review, application entry, and requirement submission stay in one flow.',
+      resourceLeadZh: '围绕项目沟通、服务资质与能力信息统一整理。',
+      resourceLeadEn: 'Project intake, service credentials, and capability notes organized in one place.',
+      resourceHintZh: '这组内容用于帮助访客快速理解沟通方式、资质说明和服务摘要。',
+      resourceHintEn: 'This block helps visitors understand contact flow, qualification notes, and service highlights.'
+    },
+    portal: {
+      referenceNoteZh: '栏目内容围绕业务能力、服务范围和沟通重点展开，便于快速了解当前方向。',
+      referenceNoteEn:
+        'Section content focuses on capability, service scope, and communication priorities for quick understanding.',
+      communicationNoteZh: '如需资质文件、服务说明或更细的项目资料，建议通过站内询盘和联系入口统一沟通。',
+      communicationNoteEn:
+        'If you need qualification files, service notes, or more detailed project material, use the site inquiry and contact flow directly.',
+      asideLeadZh: '从当前栏目继续查看相关内容，或直接进入需求与联系。',
+      asideLeadEn: 'Continue within this section or move directly into inquiry and contact.',
+      sectionSummaryTitleZh: '栏目资料摘要',
+      sectionSummaryTitleEn: 'Section Summary',
+      sectionSummaryLeadZh: '栏目重点与沟通说明统一收口。',
+      sectionSummaryLeadEn: 'Section notes and communication points organized in one place.'
+    },
+    inquiry: {
+      heroLeadZh: '提交工况、交付时间与服务范围后，站内统一进入技术或商务对接流程。',
+      heroLeadEn:
+        'After you submit operating conditions, timing, and service scope, the site routes your request into technical or commercial follow-up.',
+      formLeadZh: '建议优先填写工况、时间与服务范围，便于快速分流。',
+      formLeadEn: 'Share operating condition, timing, and scope first so the team can route the request quickly.',
+      resourceLeadZh: '询盘页保留新站自己的沟通说明与资料摘要。',
+      resourceLeadEn: 'The inquiry page keeps the new site’s own contact notes and material summary.',
+      messageNoteZh: '当前询盘流程保留问题类别和公开/保密设置，便于统一沟通。',
+      messageNoteEn:
+        'The current inquiry flow keeps message categories together with public/confidential settings for consistent coordination.',
+      coverageNoteZh: '联系方式、热线和资质信息可按项目需要提供与说明。',
+      coverageNoteEn:
+        'Contact channels, hotline, and qualification information can be provided according to project needs.'
+    },
+    footer: {
+      statementZh:
+        '本网站聚焦新站自己的业务展示与项目沟通，能力、服务和联系方式以当前页面内容与站内对接信息为准。',
+      statementEn:
+        'This website focuses on its own business presentation and project communication. Capability, service, and contact information are defined by the current site content and on-site contact flow.',
+      coverageZh: '当前站点重点覆盖风电运维、石化检修、水电工程、轨交与非标装备等工程方向，统一通过站内入口进行项目对接。',
+      coverageEn:
+        'Current coverage focuses on wind O&M, petrochemical maintenance, hydropower projects, and rail/custom machinery directions with project coordination handled through on-site entry points.'
+    }
   },
   certificates: [
     {

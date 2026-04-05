@@ -119,9 +119,9 @@ export const enCopy: SiteCopy = {
       }
     ],
     curatedProductNotes: [
-      'Public materials align this direction with wind-turbine bolting, stud removal, and hydraulic tightening work supported by torque wrenches, tensioners, nut splitters, and stud extractors.',
-      'Public materials list pipe beveling machines, flange facing machines, and valve grinding equipment for pipeline maintenance, flange service, and valve overhaul work.',
-      'Public materials also reference portable boring and milling resources together with manufacturing capability for repair and custom-equipment support.'
+      'This direction supports wind-turbine bolting, stud removal, and hydraulic tightening work with torque wrenches, tensioners, nut splitters, and stud extractors.',
+      'It covers pipe beveling machines, flange facing machines, and valve grinding equipment for pipeline maintenance, flange service, and valve overhaul work.',
+      'It also includes portable boring and milling resources together with manufacturing capability for repair and custom-equipment support.'
     ],
     heroMetrics: [
       { value: '24H', label: 'Inquiry Response' },
@@ -140,7 +140,7 @@ export const enCopy: SiteCopy = {
     selectionLogicText:
       'Start with the work type, site constraints, and matching equipment direction before narrowing specific models or delivery packages.',
     productNotes: [
-      'Public materials confirm hydraulic power, bolting, flange service, on-site machining, and wind O&M as the main equipment directions.',
+      'Hydraulic power, bolting, flange service, on-site machining, and wind O&M form the main equipment directions.',
       'Selection should be narrowed by operating condition, working space, interface form, and delivery rhythm rather than by model name alone.',
       'Custom machinery manufacturing remains available when standard categories need project-specific extension or integrated support.'
     ],

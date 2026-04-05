@@ -144,7 +144,7 @@ const productItemsZh: PortalGridItem[] = [
     id: 1,
     title: '专用液压泵站',
     image: media.pump,
-    description: '公开产品目录已保留该分类，当前未显示具体型号。新版页面按液压动力站、现场供压与多工具联动配套场景整理这一方向。',
+    description: '页面展示液压动力站、现场供压与多工具联动作业等应用方向，具体型号与配置可按项目需求确认。',
     link: officialPages.rentalService
   },
   {
@@ -152,7 +152,7 @@ const productItemsZh: PortalGridItem[] = [
     title: '螺栓螺母工程',
     image: media.windAssembly,
     description:
-      '公开资料对应风机锁紧盘、多螺栓同步拧紧与检维修工况，覆盖液压扭矩扳手、液压拉伸器、螺母劈开器与栽丝取出器等设备方向，具体配置按项目工况确认。',
+      '适用于风机锁紧盘、多螺栓同步拧紧及检维修工况，可提供液压扭矩扳手、液压拉伸器、螺母劈开器与栽丝取出器等方案。',
     link: officialPages.rentalService
   },
   {
@@ -160,14 +160,14 @@ const productItemsZh: PortalGridItem[] = [
     title: '顶升平移工程',
     image: media.factoryFloor,
     description:
-      '公开资料对应设备顶升、同步平移与姿态调整工况，重点整理液压油缸、同步顶升系统与三维调整系统等设备方向。',
+      '适用于设备顶升、同步平移与姿态调整工况，重点覆盖液压油缸、同步顶升系统与三维调整系统等设备方向。',
     link: officialPages.rentalService
   },
   {
     id: 4,
     title: '管道法兰工程',
     image: media.pipeline,
-    description: '公开资料对应管道检修与法兰加工工况，重点整理坡口、端面加工与阀门研磨等现场设备方向。',
+    description: '面向管道检修与法兰加工场景，提供坡口、端面加工与阀门研磨等现场设备方向。',
     link: officialPages.rentalService
   },
   {
@@ -175,14 +175,14 @@ const productItemsZh: PortalGridItem[] = [
     title: '现场机加工程',
     image: media.factoryFloor,
     description:
-      '公开资料对应现场镗孔、铣削与检维修加工工况，重点整理便携式机加设备、修复加工能力与现场服务支持。',
+      '适用于现场镗孔、铣削与检维修加工场景，涵盖便携式机加设备、修复加工能力与现场服务支持。',
     link: officialPages.rentalService
   },
   {
     id: 6,
     title: '风电运维工程',
     image: media.turbine,
-    description: '公开资料对应风机检修与齿轮箱维护工况，重点整理换油工程车及相关运维专用设备方向。',
+    description: '面向风机检修与齿轮箱维护工况，重点提供换油工程车及相关运维专用设备方向。',
     link: officialPages.rentalService
   },
   {
@@ -190,7 +190,7 @@ const productItemsZh: PortalGridItem[] = [
     title: '其他类别产品',
     image: media.digitalScene,
     description:
-      '公开产品目录保留了综合分类，当前未显示独立条目。新版页面先将其作为跨类别设备、成套配套与组合方案的承接入口。',
+      '适合作为跨类别设备、成套配套与组合方案的综合需求入口。',
     link: officialPages.rentalService
   },
   {
@@ -198,7 +198,7 @@ const productItemsZh: PortalGridItem[] = [
     title: '非标机械制造',
     image: media.factoryFloor,
     description:
-      '企业资料明确包含非标机械、自动化装备与工业机器人相关研发制造能力，可承接定制化装备、夹具工装与集成方案。',
+      '可承接非标机械、自动化装备与工业机器人相关研发制造需求，支持定制化装备、夹具工装与集成方案。',
     link: officialPages.aboutProfile
   }
 ]
@@ -208,7 +208,7 @@ const productItemsEn: PortalGridItem[] = [
     id: 1,
     title: 'Hydraulic Power Units',
     image: media.pump,
-    description: 'The public product directory keeps this category, but no concrete model list is exposed. The new site organizes it around hydraulic power supply, field pressure support, and multi-tool operation scenarios.',
+    description: 'This category covers hydraulic power supply, field pressure support, and multi-tool operation scenarios, with model and configuration details confirmed per project.',
     link: officialPages.rentalService
   },
   {
@@ -216,7 +216,7 @@ const productItemsEn: PortalGridItem[] = [
     title: 'Bolting Engineering',
     image: media.windAssembly,
     description:
-      'Public materials align this category with wind-turbine bolting, multi-bolt tightening, removal, and maintenance work, covering torque wrenches, tensioners, nut splitters, and stud extractors. Exact configurations are confirmed per project condition.',
+      'Designed for wind-turbine bolting, multi-bolt tightening, removal, and maintenance work, covering torque wrenches, tensioners, nut splitters, and stud extractors. Exact configurations are confirmed per project condition.',
     link: officialPages.rentalService
   },
   {
@@ -224,14 +224,14 @@ const productItemsEn: PortalGridItem[] = [
     title: 'Lifting and Positioning Engineering',
     image: media.factoryFloor,
     description:
-      'Public materials align this category with lifting, synchronous positioning, and attitude adjustment work, centered on cylinders, synchronous lifting systems, and 3D alignment systems.',
+      'Suitable for lifting, synchronous positioning, and attitude adjustment work, centered on cylinders, synchronous lifting systems, and 3D alignment systems.',
     link: officialPages.rentalService
   },
   {
     id: 4,
     title: 'Pipeline and Flange Engineering',
     image: media.pipeline,
-    description: 'Public materials align this category with pipeline maintenance and flange machining work, centered on beveling, flange facing, and valve grinding equipment.',
+    description: 'Designed for pipeline maintenance and flange machining work, centered on beveling, flange facing, and valve grinding equipment.',
     link: officialPages.rentalService
   },
   {
@@ -239,14 +239,14 @@ const productItemsEn: PortalGridItem[] = [
     title: 'On-site Machining Engineering',
     image: media.factoryFloor,
     description:
-      'Public materials align this category with field boring, milling, and repair-machining work, organized around portable machining equipment, repair capability, and on-site service support.',
+      'Suitable for field boring, milling, and repair-machining work, organized around portable machining equipment, repair capability, and on-site service support.',
     link: officialPages.rentalService
   },
   {
     id: 6,
     title: 'Wind O&M Engineering',
     image: media.turbine,
-    description: 'Public materials align this category with turbine maintenance and gearbox service work, centered on oil-changing service vehicles and related O&M equipment.',
+    description: 'Focused on turbine maintenance and gearbox service work, centered on oil-changing service vehicles and related O&M equipment.',
     link: officialPages.rentalService
   },
   {
@@ -254,7 +254,7 @@ const productItemsEn: PortalGridItem[] = [
     title: 'Other Product Categories',
     image: media.digitalScene,
     description:
-      'The public directory keeps this composite category, but no standalone rows are exposed. The new site keeps it as an entry for cross-category equipment, packaged support, and combined delivery programs.',
+      'Suitable for cross-category equipment, packaged support, and combined delivery programs.',
     link: officialPages.rentalService
   },
   {
@@ -262,7 +262,7 @@ const productItemsEn: PortalGridItem[] = [
     title: 'Custom Machinery Manufacturing',
     image: media.factoryFloor,
     description:
-      'Public company materials confirm capability in non-standard machinery, automation equipment, and industrial-robot-related manufacturing for custom equipment, fixtures, and integrated programs.',
+      'Supports custom equipment, fixtures, and integrated programs in non-standard machinery, automation equipment, and industrial-robot-related manufacturing.',
     link: officialPages.aboutProfile
   }
 ]
@@ -488,8 +488,8 @@ const zhSections: Record<PortalSectionKey, PortalSectionData> = {
         title: '组织架构',
         sourcePageUrl: officialPages.aboutOrg,
         paragraphs: [
-          '公开资料保留了“组织架构”栏目入口，但未展示具体组织图或岗位结构明细。',
-          '结合已公开的企业简介与人才战略页面，当前可确认公司由研发、制造、实验测试、售后技术和工程服务等能力单元共同支撑交付。'
+          '公司围绕研发、制造、实验测试、售后技术和工程服务构建协同交付体系。',
+          '相关团队可按项目需求协同配合，支撑方案设计、制造验证与现场服务。'
         ],
         image: media.team,
         imageAlt: '组织团队'
@@ -498,17 +498,17 @@ const zhSections: Record<PortalSectionKey, PortalSectionData> = {
         kind: 'grid',
         title: '荣誉资质',
         sourcePageUrl: officialPages.aboutHonor,
-        summary: '当前公开资料展示了质量体系认证证书页面。新版站点先将证书原图与证书标题结构化接入，后续继续补齐专利与认证明细。',
+        summary: '网站已接入质量体系认证证书，后续将继续补充更多专利与认证信息。',
         items: [
           {
             id: 1,
             title: '质量体系认证证书',
             image: officialAssets.certificate,
-            description: '当前已核实接入的证书资料，可与联系信息和后台资料池统一维护。',
+            description: '当前可查看质量体系认证证书原图与证书标题。',
             link: officialPages.aboutHonor
           }
         ],
-        pager: '现阶段已接入可核实证书资料，后续继续补充专利与体系证书'
+        pager: '已接入质量体系证书，后续继续补充更多专利与体系认证'
       }
     }
   },
@@ -593,76 +593,76 @@ const zhSections: Record<PortalSectionKey, PortalSectionData> = {
           'zh',
           'products',
           '设备目录',
-          '当前公开产品页未返回型号明细，站内先按已核实的 8 个产品分类组织目录。',
-          ['8 个公开分类', '设备方向目录', '按工况沟通']
+          '产品中心按 8 个设备方向组织，便于按工况快速浏览并发起项目沟通。',
+          ['8 个产品方向', '设备目录', '按工况沟通']
         ),
-        summary: '当前目录依据已公开产品分类、产品租赁信息和企业能力资料整理，先完整保留 8 个产品分类，再用已公开设备方向说明适用场景。',
+        summary: '产品中心围绕液压动力、螺栓、顶升、管道法兰、现场机加、风电运维、综合产品与非标制造等方向展开。',
         items: productItemsZh,
-        pager: '8 个公开产品分类已全部接入；具体型号仍待取得可公开资料后再发布'
+        pager: '已接入 8 个产品方向；具体型号与配置可按项目需求进一步确认'
       },
       pump: {
         kind: 'grid',
         title: '专用液压泵站',
         sourcePageUrl: officialPages.rentalService,
-        summary: '公开目录保留了专用液压泵站分类，但当前未提供型号列表。当前页面先说明液压动力配套方向与项目沟通入口。',
+        summary: '重点展示液压动力配套方向，适用于现场供压、多工具联动与工程作业支持。',
         items: productItemsZh.filter((item) => item.title.includes('泵站')),
-        pager: '已接入专用液压泵站分类，后续如取得真实型号资料再补齐'
+        pager: '已接入专用液压泵站方向，可按项目需求确认型号与配置'
       },
       bolting: {
         kind: 'grid',
         title: '螺栓螺母工程',
         sourcePageUrl: officialPages.rentalService,
-        summary: '该方向在公开产品资料与租赁资料中均有明确提及，是当前可核实程度较高的产品方向之一。',
+        summary: '适用于螺栓预紧、拆装与检维修工况，可匹配液压扭矩与拉伸方案。',
         items: productItemsZh.filter((item) => item.title.includes('螺栓')),
-        pager: '按已公开设备方向整理'
+        pager: '围绕螺栓工况整理，可按项目需求确认设备配置'
       },
       lifting: {
         kind: 'grid',
         title: '顶升平移工程',
         sourcePageUrl: officialPages.rentalService,
-        summary: '当前公开资料明确提到了液压油缸、同步顶升系统与三维调整系统等顶升平移设备方向。',
+        summary: '适用于顶升、同步平移与姿态调整工况，覆盖液压油缸、同步顶升系统与三维调整系统等方向。',
         items: productItemsZh.filter((item) => item.title.includes('顶升平移')),
-        pager: '按已公开设备方向整理'
+        pager: '围绕顶升平移工况整理，可按项目需求确认设备配置'
       },
       pipe: {
         kind: 'grid',
         title: '管道法兰工程',
         sourcePageUrl: officialPages.rentalService,
-        summary: '公开资料明确提到管道坡口机、法兰端面加工机与阀门研磨机等设备，用于管道法兰类工程。',
+        summary: '适用于管道检修与法兰加工场景，覆盖坡口、端面加工与阀门研磨等设备方向。',
         items: productItemsZh.filter((item) => item.title.includes('管道')),
-        pager: '按已公开设备方向整理'
+        pager: '围绕管道法兰工况整理，可按项目需求确认设备配置'
       },
       machining: {
         kind: 'grid',
         title: '现场机加工程',
         sourcePageUrl: officialPages.rentalService,
-        summary: '公开资料提到便携式镗孔机、便携式铣削机床等现场机加设备，可用于检修与现场加工场景。',
+        summary: '适用于现场镗孔、铣削与修复加工场景，可支持检维修与现场加工需求。',
         items: productItemsZh.filter((item) => item.title.includes('现场机加')),
-        pager: '按已公开设备方向整理'
+        pager: '围绕现场机加工况整理，可按项目需求确认设备配置'
       },
       wind: {
         kind: 'grid',
         title: '风电运维工程',
         sourcePageUrl: officialPages.rentalService,
-        summary: '风电运维工程已在公开产品资料中单独列出，当前先按可核实设备方向展示。',
+        summary: '围绕风机检修与齿轮箱维护场景，展示风电运维设备与服务方向。',
         items: productItemsZh.filter((item) => item.title.includes('风电运维')),
-        pager: '按已公开设备方向整理'
+        pager: '围绕风电运维工况整理，可按项目需求确认设备配置'
       },
       other: {
         kind: 'grid',
         title: '其他类别产品',
         sourcePageUrl: officialPages.rentalService,
-        summary: '公开产品目录保留了“其他类别产品”分类，但未公开独立条目。当前先保留该入口承接综合型需求。',
+        summary: '面向跨类别设备、成套配套与综合型项目需求，保留统一沟通入口。',
         items: productItemsZh.filter((item) => item.title.includes('其他类别')),
-        pager: '分类入口已保留，待取得公开资料后补充细项'
+        pager: '适合作为综合需求入口，可通过项目沟通确认具体方案'
       },
       custom: {
         kind: 'grid',
         title: '非标机械制造',
         sourcePageUrl: officialPages.aboutProfile,
-        summary: '企业资料明确提到非标机械制造与自动化装备研发制造能力，当前按已核实方向整理展示。',
+        summary: '提供非标机械制造与自动化装备研发制造支持，可根据工况进行定制化开发。',
         items: productItemsZh.filter((item) => item.title.includes('非标机械制造')),
-        pager: '按已公开设备方向整理'
+        pager: '围绕非标制造能力展示，可按项目需求沟通方案'
       }
     }
   },
@@ -689,7 +689,7 @@ const zhSections: Record<PortalSectionKey, PortalSectionData> = {
           ['服务 E-01', '驻场支持', '工艺验证']
         ),
         paragraphs: [
-          '海拓斯特设有工程服务部，能够为用户提供满意的现场检维修服务。全部上岗人员均经历专业技术培训，可快速组合成多个高水平工作组。',
+          '海拓斯特工程服务团队具备现场检维修能力，可根据项目需求快速组织专业人员到场支持。',
           '在以往专业现场服务过程中，公司形成了工程服务程序化、技术操作规范化、维修工作专业化、质量管理标准化的一套服务模式。',
           '专业化的服务设备与经验丰富的服务团队，不但提供高质量现场服务，也可面向具体工况提供定制解决方案。'
         ],
@@ -702,7 +702,7 @@ const zhSections: Record<PortalSectionKey, PortalSectionData> = {
         sourcePageUrl: officialPages.rentalService,
         paragraphs: [
           '为满足多样化市场需求并帮助用户节约成本，海拓斯特提供产品及专用设备租赁业务，并可同步安排相关技术工程师进行产品与设备的操作技术培训和施工作业指导。',
-          '当前公开资料明确列出的租赁方向包括：螺栓螺母工程、顶升平移工程、管道法兰工程、现场机加工程以及风电运维工程。',
+          '当前租赁服务覆盖螺栓螺母工程、顶升平移工程、管道法兰工程、现场机加工程以及风电运维工程。',
           '可租赁设备包括液压扭矩扳手、液压拉伸器、液压油缸、同步顶升系统、三维顶升调整系统、管道坡口机、法兰端面加工机、阀门研磨机、便携式镗孔机、便携式铣削机床以及齿轮箱换油工程车等。'
         ],
         bullets: ['设备租赁', '现场支持', '快速调配', '按项目计费']
@@ -736,74 +736,74 @@ const zhSections: Record<PortalSectionKey, PortalSectionData> = {
           'zh',
           'cases',
           '应用场景案例',
-          '当前公开案例页未返回案例明细，站内先按已核实的 9 个应用分类组织目录。',
-          ['9 个公开分类', '场景入口目录', '按项目沟通']
+          '应用案例按 9 类工程场景组织，便于快速匹配项目方向与服务能力。',
+          ['9 类应用场景', '场景入口', '按项目沟通']
         ),
         items: caseItemsZh,
-        pager: '9 个公开应用分类已全部接入；具体案例内容仍待取得可公开资料后再发布'
+        pager: '已接入 9 类应用场景；具体项目案例可在沟通中进一步了解'
       },
       bolting: {
         kind: 'grid',
         title: '螺栓螺母工程',
-        summary: '公开案例目录保留了“螺栓螺母工程”分类，但当前未公开案例条目。当前页面先保留该类场景入口。',
+        summary: '聚焦螺栓螺母工程相关应用场景，可结合具体项目进一步确认设备与实施方案。',
         items: caseItemsZh.filter((item) => item.title === '螺栓螺母工程'),
-        pager: '分类入口已保留，待取得公开案例资料后补充细项'
+        pager: '围绕该场景保留入口，可结合项目进一步沟通'
       },
       lifting: {
         kind: 'grid',
         title: '顶升平移工程',
-        summary: '公开案例目录保留了“顶升平移工程”分类，但当前未公开案例条目。当前页面先保留该类场景入口。',
+        summary: '聚焦顶升平移工程相关应用场景，可结合具体项目进一步确认设备与实施方案。',
         items: caseItemsZh.filter((item) => item.title === '顶升平移工程'),
-        pager: '分类入口已保留，待取得公开案例资料后补充细项'
+        pager: '围绕该场景保留入口，可结合项目进一步沟通'
       },
       wind: {
         kind: 'grid',
         title: '风电运维工程',
-        summary: '公开案例目录保留了“风电运维工程”分类，但当前未公开案例条目。当前页面先保留该类场景入口。',
+        summary: '聚焦风电运维工程相关应用场景，可结合具体项目进一步确认设备与实施方案。',
         items: caseItemsZh.filter((item) => item.title === '风电运维工程'),
-        pager: '分类入口已保留，待取得公开案例资料后补充细项'
+        pager: '围绕该场景保留入口，可结合项目进一步沟通'
       },
       pipeline: {
         kind: 'grid',
         title: '管道法兰工程',
-        summary: '公开案例目录保留了“管道法兰工程”分类，但当前未公开案例条目。当前页面先保留该类场景入口。',
+        summary: '聚焦管道法兰工程相关应用场景，可结合具体项目进一步确认设备与实施方案。',
         items: caseItemsZh.filter((item) => item.title === '管道法兰工程'),
-        pager: '分类入口已保留，待取得公开案例资料后补充细项'
+        pager: '围绕该场景保留入口，可结合项目进一步沟通'
       },
       machining: {
         kind: 'grid',
         title: '现场机加工程',
-        summary: '公开案例目录保留了“现场机加工程”分类，但当前未公开案例条目。当前页面先保留该类场景入口。',
+        summary: '聚焦现场机加工程相关应用场景，可结合具体项目进一步确认设备与实施方案。',
         items: caseItemsZh.filter((item) => item.title === '现场机加工程'),
-        pager: '分类入口已保留，待取得公开案例资料后补充细项'
+        pager: '围绕该场景保留入口，可结合项目进一步沟通'
       },
       energy: {
         kind: 'grid',
         title: '节能环保工程',
-        summary: '公开案例目录保留了“节能环保工程”分类，但当前未公开案例条目。当前页面先保留该类场景入口。',
+        summary: '聚焦节能环保工程相关应用场景，可结合具体项目进一步确认设备与实施方案。',
         items: caseItemsZh.filter((item) => item.title === '节能环保工程'),
-        pager: '分类入口已保留，待取得公开案例资料后补充细项'
+        pager: '围绕该场景保留入口，可结合项目进一步沟通'
       },
       other: {
         kind: 'grid',
         title: '其它类别产品',
-        summary: '公开案例目录保留了“其它类别产品”分类，但当前未公开案例条目。当前页面先保留该类场景入口。',
+        summary: '聚焦其他综合类应用场景，可结合具体项目进一步确认设备与实施方案。',
         items: caseItemsZh.filter((item) => item.title === '其它类别产品'),
-        pager: '分类入口已保留，待取得公开案例资料后补充细项'
+        pager: '围绕该场景保留入口，可结合项目进一步沟通'
       },
       custom: {
         kind: 'grid',
         title: '非标机械制造',
-        summary: '公开案例目录保留了“非标机械制造”分类，但当前未公开案例条目。当前页面先保留该类场景入口。',
+        summary: '聚焦非标机械制造相关应用场景，可结合具体项目进一步确认设备与实施方案。',
         items: caseItemsZh.filter((item) => item.title === '非标机械制造'),
-        pager: '分类入口已保留，待取得公开案例资料后补充细项'
+        pager: '围绕该场景保留入口，可结合项目进一步沟通'
       },
       users: {
         kind: 'grid',
         title: '我们的用户',
-        summary: '公开案例目录保留了“我们的用户”分类，但当前未公开客户或用户名单。当前页面先保留该类入口。',
+        summary: '面向合作客户与服务行业场景，支持按项目需求进一步沟通。',
         items: caseItemsZh.filter((item) => item.title === '我们的用户'),
-        pager: '分类入口已保留，待取得公开案例资料后补充细项'
+        pager: '保留合作场景入口，可结合项目进一步沟通'
       }
     }
   },
@@ -833,7 +833,7 @@ const zhSections: Record<PortalSectionKey, PortalSectionData> = {
         ),
         paragraphs: [
           '海拓斯特已通过 ISO9001 质量管理体系认证，拥有先进的试验设备和完善的售后服务体系，售后服务部覆盖售前技术支持、技术培训、产品维修等工作。',
-          '公开服务资料明确说明：质保期内由设计或生产缺陷导致的问题由公司免费维修及更换配件；因用户使用不当导致的问题，可提供免费维修并收取零件成本费用。',
+          '质保期内由设计或生产缺陷导致的问题由公司免费维修及更换配件；因用户使用不当导致的问题，可提供免费维修并收取零件成本费用。',
           '交货服务可覆盖安装、调试、理论培训、操作培训与维保培训；保内服务承诺 2 小时响应，一般故障远程指导，疑难故障 24 小时内赴现场并在必要时提供替代产品。'
         ],
         bullets: ['质量保证', '交货服务', '保内服务', '保外服务']
@@ -843,7 +843,7 @@ const zhSections: Record<PortalSectionKey, PortalSectionData> = {
         title: '技术培训',
         sourcePageUrl: officialPages.training,
         paragraphs: [
-          '公开技术培训资料明确列出理论培训、操作培训和维保培训三大部分，并在培训完结后对接受培训的人员进行技术考核，对通过者颁发相关证书。',
+          '技术培训分为理论培训、操作培训和维保培训三大部分，并在培训完结后对参训人员进行技术考核，对通过者颁发相关证书。',
           '理论培训覆盖工作原理、故障预防与检测、安全注意事项以及日常维护保养；操作培训包括产品演示、安全操作全过程讲解和逐步实操指导。',
           '维保培训强调设备保养与维护知识、人员安全、设备安全、设备维护、修理及备件更换等全过程注意事项。'
         ],
@@ -855,7 +855,7 @@ const zhSections: Record<PortalSectionKey, PortalSectionData> = {
         title: '产品试用',
         sourcePageUrl: officialPages.trial,
         paragraphs: [
-          '当前公开资料内容较简洁，仅明确说明公司可提供产品演示以及试用服务。',
+          '公司可提供产品演示以及试用服务，便于客户进一步确认设备适配性与使用方式。',
           '如需试用，建议直接与公司联系，由团队进一步确认设备、工况和试用安排。'
         ]
       },
@@ -864,10 +864,10 @@ const zhSections: Record<PortalSectionKey, PortalSectionData> = {
         title: '下载中心',
         sourcePageUrl: officialPages.downloads,
         paragraphs: [
-          '当前公开的“下载中心”列表未返回有效文件条目。',
-          '新版站点暂按栏目结构保留下载入口，待取得真实公开资料后再接入文件与参数包。'
+          '下载中心用于发布资料文件、参数包与配套说明。',
+          '如需当前可提供的资料，建议通过联系页或询盘页与团队沟通获取。'
         ],
-        bullets: ['栏目入口已保留', '当前无公开文件列表', '后续接入真实下载资料', '统一由后台管理']
+        bullets: ['资料文件', '参数包说明', '按需获取', '统一发布']
       }
     }
   },
@@ -946,8 +946,8 @@ const zhSections: Record<PortalSectionKey, PortalSectionData> = {
         title: '招聘职位',
         sourcePageUrl: officialPages.jobs,
         paragraphs: [
-          '公开招聘资料说明：如对职位感兴趣，可将简历发送至 hr@hytorist.com，并附近期免冠照片，在邮件主题中注明“职位+姓名”及期望薪资。',
-          '当前公开岗位包括机械设计工程师/技术研发工程师、技术服务工程师/维修工程师、销售工程师/销售经理等方向。',
+          '如对职位感兴趣，可将简历发送至 hr@hytorist.com，并附近期免冠照片，在邮件主题中注明“职位+姓名”及期望薪资。',
+          '当前岗位包括机械设计工程师/技术研发工程师、技术服务工程师/维修工程师、销售工程师/销售经理等方向。',
           '岗位说明对机械制图、结构与材料知识、SolidWorks/CAD/CAXA、Office、出差适应性以及相关行业经验等能力有较明确要求。'
         ]
       },
@@ -956,8 +956,8 @@ const zhSections: Record<PortalSectionKey, PortalSectionData> = {
         title: '员工天地',
         sourcePageUrl: officialPages.staff,
         paragraphs: [
-          '公开资料保留了“员工天地”栏目入口，但当前公开页面未展示正文内容。',
-          '新版站点保留该栏目结构，后续如取得真实公开活动、团队文化或员工发展资料，再由后台统一补充。'
+          '员工天地栏目将逐步补充团队活动、员工发展与企业文化内容。',
+          '如需进一步了解团队氛围与人才发展，也可通过新闻与联系页进行沟通。'
         ],
         image: media.team,
         imageAlt: '员工活动'
@@ -1053,7 +1053,7 @@ const enSections: Record<PortalSectionKey, PortalSectionData> = {
         ),
         paragraphs: [
           'Hytorist focuses on industrial assembly and maintenance solutions, developing tooling and equipment for bolting, pipeline maintenance, portable machining, robotics, and automation scenarios.',
-          'Public company materials cover applications in nuclear, thermal, wind, hydropower, petrochemical, metallurgy, mining, shipbuilding, railway, defense, and aerospace sectors.',
+          'Its solutions serve nuclear, thermal, wind, hydropower, petrochemical, metallurgy, mining, shipbuilding, railway, defense, and aerospace sectors.',
           'The company states that ISO9001 certification, patented products, laboratory capability, after-sales engineers, engineering contracting, and equipment rental together support its delivery system.'
         ]
       },
@@ -1062,7 +1062,7 @@ const enSections: Record<PortalSectionKey, PortalSectionData> = {
         title: 'Culture',
         sourcePageUrl: officialPages.aboutCulture,
         paragraphs: [
-          'Public culture materials list management values around democracy, harmony, science, and innovation.',
+          'Its culture emphasizes democracy, harmony, science, and innovation in management and teamwork.',
           'Its business philosophy emphasizes service first, customer priority, integrity, and innovation, while the development philosophy focuses on mindset, detail, and execution.',
           'The page also states a people-first talent philosophy and the goal of creating value for customers, employees, and society.'
         ]
@@ -1072,25 +1072,25 @@ const enSections: Record<PortalSectionKey, PortalSectionData> = {
         title: 'Organization',
         sourcePageUrl: officialPages.aboutOrg,
         paragraphs: [
-          'Public materials keep an organization section, but the current page does not expose a detailed organizational chart.',
-          'Based on the available company materials, the delivery structure clearly involves R&D, manufacturing, testing, after-sales support, and engineering service functions.'
+          'The delivery structure combines R&D, manufacturing, testing, after-sales support, and engineering service functions.',
+          'These teams work together across design, validation, production, and on-site execution based on project needs.'
         ]
       },
       honor: {
         kind: 'grid',
         title: 'Certifications',
         sourcePageUrl: officialPages.aboutHonor,
-        summary: 'Current public materials expose a quality-system certificate page. The new site structures the certificate image and title for future expansion.',
+        summary: 'The site already presents the quality-management certificate and will continue to add more patent and certification details.',
         items: [
           {
             id: 1,
             title: 'Quality Management Certification',
             image: officialAssets.certificate,
-            description: 'Currently verified certificate material, structured as a reusable asset inside the new site.',
+            description: 'The current page presents the certificate image together with its title.',
             link: officialPages.aboutHonor
           }
         ],
-        pager: 'Current verified certificate material connected, with more patents and certifications to be added'
+        pager: 'Quality-management certification is connected, with more patents and certifications to be added'
       }
     }
   },
@@ -1116,7 +1116,7 @@ const enSections: Record<PortalSectionKey, PortalSectionData> = {
           ['R&D Capability', 'Integrated Chain', 'Quality Traceability']
         ),
         paragraphs: [
-          'Public materials position R&D around a complete chain of design, testing, prototyping, validation, and applied development.',
+          'R&D is built around a complete chain of design, testing, prototyping, validation, and applied development.',
           'It emphasizes laboratory capability and the ability to iterate hydraulic power, structural reliability, and field-oriented equipment solutions.'
         ]
       },
@@ -1125,7 +1125,7 @@ const enSections: Record<PortalSectionKey, PortalSectionData> = {
         title: 'Production Capability',
         sourcePageUrl: officialPages.manufacturing,
         paragraphs: [
-          'Public manufacturing materials describe early non-standard machining work for defense-industry customers together with OEM-oriented production for overseas brands.',
+          'Production capability includes early experience in non-standard machining for defense-industry customers together with OEM-oriented production for overseas brands.',
           'It highlights roughly 1,000 square meters of coordinated production capacity and more than 50 sets of equipment, including CNC lathes, grinding machines, milling machines, laser cutting, bending, and sheet-metal systems.',
           'Advanced equipment, mature processing methods, and the quality-management system are presented as the foundation for stable delivery.'
         ],
@@ -1137,7 +1137,7 @@ const enSections: Record<PortalSectionKey, PortalSectionData> = {
         title: 'Testing Methods',
         sourcePageUrl: officialPages.testing,
         paragraphs: [
-          'Public materials state that Hytorist established a laboratory and test room to support design, prototyping, validation, and applied research in one system.',
+          'Hytorist established a laboratory and test room to support design, prototyping, validation, and applied research in one system.',
           'Equipment includes torque testers, hydraulic tensile benches, pressure calibration rigs, hardness testers, flange-processing benches, and valve grinding test equipment.',
           'The testing workflow is positioned as a disciplined part of product reliability and engineering delivery.'
         ]
@@ -1168,76 +1168,76 @@ const enSections: Record<PortalSectionKey, PortalSectionData> = {
           'en',
           'products',
           'Equipment Catalog',
-          'The current public catalog does not expose model-level product records, so this page keeps the eight verified product categories and explains each direction without inventing SKUs.',
-          ['8 Public Categories', 'Equipment Directions', 'Scenario Matching']
+          'The product center is organized into eight equipment directions so customers can review applications and move quickly into project discussion.',
+          ['8 Product Directions', 'Equipment Overview', 'Scenario Matching']
         ),
-        summary: 'The current catalog is derived from verified product categories, rental materials, and company capabilities, preserving all eight public categories before any model list is published.',
+        summary: 'The product center covers hydraulic power, bolting, lifting, pipeline and flange work, on-site machining, wind O&M, combined product demand, and custom machinery.',
         items: productItemsEn,
-        pager: 'All eight public product categories are now connected; model-level details will be added only after verified records are available'
+        pager: 'All eight product directions are connected; model and configuration details can be confirmed per project'
       },
       pump: {
         kind: 'grid',
         title: 'Hydraulic Power Units',
         sourcePageUrl: officialPages.rentalService,
-        summary: 'The public catalog keeps a Hydraulic Power Units category, but no model list is currently exposed. This page explains the verified hydraulic-power direction only.',
+        summary: 'This section focuses on hydraulic-power support for field pressure supply, multi-tool operation, and engineering execution.',
         items: productItemsEn.filter((item) => item.title.includes('Hydraulic Power')),
-        pager: 'Hydraulic Power Units category connected with verified direction notes'
+        pager: 'Hydraulic power direction connected with project-based model confirmation'
       },
       bolting: {
         kind: 'grid',
         title: 'Bolting Engineering',
         sourcePageUrl: officialPages.rentalService,
-        summary: 'Bolting engineering is explicitly listed in the public product and rental materials.',
+        summary: 'Suitable for bolting preload, removal, and maintenance work with matching hydraulic torque and tensioning solutions.',
         items: productItemsEn.filter((item) => item.title.includes('Bolting')),
-        pager: 'Organized from verified public equipment directions'
+        pager: 'Organized around bolting scenarios with project-based configuration confirmation'
       },
       lifting: {
         kind: 'grid',
         title: 'Lifting and Positioning',
         sourcePageUrl: officialPages.rentalService,
-        summary: 'Public materials explicitly reference cylinders, synchronous lifting systems, and 3D adjustment systems in this category.',
+        summary: 'Suitable for lifting, synchronous positioning, and alignment work with cylinders, synchronous lifting systems, and 3D adjustment systems.',
         items: productItemsEn.filter((item) => item.title.includes('Lifting')),
-        pager: 'Organized from verified public equipment directions'
+        pager: 'Organized around lifting scenarios with project-based configuration confirmation'
       },
       pipe: {
         kind: 'grid',
         title: 'Pipeline and Flange',
         sourcePageUrl: officialPages.rentalService,
-        summary: 'Pipe beveling, flange facing, and valve grinding equipment are explicitly referenced in public materials.',
+        summary: 'Designed for pipeline maintenance and flange machining with beveling, flange-facing, and valve-grinding equipment.',
         items: productItemsEn.filter((item) => item.title.includes('Pipeline')),
-        pager: 'Organized from verified public equipment directions'
+        pager: 'Organized around pipeline scenarios with project-based configuration confirmation'
       },
       machining: {
         kind: 'grid',
         title: 'On-site Machining',
         sourcePageUrl: officialPages.rentalService,
-        summary: 'Portable boring and milling equipment are listed in public materials for on-site machining scenarios.',
+        summary: 'Suitable for field boring, milling, and repair-machining work with portable machining equipment and on-site support.',
         items: productItemsEn.filter((item) => item.title.includes('Machining')),
-        pager: 'Organized from verified public equipment directions'
+        pager: 'Organized around machining scenarios with project-based configuration confirmation'
       },
       wind: {
         kind: 'grid',
         title: 'Wind O&M Engineering',
         sourcePageUrl: officialPages.rentalService,
-        summary: 'Wind-power maintenance is preserved as its own category in the public catalog and remains available as a verified engineering direction.',
+        summary: 'Focused on turbine maintenance and gearbox service with wind O&M equipment and related field support.',
         items: productItemsEn.filter((item) => item.title.includes('Wind O&M')),
-        pager: 'Organized from verified public equipment directions'
+        pager: 'Organized around wind O&M scenarios with project-based configuration confirmation'
       },
       other: {
         kind: 'grid',
         title: 'Other Products',
         sourcePageUrl: officialPages.rentalService,
-        summary: 'The public catalog keeps an Other Products category, but no standalone rows are currently exposed. The new site preserves this category as a general intake bucket.',
+        summary: 'This section works as a general entry for cross-category equipment, packaged support, and combined delivery demand.',
         items: productItemsEn.filter((item) => item.title.includes('Other Product')),
-        pager: 'Category preserved until verified public details are available'
+        pager: 'Kept as a general intake category for broader project demand'
       },
       custom: {
         kind: 'grid',
         title: 'Custom Machinery',
         sourcePageUrl: officialPages.aboutProfile,
-        summary: 'Public company materials state capability in custom machinery manufacturing and automation equipment.',
+        summary: 'Supports custom machinery manufacturing and automation-equipment development based on project conditions.',
         items: productItemsEn.filter((item) => item.title.includes('Custom Machinery')),
-        pager: 'Organized from verified public equipment directions'
+        pager: 'Organized around custom manufacturing capability and project consultation'
       }
     }
   },
@@ -1262,7 +1262,7 @@ const enSections: Record<PortalSectionKey, PortalSectionData> = {
           ['Field Service', 'Service Team', 'Process Control']
         ),
         paragraphs: [
-          'Public field-service materials describe a dedicated engineering service department with trained personnel and organized service teams.',
+          'The engineering service team provides trained personnel and coordinated field support for project execution and maintenance work.',
           'It emphasizes procedural service workflow, standardized operation, professional repair work, and standardized quality management.',
           'The team is positioned to deliver both on-site service and scenario-specific solution customization.'
         ],
@@ -1274,7 +1274,7 @@ const enSections: Record<PortalSectionKey, PortalSectionData> = {
         title: 'Rental Services',
         sourcePageUrl: officialPages.rentalService,
         paragraphs: [
-          'Public rental materials state that Hytorist offers equipment rental to reduce customer cost and support diverse project demand.',
+          'Hytorist offers equipment rental to reduce project cost and support a wide range of engineering demand.',
           'It explicitly lists bolting engineering, lifting and positioning, pipeline and flange work, on-site machining, and wind-power maintenance as rental directions.',
           'Training and operational guidance can be provided together with the rented equipment.'
         ]
@@ -1306,74 +1306,74 @@ const enSections: Record<PortalSectionKey, PortalSectionData> = {
           'en',
           'cases',
           'Application Cases',
-          'The current public application pages do not expose case-level records, so this page keeps the nine verified categories and explains each one without inventing project entries.',
-          ['9 Public Categories', 'Scenario Entry Points', 'Project Coordination']
+          'Application cases are organized into nine engineering scenarios so visitors can review service directions and move into project discussion.',
+          ['9 Application Scenarios', 'Scenario Entry Points', 'Project Coordination']
         ),
         items: caseItemsEn,
-        pager: 'All nine public application categories are now connected; case-level details will be added only after verified records are available'
+        pager: 'All nine application scenarios are connected; project details can be shared during follow-up communication'
       },
       bolting: {
         kind: 'grid',
         title: 'Bolting Engineering',
-        summary: 'The public application catalog keeps a Bolting Engineering category, but no case rows are currently exposed. The new site preserves it as a scenario entry.',
+        summary: 'Focused on bolting-engineering scenarios and ready for deeper discussion on equipment and implementation plans.',
         items: caseItemsEn.filter((item) => item.title === 'Bolting Engineering'),
-        pager: 'Category preserved until verified public case details are available'
+        pager: 'This scenario entry stays available for project discussion'
       },
       lifting: {
         kind: 'grid',
         title: 'Lifting and Positioning',
-        summary: 'The public application catalog keeps a Lifting and Positioning category, but no case rows are currently exposed. The new site preserves it as a scenario entry.',
+        summary: 'Focused on lifting and positioning scenarios and ready for deeper discussion on equipment and implementation plans.',
         items: caseItemsEn.filter((item) => item.title === 'Lifting and Positioning'),
-        pager: 'Category preserved until verified public case details are available'
+        pager: 'This scenario entry stays available for project discussion'
       },
       wind: {
         kind: 'grid',
         title: 'Wind O&M Engineering',
-        summary: 'The public application catalog keeps a Wind O&M Engineering category, but no case rows are currently exposed. The new site preserves it as a scenario entry.',
+        summary: 'Focused on wind O&M scenarios and ready for deeper discussion on equipment and implementation plans.',
         items: caseItemsEn.filter((item) => item.title === 'Wind O&M Engineering'),
-        pager: 'Category preserved until verified public case details are available'
+        pager: 'This scenario entry stays available for project discussion'
       },
       pipeline: {
         kind: 'grid',
         title: 'Pipeline and Flange',
-        summary: 'The public application catalog keeps a Pipeline and Flange category, but no case rows are currently exposed. The new site preserves it as a scenario entry.',
+        summary: 'Focused on pipeline and flange scenarios and ready for deeper discussion on equipment and implementation plans.',
         items: caseItemsEn.filter((item) => item.title === 'Pipeline and Flange'),
-        pager: 'Category preserved until verified public case details are available'
+        pager: 'This scenario entry stays available for project discussion'
       },
       machining: {
         kind: 'grid',
         title: 'On-site Machining',
-        summary: 'The public application catalog keeps an On-site Machining category, but no case rows are currently exposed. The new site preserves it as a scenario entry.',
+        summary: 'Focused on on-site machining scenarios and ready for deeper discussion on equipment and implementation plans.',
         items: caseItemsEn.filter((item) => item.title === 'On-site Machining'),
-        pager: 'Category preserved until verified public case details are available'
+        pager: 'This scenario entry stays available for project discussion'
       },
       energy: {
         kind: 'grid',
         title: 'Energy Saving and Environmental',
-        summary: 'The public application catalog keeps an Energy Saving and Environmental category, but no case rows are currently exposed. The new site preserves it as a scenario entry.',
+        summary: 'Focused on energy-saving and environmental scenarios and ready for deeper discussion on equipment and implementation plans.',
         items: caseItemsEn.filter((item) => item.title === 'Energy Saving and Environmental'),
-        pager: 'Category preserved until verified public case details are available'
+        pager: 'This scenario entry stays available for project discussion'
       },
       other: {
         kind: 'grid',
         title: 'Other Categories',
-        summary: 'The public application catalog keeps an Other Categories section, but no case rows are currently exposed. The new site preserves it as a scenario entry.',
+        summary: 'Focused on broader integrated scenarios and ready for deeper discussion on equipment and implementation plans.',
         items: caseItemsEn.filter((item) => item.title === 'Other Categories'),
-        pager: 'Category preserved until verified public case details are available'
+        pager: 'This scenario entry stays available for project discussion'
       },
       custom: {
         kind: 'grid',
         title: 'Custom Machinery',
-        summary: 'The public application catalog keeps a Custom Machinery category, but no case rows are currently exposed. The new site preserves it as a scenario entry.',
+        summary: 'Focused on custom-machinery scenarios and ready for deeper discussion on equipment and implementation plans.',
         items: caseItemsEn.filter((item) => item.title === 'Custom Machinery'),
-        pager: 'Category preserved until verified public case details are available'
+        pager: 'This scenario entry stays available for project discussion'
       },
       users: {
         kind: 'grid',
         title: 'Our Users',
-        summary: 'The public application catalog keeps an Our Users section, but no public user list is currently exposed. The new site preserves it as a category entry.',
+        summary: 'This section supports communication around served industries, partner scenarios, and broader project demand.',
         items: caseItemsEn.filter((item) => item.title === 'Our Users'),
-        pager: 'Category preserved until verified public case details are available'
+        pager: 'This category stays available for project discussion'
       }
     }
   },
@@ -1400,7 +1400,7 @@ const enSections: Record<PortalSectionKey, PortalSectionData> = {
           ['Technical Support', '24H Response', 'Service Coverage']
         ),
         paragraphs: [
-          'Public support materials state that the company operates under ISO9001 and maintains a dedicated after-sales service department.',
+          'The company operates under ISO9001 and maintains a dedicated after-sales service team.',
           'Its service scope includes pre-sales technical support, training, repair, installation, commissioning, and customer follow-up.',
           'The public service commitment includes a 2-hour response window and a 24-hour on-site dispatch path for difficult failures.'
         ]
@@ -1410,7 +1410,7 @@ const enSections: Record<PortalSectionKey, PortalSectionData> = {
         title: 'Training',
         sourcePageUrl: officialPages.training,
         paragraphs: [
-          'Public training materials break training into theory, operation, and maintenance modules.',
+          'Training is organized into theory, operation, and maintenance modules.',
           'It explicitly mentions post-training assessment and issuing certificates to qualified participants.'
         ]
       },
@@ -1419,7 +1419,7 @@ const enSections: Record<PortalSectionKey, PortalSectionData> = {
         title: 'Trial',
         sourcePageUrl: officialPages.trial,
         paragraphs: [
-          'The current public materials provide only a short note for trial service, stating that product demonstration and trial support are available on request.',
+          'Product demonstration and trial support are available on request so customers can confirm suitability before project rollout.',
           'Customers are asked to contact the company directly for further arrangement.'
         ]
       },
@@ -1428,8 +1428,8 @@ const enSections: Record<PortalSectionKey, PortalSectionData> = {
         title: 'Downloads',
         sourcePageUrl: officialPages.downloads,
         paragraphs: [
-          'The public download-center page does not currently return valid file records.',
-          'The new site therefore keeps the section structure in place and waits for verified downloadable files before publishing them.'
+          'The download center is intended for files, parameter packs, and supporting documents.',
+          'Customers can use the contact or inquiry flow to request currently available materials.'
         ]
       }
     }
@@ -1484,7 +1484,7 @@ const enSections: Record<PortalSectionKey, PortalSectionData> = {
           ['Talent Strategy', 'Role System', 'Growth Framework']
         ),
         paragraphs: [
-          'Public talent-strategy materials frame people as the company’s growth engine and emphasize a long-term people-first management system.',
+          'The talent strategy frames people as the company’s growth engine and emphasizes a long-term people-first management system.',
           'It highlights merit-based selection, fair competition, role matching, tracking and mentoring, professional training, and growth through practical project work.',
           'Compensation, incentives, and career-development mechanisms are positioned around responsibility, execution, teamwork, and continuous improvement.'
         ]
@@ -1494,8 +1494,8 @@ const enSections: Record<PortalSectionKey, PortalSectionData> = {
         title: 'Open Positions',
         sourcePageUrl: officialPages.jobs,
         paragraphs: [
-          'Public recruitment materials ask applicants to send resumes to hr@hytorist.com with a recent photo, expected salary, and an email subject formatted as “position + name”.',
-          'The publicly listed roles include mechanical design and R&D engineers, service and maintenance engineers, and sales engineers or managers.',
+          'Applicants are asked to send resumes to hr@hytorist.com with a recent photo, expected salary, and an email subject formatted as “position + name”.',
+          'The listed roles include mechanical design and R&D engineers, service and maintenance engineers, and sales engineers or managers.',
           'The role descriptions emphasize mechanical knowledge, CAD and SolidWorks capability, office software, communication skills, and travel adaptability.'
         ]
       },
@@ -1504,8 +1504,8 @@ const enSections: Record<PortalSectionKey, PortalSectionData> = {
         title: 'Employee Life',
         sourcePageUrl: officialPages.staff,
         paragraphs: [
-          'Public materials keep an employee-life section, but the current page does not provide body content.',
-          'The new site keeps the section structure and will publish verified employee or culture materials once they are available.'
+          'This section will continue to expand with team activities, employee growth, and culture-related content.',
+          'Visitors can also use the news and contact pages to learn more about the team and company culture.'
         ]
       }
     }
