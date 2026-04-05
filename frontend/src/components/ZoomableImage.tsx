@@ -1,5 +1,6 @@
 import { type ImgHTMLAttributes, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
+import { resolveOfficialAssetUrl } from '../content/officialAssetMap'
 
 interface ZoomableImageProps extends ImgHTMLAttributes<HTMLImageElement> {
   wrapperClassName?: string
@@ -32,7 +33,8 @@ const ZoomableImage = ({
 }: ZoomableImageProps) => {
   const [open, setOpen] = useState(false)
   const [actualSize, setActualSize] = useState(false)
-  const canPreview = typeof src === 'string' && src.trim().length > 0
+  const resolvedSrc = typeof src === 'string' ? resolveOfficialAssetUrl(src) : src
+  const canPreview = typeof resolvedSrc === 'string' && resolvedSrc.trim().length > 0
   const imageCaption = caption || alt || previewLabel
   const dialogRef = useRef<HTMLDivElement | null>(null)
   const closeButtonRef = useRef<HTMLButtonElement | null>(null)
@@ -139,7 +141,7 @@ const ZoomableImage = ({
       <div className={`group relative ${wrapperClassName}`}>
         <img
           {...imgProps}
-          src={src}
+          src={resolvedSrc}
           alt={alt}
           className={`${className} ${canPreview ? 'cursor-zoom-in' : ''}`.trim()}
           onClick={() => {
@@ -199,7 +201,7 @@ const ZoomableImage = ({
                   </button>
                   {canPreview && (
                     <a
-                      href={src}
+                      href={resolvedSrc}
                       target="_blank"
                       rel="noreferrer"
                       className="inline-flex min-h-[38px] flex-1 items-center justify-center rounded-full border border-[#d7cfbf] bg-white/80 px-3 py-1.5 text-[12px] font-semibold text-[#26313d] transition-colors hover:bg-white sm:min-h-[36px] sm:flex-none"
@@ -222,7 +224,7 @@ const ZoomableImage = ({
               <div className="bg-[linear-gradient(180deg,#f7f2e9,#efe7d9)] p-3 sm:p-4">
                 <div ref={imageScrollRef} className="max-h-[78vh] overflow-auto rounded-[18px] bg-[#f4eee2]">
                   <img
-                    src={src}
+                    src={resolvedSrc}
                     alt={alt}
                     onDoubleClick={() => setActualSize((current) => !current)}
                     className={

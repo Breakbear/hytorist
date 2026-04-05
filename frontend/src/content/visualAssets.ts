@@ -1,7 +1,9 @@
+import { officialImageAssets } from './officialAssetMap'
+
 export const visualAssets = {
-  factoryFloor: 'http://www.hytorist.com/UploadFiles/201571033051350.png',
-  digitalScene: 'http://www.hytorist.com/UploadFiles/202322316923919.png',
-  windAssembly: 'http://www.hytorist.com/UploadFiles/2021612232830330.jpg',
+  factoryFloor: officialImageAssets.factoryFloor,
+  digitalScene: officialImageAssets.digitalScene,
+  windAssembly: officialImageAssets.windAssembly,
   workshop:
     'https://images.unsplash.com/photo-1581090464777-f3220bbe1b8b?auto=format&fit=crop&w=1400&q=80',
   office:

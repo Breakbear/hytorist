@@ -1,5 +1,6 @@
 ﻿import type { Locale } from '../i18n/types'
 import { portalHeroVisuals, visualAssets } from './visualAssets'
+import { officialImageAssets } from './officialAssetMap'
 
 export type PortalSectionKey =
   | 'about'
@@ -134,9 +135,9 @@ const officialPages = {
   message: `${officialBaseUrl}/about.asp?id=4`
 }
 const officialAssets = {
-  certificate: `${officialBaseUrl}/UploadFiles/201578185652222.jpg`,
-  manufacturing: `${officialBaseUrl}/UploadFiles/201571033051350.png`,
-  wechatQr: `${officialBaseUrl}/UploadFiles/20202182394680.png`
+  certificate: officialImageAssets.certificate,
+  manufacturing: officialImageAssets.factoryFloor,
+  wechatQr: officialImageAssets.wechatQr
 }
 
 const productItemsZh: PortalGridItem[] = [
@@ -693,7 +694,7 @@ const zhSections: Record<PortalSectionKey, PortalSectionData> = {
           '在以往专业现场服务过程中，公司形成了工程服务程序化、技术操作规范化、维修工作专业化、质量管理标准化的一套服务模式。',
           '专业化的服务设备与经验丰富的服务团队，不但提供高质量现场服务，也可面向具体工况提供定制解决方案。'
         ],
-        image: `${officialBaseUrl}/UploadFiles/20157262092864.png`,
+        image: officialImageAssets.fieldService,
         imageAlt: '工程服务现场'
       },
       rental: {
@@ -1266,7 +1267,7 @@ const enSections: Record<PortalSectionKey, PortalSectionData> = {
           'It emphasizes procedural service workflow, standardized operation, professional repair work, and standardized quality management.',
           'The team is positioned to deliver both on-site service and scenario-specific solution customization.'
         ],
-        image: `${officialBaseUrl}/UploadFiles/20157262092864.png`,
+        image: officialImageAssets.fieldService,
         imageAlt: 'Field service'
       },
       rental: {
