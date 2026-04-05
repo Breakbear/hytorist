@@ -809,7 +809,7 @@ const renderArticle = (locale: Locale, page: Extract<PortalPageData, { kind: 'ar
               previewLabel={getImagePreviewLabel(locale)}
               closeLabel={getImageCloseLabel(locale)}
               wrapperClassName="h-full w-full"
-              className="day-section-image h-full w-full object-cover"
+              className="day-section-image mobile-content-image h-full w-full object-cover"
               loading="lazy"
             />
           </div>
@@ -926,7 +926,7 @@ const renderGrid = (locale: Locale, page: Extract<PortalPageData, { kind: 'grid'
                   previewLabel={getImagePreviewLabel(locale)}
                   closeLabel={getImageCloseLabel(locale)}
                   wrapperClassName="h-full w-full"
-                  className="day-section-image h-full w-full object-cover transition-transform duration-700 hover:scale-105"
+                  className="day-section-image mobile-content-image h-full w-full object-cover transition-transform duration-700 hover:scale-105"
                   loading="lazy"
                 />
               </div>
@@ -1033,7 +1033,7 @@ const renderContact = (locale: Locale, page: Extract<PortalPageData, { kind: 'co
         </p>
         {page.ctaLabel && (
           <div className="mt-8">
-            <Link to={buildLocalizedPath(locale, 'inquiry')} className="btn-primary">
+            <Link to={buildLocalizedPath(locale, 'inquiry')} className="btn-primary w-full sm:w-auto">
               {page.ctaLabel}
             </Link>
           </div>
@@ -1056,7 +1056,7 @@ const renderContact = (locale: Locale, page: Extract<PortalPageData, { kind: 'co
                 previewLabel={getImagePreviewLabel(locale)}
                 closeLabel={getImageCloseLabel(locale)}
                 wrapperClassName="h-full w-full"
-                className="day-section-image h-full w-full object-cover"
+                className="day-section-image mobile-content-image h-full w-full object-cover"
                 loading="lazy"
               />
             </div>
@@ -1378,6 +1378,7 @@ const PortalSectionView = ({ locale, sectionKey }: PortalSectionViewProps) => {
             <ZoomableImage
               src={activeHero.image}
               alt={activeHero.title}
+              showHint={false}
               hintVisibility="always"
               previewLabel={getImagePreviewLabel(locale)}
               closeLabel={getImageCloseLabel(locale)}
@@ -1390,16 +1391,16 @@ const PortalSectionView = ({ locale, sectionKey }: PortalSectionViewProps) => {
 
             <div className="section-wrap relative grid min-h-[360px] grid-rows-[1fr_auto] gap-6 pb-8 pt-[7.75rem] text-[#1f252d] sm:min-h-[560px] sm:gap-12 sm:pb-14 sm:pt-40 lg:min-h-[600px] lg:gap-[3.25rem] lg:pb-[3.75rem] lg:pt-52 xl:min-h-[640px] xl:gap-14 xl:pb-16 xl:pt-56">
               <div className="flex items-center">
-                <div className="hero-panel max-w-[34rem] lg:max-w-[54rem] xl:max-w-[60rem]">
+                <div className="hero-panel w-full max-w-none lg:max-w-[54rem] xl:max-w-[60rem]">
                   <p className="eyebrow">{section.navLabel}</p>
                   <h1
-                    className={`mt-6 hero-display hero-display-section text-[#1f252d] ${
+                    className={`mt-6 max-w-[calc(100vw-2rem)] hero-display hero-display-section text-[#1f252d] sm:max-w-none ${
                       locale === 'zh' ? 'hero-title-nowrap' : ''
                     }`}
                   >
                     {activeHero.title}
                   </h1>
-                  <p className="hero-copy mt-6 max-w-[28rem] text-[0.98rem] leading-7 text-[#4f5a67] sm:mt-7 sm:max-w-[54rem] sm:text-[1.2rem] sm:leading-9 xl:text-[1.24rem]">
+                  <p className="hero-copy mt-6 max-w-[calc(100vw-2rem)] text-[0.98rem] leading-7 text-[#4f5a67] sm:mt-7 sm:max-w-[54rem] sm:text-[1.2rem] sm:leading-9 xl:text-[1.24rem]">
                     {activeHeroSubtitle}
                   </p>
 

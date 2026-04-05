@@ -386,8 +386,8 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
   const imagePreviewLabel = isZh ? '查看原图' : 'View Full Image'
   const imageCloseLabel = isZh ? '关闭原图' : 'Close Image'
   const heroLabelClass = 'label-accent text-[13px] sm:text-[14px]'
-  const heroPrimaryButtonClass = 'btn-primary min-h-[60px] w-full px-9 text-[15px] sm:min-h-[64px] sm:w-auto sm:text-[16px]'
-  const heroSecondaryButtonClass = 'btn-secondary min-h-[60px] w-full px-9 text-[15px] sm:min-h-[64px] sm:w-auto sm:text-[16px]'
+  const heroPrimaryButtonClass = 'btn-primary min-h-[56px] w-full px-6 text-[14px] leading-[1.25] sm:min-h-[64px] sm:w-auto sm:px-9 sm:text-[16px]'
+  const heroSecondaryButtonClass = 'btn-secondary min-h-[56px] w-full px-6 text-[14px] leading-[1.25] sm:min-h-[64px] sm:w-auto sm:px-9 sm:text-[16px]'
   const activeHeroGuide = (() => {
     const activeHeroId = heroSlides[activeSlide]?.id
     if (activeHeroId === 'capability') {
@@ -494,18 +494,18 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
 
         <div className="relative section-wrap grid min-h-[100svh] grid-rows-[1fr_auto] gap-6 pb-8 pt-[7.25rem] sm:min-h-[92svh] sm:gap-12 sm:pb-[4.5rem] sm:pt-40 lg:gap-14 lg:pb-16 lg:pt-56 xl:min-h-[100svh] xl:gap-16 xl:pb-20 xl:pt-64">
           <div className="flex items-center">
-            <div className="hero-panel max-w-[20.5rem] py-6 sm:max-w-[52rem] sm:py-12 lg:max-w-[54rem] xl:max-w-[58rem] xl:py-16">
+            <div className="hero-panel w-full max-w-none py-6 sm:max-w-[52rem] sm:py-12 lg:max-w-[54rem] xl:max-w-[58rem] xl:py-16">
               <p className={heroLabelClass}>
                 {heroSlides[activeSlide]?.label}
               </p>
               <h1
-                className={`mt-6 max-w-[15.5rem] hero-display hero-display-home text-[#1f252d] sm:max-w-none ${
+                className={`mt-6 max-w-[calc(100vw-4.75rem)] hero-display hero-display-home text-[#1f252d] sm:max-w-none ${
                   isZh ? 'hero-title-nowrap' : ''
                 }`}
               >
                 {heroSlides[activeSlide]?.title}
               </h1>
-              <p className="hero-copy mt-6 max-w-[17.5rem] text-[0.98rem] leading-7 text-[#4e5966] sm:mt-8 sm:max-w-[46rem] sm:text-[1.2rem] sm:leading-9 xl:max-w-[50rem] xl:text-[1.26rem]">
+              <p className="hero-copy mt-6 max-w-[calc(100vw-4rem)] text-[0.98rem] leading-7 text-[#4e5966] sm:mt-8 sm:max-w-[46rem] sm:text-[1.2rem] sm:leading-9 xl:max-w-[50rem] xl:text-[1.26rem]">
                 {heroSlides[activeSlide]?.description}
               </p>
               <p className="mt-5 hidden max-w-[48rem] text-[0.96rem] leading-8 text-[#5d6773] sm:block sm:text-[1.02rem] xl:max-w-[52rem]">

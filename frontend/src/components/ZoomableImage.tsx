@@ -34,6 +34,9 @@ const ZoomableImage = ({
   const [open, setOpen] = useState(false)
   const [actualSize, setActualSize] = useState(false)
   const resolvedSrc = typeof src === 'string' ? resolveOfficialAssetUrl(src) : src
+  const wrapperBaseClass = /\b(?:absolute|fixed|sticky)\b/.test(wrapperClassName)
+    ? 'group'
+    : 'group relative'
   const canPreview = typeof resolvedSrc === 'string' && resolvedSrc.trim().length > 0
   const imageCaption = caption || alt || previewLabel
   const dialogRef = useRef<HTMLDivElement | null>(null)
@@ -138,7 +141,7 @@ const ZoomableImage = ({
 
   return (
     <>
-      <div className={`group relative ${wrapperClassName}`}>
+      <div className={`${wrapperBaseClass} ${wrapperClassName}`.trim()}>
         <img
           {...imgProps}
           src={resolvedSrc}

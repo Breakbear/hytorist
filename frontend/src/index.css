@@ -487,7 +487,16 @@ h6 {
     text-wrap: pretty;
   }
 
+  html[lang='zh-CN'] .hero-copy {
+    word-break: normal;
+    overflow-wrap: anywhere;
+  }
+
   .summary-chip {
+    max-width: 100%;
+    justify-content: center;
+    white-space: normal;
+    text-align: center;
     padding: 0.62rem 0.88rem;
     font-size: 13px;
   }
@@ -498,8 +507,22 @@ h6 {
 
   .btn-primary,
   .btn-secondary {
+    max-width: 100%;
+    min-width: 0;
     border-radius: 14px;
+    padding-inline: 1rem;
     letter-spacing: 0.045em;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    text-align: center;
+    text-wrap: balance;
+  }
+
+  .mobile-content-image {
+    object-fit: contain;
+    background: #efe6d7;
+    padding: 0.75rem;
   }
 
   .art-image-frame {
@@ -570,9 +593,9 @@ h6 {
   .btn-primary,
   .btn-secondary {
     min-height: 50px;
-    padding: 0.8rem 1.15rem;
-    font-size: 14px;
-    letter-spacing: 0.085em;
+    padding: 0.78rem 0.95rem;
+    font-size: 13.5px;
+    letter-spacing: 0.06em;
   }
 
   .eyebrow {
