@@ -97,29 +97,31 @@ const Footer = ({ locale, copy }: FooterProps) => {
         'We provide hydraulic tools, engineering services, and project support. Contact us through inquiry or direct channels for follow-up.')
   const footerBlockTitleClass = 'label-accent text-[14px]'
   const footerBlockListClass = 'mt-5 space-y-3 text-[1rem] text-[#4d5763] sm:space-y-4 sm:text-[1.04rem]'
+  const footerSectionCardClass =
+    'rounded-[22px] bg-[rgba(255,255,255,0.48)] px-5 py-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.5)] sm:bg-transparent sm:px-0 sm:py-0 sm:shadow-none'
 
   return (
-    <footer className="mt-20 pb-8 text-[#1f252d] sm:mt-24 xl:mt-28">
+    <footer className="mt-16 pb-8 text-[#1f252d] sm:mt-24 xl:mt-28">
       <div className="section-wrap">
-        <div className="overflow-hidden border-t border-[#d7cfbf] px-2 py-11 sm:px-0 sm:py-16 xl:py-[4.8rem]">
-          <div className="grid gap-10 sm:gap-12 md:grid-cols-2 xl:grid-cols-[1.14fr_0.56fr_0.56fr_0.74fr] xl:items-start">
-            <div className="max-w-2xl">
+        <div className="overflow-hidden border-t border-[#d7cfbf] px-0 py-9 sm:px-0 sm:py-16 xl:py-[4.8rem]">
+          <div className="grid gap-8 sm:gap-12 lg:grid-cols-[1.08fr_0.92fr] lg:items-start">
+            <div className="max-w-2xl rounded-[28px] bg-[rgba(255,255,255,0.42)] px-5 py-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.56)] sm:bg-transparent sm:px-0 sm:py-0 sm:shadow-none">
               <p className="eyebrow">{locale === 'zh' ? '工业服务网络' : 'Industrial Service Network'}</p>
               <h2 className="section-title-lg mt-4 max-w-[32rem]">
                 {copy.header.brandName}
               </h2>
-              <p className="brand-tagline mt-4 text-[13px]">
+              <p className="brand-tagline mt-3 text-[12px] sm:mt-4 sm:text-[13px]">
                 {copy.header.brandTagline}
               </p>
-              <p className="section-copy section-copy-compact mt-7 max-w-none copy-clamp-4">
+              <p className="section-copy section-copy-compact mt-6 max-w-none copy-clamp-4">
                 {footerAboutText}
               </p>
 
-              <div className="mt-9 flex flex-wrap gap-3">
+              <div className="mt-7 flex flex-wrap gap-2.5 sm:mt-9 sm:gap-3">
                 {sectorItems.map((item) => (
                   <span
                     key={item}
-                    className="rounded-full border border-[#d7cfbf]/75 bg-[rgba(250,245,236,0.72)] px-3.5 py-2 text-[13px] font-semibold text-[#3b4652] sm:px-4 sm:py-2.5 sm:text-[14px]"
+                    className="rounded-full border border-[#d7cfbf]/75 bg-[rgba(250,245,236,0.72)] px-3 py-1.5 text-[12px] font-semibold text-[#3b4652] sm:px-4 sm:py-2.5 sm:text-[14px]"
                   >
                     {item}
                   </span>
@@ -134,80 +136,84 @@ const Footer = ({ locale, copy }: FooterProps) => {
 
               <Link
                 to={buildLocalizedPath(locale, 'inquiry')}
-                className="btn-primary mt-8 inline-flex w-full sm:w-auto"
+                className="btn-primary mt-7 inline-flex w-full sm:mt-8 sm:w-auto"
               >
                 {copy.header.quoteButton}
               </Link>
             </div>
 
-            <div>
-              <h3 className={footerBlockTitleClass}>
-                {copy.footer.quickLinksTitle}
-              </h3>
-              <ul className={footerBlockListClass}>
-                {quickLinkKeys.map((key) => (
-                  <li key={key}>
-                    <Link
-                      to={buildLocalizedPath(locale, key)}
-                      className="transition-colors hover:text-[#1f252d]"
-                    >
-                      {copy.footer.quickLinks[key]}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <div className="grid gap-4 sm:grid-cols-2 lg:gap-6 xl:grid-cols-[0.92fr_0.92fr_1.08fr]">
+              <div className={footerSectionCardClass}>
+                <h3 className={footerBlockTitleClass}>
+                  {copy.footer.quickLinksTitle}
+                </h3>
+                <ul className={footerBlockListClass}>
+                  {quickLinkKeys.map((key) => (
+                    <li key={key}>
+                      <Link
+                        to={buildLocalizedPath(locale, key)}
+                        className="transition-colors hover:text-[#1f252d]"
+                      >
+                        {copy.footer.quickLinks[key]}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
 
-            <div>
-              <h3 className={footerBlockTitleClass}>
-                {copy.footer.productsTitle}
-              </h3>
-              <ul className={footerBlockListClass}>
-                {footerProductItems.map((item) => (
-                  <li key={item}>
-                    <Link
-                      to={buildLocalizedPath(locale, 'products')}
-                      className="transition-colors hover:text-[#1f252d]"
-                    >
+              <div className={footerSectionCardClass}>
+                <h3 className={footerBlockTitleClass}>
+                  {copy.footer.productsTitle}
+                </h3>
+                <ul className={footerBlockListClass}>
+                  {footerProductItems.map((item, index) => (
+                    <li key={item} className={index > 2 ? 'hidden sm:list-item' : ''}>
+                      <Link
+                        to={buildLocalizedPath(locale, 'products')}
+                        className="transition-colors hover:text-[#1f252d]"
+                      >
+                        {item}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className={`${footerSectionCardClass} sm:col-span-2 xl:col-span-1`}>
+                <h3 className={footerBlockTitleClass}>
+                  {copy.footer.contactTitle}
+                </h3>
+                <ul className={footerBlockListClass}>
+                  {footerContactItems.map((item) => (
+                    <li key={item} className="leading-7 sm:leading-8">
                       {item}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
+                    </li>
+                  ))}
+                </ul>
 
-            <div>
-              <h3 className={footerBlockTitleClass}>
-                {copy.footer.contactTitle}
-              </h3>
-              <ul className={footerBlockListClass}>
-                {footerContactItems.map((item) => (
-                  <li key={item} className="leading-7 sm:leading-8">
-                    {item}
-                  </li>
-                ))}
-              </ul>
+                <div className="art-divider my-5" />
 
-              <div className="art-divider my-5" />
-
-              <h3 className={footerBlockTitleClass}>
-                {locale === 'zh' ? '服务领域' : 'Service Coverage'}
-              </h3>
-              <p className="section-copy section-copy-compact mt-4 max-w-none text-[0.96rem] sm:text-[1rem] copy-clamp-4">
-                {locale === 'zh'
-                  ? footerNarrative?.coverageZh ||
-                    `重点覆盖 ${sectorItems.join('、')} 等工程方向，可按项目需求提供对应方案。`
-                  : footerNarrative?.coverageEn ||
-                    `Coverage focuses on ${sectorItems.join(', ')} with tailored solutions based on project needs.`}
-              </p>
+                <h3 className={footerBlockTitleClass}>
+                  {locale === 'zh' ? '服务领域' : 'Service Coverage'}
+                </h3>
+                <p className="section-copy section-copy-compact mt-4 max-w-none text-[0.96rem] sm:text-[1rem] copy-clamp-4">
+                  {locale === 'zh'
+                    ? footerNarrative?.coverageZh ||
+                      `重点覆盖 ${sectorItems.join('、')} 等工程方向，可按项目需求提供对应方案。`
+                    : footerNarrative?.coverageEn ||
+                      `Coverage focuses on ${sectorItems.join(', ')} with tailored solutions based on project needs.`}
+                </p>
+              </div>
             </div>
           </div>
 
-          <div className="art-divider mt-8 sm:mt-10" />
+          <div className="art-divider mt-7 sm:mt-10" />
 
-          <p className="section-copy section-copy-wide mt-6 max-w-none text-[0.98rem] sm:mt-8 copy-clamp-4">
-            {footerStatement}
-          </p>
+          <div className="mt-6 rounded-[22px] bg-[rgba(255,255,255,0.42)] px-5 py-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.5)] sm:mt-8 sm:bg-transparent sm:px-0 sm:py-0 sm:shadow-none">
+            <p className="section-copy section-copy-wide max-w-none text-[0.98rem] copy-clamp-4">
+              {footerStatement}
+            </p>
+          </div>
 
           <div className="mt-5 flex flex-col gap-2 text-[13px] text-[#7b838f] sm:mt-6 sm:flex-row sm:items-center sm:justify-between">
             <p>{copy.footer.copyright}</p>

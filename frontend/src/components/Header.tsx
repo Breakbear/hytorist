@@ -53,6 +53,7 @@ const Header = ({ locale, copy }: HeaderProps) => {
 
   const phoneNumber =
     copy.footer.contactItems.find((item) => item.includes('+')) ?? '+86 13366668010'
+  const mobileCallLabel = locale === 'zh' ? '拨打热线' : 'Call Hotline'
   const desktopNavLocaleClass = locale === 'zh' ? 'header-nav-item-zh' : 'header-nav-item-en'
   const mobileNavLocaleClass =
     locale === 'zh' ? 'header-mobile-nav-item-zh' : 'header-mobile-nav-item-en'
@@ -135,16 +136,16 @@ const Header = ({ locale, copy }: HeaderProps) => {
 
       <div className="border-b border-[#d7cfbf]/90">
         <div className="section-wrap">
-          <div className="flex h-[98px] items-center justify-between gap-4 sm:h-[104px] xl:h-[112px] 2xl:h-[118px]">
-            <Link to={`/${locale}`} className="flex min-w-0 items-center gap-3 sm:gap-4">
-              <div className="grid h-11 w-11 flex-shrink-0 place-items-center border border-[#d7cfbf] bg-[linear-gradient(145deg,rgba(255,255,255,0.96),rgba(238,230,215,0.88))] text-[#8f672b] shadow-[0_10px_20px_rgba(88,98,112,0.12)] sm:h-12 sm:w-12 2xl:h-14 2xl:w-14">
-                <span className="font-display text-[1.52rem] leading-none sm:text-[1.66rem] 2xl:text-[1.92rem]">H</span>
+          <div className="flex h-[78px] items-center justify-between gap-3 sm:h-[92px] sm:gap-4 xl:h-[112px] 2xl:h-[118px]">
+            <Link to={`/${locale}`} className="flex min-w-0 items-center gap-2.5 sm:gap-4">
+              <div className="grid h-10 w-10 flex-shrink-0 place-items-center rounded-[10px] border border-[#d7cfbf] bg-[linear-gradient(145deg,rgba(255,255,255,0.96),rgba(238,230,215,0.88))] text-[#8f672b] shadow-[0_10px_20px_rgba(88,98,112,0.12)] sm:h-12 sm:w-12 2xl:h-14 2xl:w-14">
+                <span className="font-display text-[1.38rem] leading-none sm:text-[1.66rem] 2xl:text-[1.92rem]">H</span>
               </div>
               <div className="min-w-0">
-                <p className="truncate font-display text-[1.58rem] leading-none text-[#1f252d] sm:text-[1.72rem] 2xl:text-[2.02rem]">
+                <p className="truncate font-display text-[1.34rem] leading-none text-[#1f252d] sm:text-[1.72rem] 2xl:text-[2.02rem]">
                   {copy.header.brandName}
                 </p>
-                <p className="brand-tagline mt-1 truncate text-[11px] 2xl:text-[12px]">
+                <p className="brand-tagline mt-1 hidden truncate text-[11px] sm:block 2xl:text-[12px]">
                   {copy.header.brandTagline}
                 </p>
               </div>
@@ -181,18 +182,18 @@ const Header = ({ locale, copy }: HeaderProps) => {
               </Link>
             </div>
 
-            <div className="flex items-center gap-3 xl:hidden">
+            <div className="flex items-center gap-2 xl:hidden">
               <Link
                 to={switchPath}
                 onClick={() => setStoredLocale(switchTo)}
-                className="machine-nav-utility min-h-[46px] px-3.5 text-[12px]"
+                className="machine-nav-utility min-h-[42px] rounded-[12px] px-3 text-[11px] sm:min-h-[46px] sm:px-3.5 sm:text-[12px]"
               >
                 {copy.header.switchLanguageLabel}
               </Link>
               <button
                 type="button"
                 onClick={() => setMenuOpen((open) => !open)}
-                className="grid h-12 w-12 place-items-center border border-[#d7cfbf] bg-[rgba(255,255,255,0.82)] text-[#1f252d] transition-colors hover:bg-white"
+                className="grid h-[42px] w-[42px] place-items-center rounded-[12px] border border-[#d7cfbf] bg-[rgba(255,255,255,0.82)] text-[#1f252d] transition-colors hover:bg-white sm:h-12 sm:w-12"
                 aria-label={menuOpen ? copy.header.closeMenuLabel : copy.header.openMenuLabel}
                 aria-expanded={menuOpen}
                 aria-controls="mobile-site-menu"
@@ -224,41 +225,56 @@ const Header = ({ locale, copy }: HeaderProps) => {
 
       {menuOpen && (
         <div className="border-b border-[#d7cfbf] bg-[rgba(251,248,242,0.97)] xl:hidden">
-          <div className="section-wrap py-6">
-            <div className="label-muted flex flex-wrap items-center gap-4 border-b border-[#d7cfbf] pb-4 text-[13px]">
-              <a href={`tel:${phoneNumber.replace(/\s+/g, '')}`} className="transition-colors hover:text-[#1f252d]">
-                {phoneNumber}
-              </a>
-            </div>
-            <p className="brand-tagline mt-5 text-[12px]">
-              {copy.header.brandTagline}
-            </p>
+          <div className="section-wrap pb-6 pt-5 sm:pb-7 sm:pt-6">
+            <div className="rounded-[24px] border border-[#ded4c4] bg-[linear-gradient(180deg,rgba(252,248,241,0.94),rgba(243,236,226,0.9))] p-4 shadow-[0_16px_34px_rgba(82,92,106,0.1)] sm:p-5">
+              <div className="border-b border-[#d7cfbf] pb-4">
+                <p className="brand-tagline text-[12px]">
+                  {copy.header.brandTagline}
+                </p>
+                <div className="mt-3 flex flex-wrap items-center gap-3">
+                  <a
+                    href={`tel:${phoneNumber.replace(/\s+/g, '')}`}
+                    className="inline-flex min-h-[40px] items-center rounded-full border border-[#d7cfbf] bg-white/70 px-3.5 text-[13px] font-semibold text-[#45515d]"
+                  >
+                    {phoneNumber}
+                  </a>
+                </div>
+              </div>
 
-            <nav id="mobile-site-menu" className="mt-5 grid gap-3.5">
+              <nav id="mobile-site-menu" className="mt-4 grid grid-cols-2 gap-3">
               {mobileMainNavItems.map((item) => {
                 const active = isActive(item.path)
                 return (
                   <Link
                     key={item.path}
                     to={item.path}
-                    className={`header-mobile-nav-item border-b px-1 pb-4 pt-2 transition-colors ${mobileNavLocaleClass} ${
+                    className={`header-mobile-nav-item flex min-h-[86px] items-end rounded-[18px] border px-4 py-4 transition-all ${mobileNavLocaleClass} ${
                       active
-                        ? 'border-[#c89b45] text-[#8f672b]'
-                        : 'border-[#d7cfbf] text-[#5e6874] hover:text-[#1f252d]'
+                        ? 'border-[#c89b45]/65 bg-[linear-gradient(180deg,rgba(244,230,191,0.76),rgba(255,255,255,0.92))] text-[#8f672b] shadow-[0_14px_28px_rgba(182,141,63,0.14)]'
+                        : 'border-[#dfd6c8] bg-[rgba(255,255,255,0.72)] text-[#55616d] hover:border-[#c89b45]/35 hover:text-[#1f252d]'
                     }`}
                   >
                     {item.label}
                   </Link>
                 )
               })}
-            </nav>
+              </nav>
 
-            <Link
-              to={`/${locale}/inquiry`}
-              className="btn-primary mt-6 min-h-[54px] w-full px-6 text-[14px]"
-            >
-              {copy.header.quoteButton}
-            </Link>
+              <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                <Link
+                  to={`/${locale}/inquiry`}
+                  className="btn-primary min-h-[52px] w-full px-5 text-[13px]"
+                >
+                  {copy.header.quoteButton}
+                </Link>
+                <a
+                  href={`tel:${phoneNumber.replace(/\s+/g, '')}`}
+                  className="btn-secondary min-h-[52px] w-full px-5 text-[13px]"
+                >
+                  {mobileCallLabel}
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       )}

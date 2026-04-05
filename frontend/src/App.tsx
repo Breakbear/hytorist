@@ -73,7 +73,7 @@ const AdminShell = () => {
   return (
     <div className="page-shell min-h-screen flex flex-col">
       <Header locale="en" copy={enCopy} />
-      <main className="flex-grow pt-[8.8rem] sm:pt-[9.4rem] xl:pt-[10.4rem] 2xl:pt-[10.8rem]">
+      <main className="flex-grow pt-[7rem] sm:pt-[7.6rem] xl:pt-[10.4rem] 2xl:pt-[10.8rem]">
         <Admin />
       </main>
       <Footer locale="en" copy={enCopy} />

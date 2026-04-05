@@ -474,6 +474,16 @@ h6 {
     font-size: 13px;
   }
 
+  .content-card {
+    padding: 1.12rem;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    border-radius: 14px;
+    letter-spacing: 0.045em;
+  }
+
   .art-image-frame {
     padding: 8px;
     border-radius: 24px;
@@ -490,12 +500,12 @@ h6 {
 
   .panel,
   .action-panel {
-    border-radius: 22px;
+    border-radius: 20px;
   }
 
   .info-card,
   .art-card {
-    border-radius: 18px;
+    border-radius: 16px;
   }
 }
 
@@ -555,6 +565,16 @@ h6 {
   .machine-nav-utility {
     min-height: 44px;
     font-size: 12px;
+  }
+
+  .header-mobile-nav-item-en {
+    font-size: 17px;
+    letter-spacing: 0.08em;
+  }
+
+  .header-mobile-nav-item-zh {
+    font-size: 17px;
+    letter-spacing: 0.04em;
   }
 
   .art-image-frame {

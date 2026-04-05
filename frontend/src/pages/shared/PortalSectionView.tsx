@@ -1371,10 +1371,10 @@ const PortalSectionView = ({ locale, sectionKey }: PortalSectionViewProps) => {
   const sectionSummaryTags = [section.navLabel, newsArticlePage ? activeMenuLabel : activePage.title]
 
   return (
-    <div className="section-wrap pb-20 pt-5 sm:pt-7 sm:pb-24">
-      <section className="space-y-8">
+    <div className="section-wrap pb-16 pt-3 sm:pt-7 sm:pb-24">
+      <section className="space-y-6 sm:space-y-8">
         <div className="-mx-4 overflow-hidden bg-[#f3eee4] sm:-mx-6 xl:-mx-8 2xl:-mx-10">
-          <div className="relative min-h-[420px] sm:min-h-[560px] xl:min-h-[640px]">
+          <div className="relative min-h-[360px] sm:min-h-[560px] xl:min-h-[640px]">
             <ZoomableImage
               src={activeHero.image}
               alt={activeHero.title}
@@ -1388,9 +1388,9 @@ const PortalSectionView = ({ locale, sectionKey }: PortalSectionViewProps) => {
             <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(251,248,242,0.95)_0%,rgba(251,248,242,0.8)_40%,rgba(251,248,242,0.36)_100%)]" />
             <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(251,248,242,0.18)_0%,rgba(251,248,242,0)_28%,rgba(251,248,242,0.62)_100%)]" />
 
-            <div className="section-wrap relative grid min-h-[420px] grid-rows-[1fr_auto] gap-8 pb-10 pt-36 text-[#1f252d] sm:min-h-[560px] sm:gap-12 sm:pb-14 sm:pt-48 lg:min-h-[600px] lg:gap-[3.25rem] lg:pb-[3.75rem] lg:pt-52 xl:min-h-[640px] xl:gap-14 xl:pb-16 xl:pt-56">
+            <div className="section-wrap relative grid min-h-[360px] grid-rows-[1fr_auto] gap-6 pb-8 pt-[7.75rem] text-[#1f252d] sm:min-h-[560px] sm:gap-12 sm:pb-14 sm:pt-40 lg:min-h-[600px] lg:gap-[3.25rem] lg:pb-[3.75rem] lg:pt-52 xl:min-h-[640px] xl:gap-14 xl:pb-16 xl:pt-56">
               <div className="flex items-center">
-                <div className="hero-panel max-w-[52rem] lg:max-w-[54rem] xl:max-w-[60rem]">
+                <div className="hero-panel max-w-[34rem] lg:max-w-[54rem] xl:max-w-[60rem]">
                   <p className="eyebrow">{section.navLabel}</p>
                   <h1
                     className={`mt-6 hero-display hero-display-section text-[#1f252d] ${
@@ -1399,11 +1399,11 @@ const PortalSectionView = ({ locale, sectionKey }: PortalSectionViewProps) => {
                   >
                     {activeHero.title}
                   </h1>
-                  <p className="hero-copy mt-7 max-w-[54rem] text-[1.08rem] leading-8 text-[#4f5a67] sm:text-[1.2rem] sm:leading-9 xl:text-[1.24rem]">
+                  <p className="hero-copy mt-6 max-w-[28rem] text-[0.98rem] leading-7 text-[#4f5a67] sm:mt-7 sm:max-w-[54rem] sm:text-[1.2rem] sm:leading-9 xl:text-[1.24rem]">
                     {activeHeroSubtitle}
                   </p>
 
-                  <div className="mt-9 flex flex-col gap-3 sm:mt-11 sm:flex-row sm:flex-wrap sm:gap-5">
+                  <div className="mt-8 flex flex-col gap-2.5 sm:mt-11 sm:flex-row sm:flex-wrap sm:gap-5">
                     <Link to={buildLocalizedPath(locale, 'inquiry')} className="btn-primary w-full sm:w-auto">
                       {locale === 'zh' ? '提交项目需求' : 'Submit Requirement'}
                     </Link>
@@ -1414,10 +1414,10 @@ const PortalSectionView = ({ locale, sectionKey }: PortalSectionViewProps) => {
                 </div>
               </div>
 
-              <div className="grid max-w-3xl gap-5 border-t border-[#d7cfbf] pt-6 sm:grid-cols-3 sm:gap-7 sm:pt-7">
+              <div className="grid max-w-3xl grid-cols-3 gap-3 border-t border-[#d7cfbf] pt-5 sm:gap-7 sm:pt-7">
                 {activeHero.metrics.slice(0, 3).map((metric) => (
                   <div key={`${metric.label}-${metric.value}`}>
-                    <p className="font-display text-[2.9rem] leading-none text-[#1f252d] sm:text-[3.2rem]">{metric.value}</p>
+                    <p className="font-display text-[2.15rem] leading-none text-[#1f252d] sm:text-[3.2rem]">{metric.value}</p>
                     <p className="metric-label mt-2 text-[12px]">
                       {metric.label}
                     </p>
@@ -1428,7 +1428,7 @@ const PortalSectionView = ({ locale, sectionKey }: PortalSectionViewProps) => {
           </div>
         </div>
 
-        <div className="-mx-4 overflow-x-auto border-y border-[#d7cfbf] px-4 py-4 sm:-mx-6 sm:px-6 xl:-mx-8 xl:px-8 2xl:-mx-10 2xl:px-10">
+        <div className="-mx-4 overflow-x-auto border-y border-[#d7cfbf] px-4 py-3 sm:-mx-6 sm:px-6 sm:py-4 xl:-mx-8 xl:px-8 2xl:-mx-10 2xl:px-10">
           <nav>
             <div className="machine-nav-shell min-w-max">
               {section.menu.map((menuItem) => {
@@ -1448,9 +1448,9 @@ const PortalSectionView = ({ locale, sectionKey }: PortalSectionViewProps) => {
           </nav>
         </div>
 
-        <div className="grid gap-10 sm:gap-12 xl:grid-cols-[minmax(0,1fr)_280px] 2xl:grid-cols-[minmax(0,1fr)_320px]">
+        <div className="grid gap-8 sm:gap-12 xl:grid-cols-[minmax(0,1fr)_280px] 2xl:grid-cols-[minmax(0,1fr)_320px]">
           <div key={location.pathname} className="animate-fade-up">
-            <div className="grid gap-6 border-b border-[#d7cfbf] pb-10 sm:gap-7 sm:pb-12 xl:grid-cols-[0.38fr_0.62fr] xl:items-start 2xl:grid-cols-[0.34fr_0.66fr]">
+            <div className="grid gap-5 border-b border-[#d7cfbf] pb-8 sm:gap-7 sm:pb-12 xl:grid-cols-[0.38fr_0.62fr] xl:items-start 2xl:grid-cols-[0.34fr_0.66fr]">
               <div>
                 <p className="eyebrow">{section.navLabel}</p>
                 <h2 className="section-title-lg mt-4">{activePage.title}</h2>
@@ -1481,13 +1481,13 @@ const PortalSectionView = ({ locale, sectionKey }: PortalSectionViewProps) => {
           </div>
 
           <aside className="xl:sticky xl:top-[10.1rem] 2xl:top-[10.8rem] xl:h-fit">
-            <div className="space-y-5">
-              <div className="action-panel px-6 py-7 sm:px-7">
+            <div className="space-y-4 sm:space-y-5">
+              <div className="action-panel px-5 py-6 sm:px-7">
                 <p className="eyebrow">{locale === 'zh' ? '快速操作' : 'Quick Actions'}</p>
                 <p className="section-copy section-copy-compact mt-4 max-w-none text-[0.98rem]">
                   {asideLeadText}
                 </p>
-                <div className="mt-6 grid gap-5">
+                <div className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-1 xl:gap-5">
                   <Link
                     to={primaryAsideLink.to}
                     className="info-card content-card block transition-colors hover:border-[#c89b45]/30"
@@ -1521,7 +1521,7 @@ const PortalSectionView = ({ locale, sectionKey }: PortalSectionViewProps) => {
                 </Link>
               </div>
 
-              <div className="info-card content-card">
+              <div className="info-card content-card hidden xl:block">
                 <p className="eyebrow">{locale === 'zh' ? '当前浏览' : 'Now Viewing'}</p>
                 <p className="meta-copy meta-copy-compact mt-4">
                   {locale === 'zh'
@@ -1529,8 +1529,8 @@ const PortalSectionView = ({ locale, sectionKey }: PortalSectionViewProps) => {
                     : `${section.navLabel} / ${newsArticlePage ? activeMenuLabel : activePage.title}`}
                 </p>
                 <div className="mt-5 flex flex-wrap gap-2.5">
-                  {sectionSummaryTags.map((item) => (
-                    <span key={item} className="summary-chip">
+                  {sectionSummaryTags.map((item, index) => (
+                    <span key={`${item}-${index}`} className="summary-chip">
                       {item}
                     </span>
                   ))}
@@ -1540,7 +1540,7 @@ const PortalSectionView = ({ locale, sectionKey }: PortalSectionViewProps) => {
           </aside>
         </div>
 
-        <div className="border-t border-[#d7cfbf] pt-10 sm:pt-12">
+        <div className="border-t border-[#d7cfbf] pt-8 sm:pt-12">
           <div className="grid gap-6 xl:grid-cols-[0.96fr_1.04fr] 2xl:grid-cols-[0.92fr_1.08fr]">
             <div className="panel content-card">
               <p className="eyebrow">{sectionSummaryTitle}</p>
@@ -1554,8 +1554,8 @@ const PortalSectionView = ({ locale, sectionKey }: PortalSectionViewProps) => {
               </p>
 
               <div className="mt-8 flex flex-wrap gap-3">
-                {sectionSummaryTags.map((item) => (
-                  <span key={item} className="summary-chip">
+                {sectionSummaryTags.map((item, index) => (
+                  <span key={`${item}-${index}`} className="summary-chip">
                     {item}
                   </span>
                 ))}

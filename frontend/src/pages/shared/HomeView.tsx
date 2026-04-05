@@ -463,8 +463,8 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
       ]
 
   return (
-    <div className="pb-20">
-      <section className="relative -mt-[8.8rem] min-h-[100svh] overflow-hidden bg-[#f6f1e8] sm:-mt-[9.4rem] xl:-mt-[10.4rem] 2xl:-mt-[10.8rem]">
+    <div className="pb-16 sm:pb-20">
+      <section className="relative -mt-[7rem] min-h-[86svh] overflow-hidden bg-[#f6f1e8] sm:-mt-[7.6rem] sm:min-h-[92svh] xl:-mt-[10.4rem] xl:min-h-[100svh] 2xl:-mt-[10.8rem]">
         {heroSlides.map((slide, index) => {
           const active = index === activeSlide
           return (
@@ -491,9 +491,9 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
 
         <div className="absolute inset-x-0 bottom-0 h-px bg-[#d7cfbf]" />
 
-        <div className="relative section-wrap grid min-h-[100svh] grid-rows-[1fr_auto] gap-8 pb-12 pt-36 sm:gap-12 sm:pb-[4.5rem] sm:pt-48 lg:gap-14 lg:pb-16 lg:pt-56 xl:gap-16 xl:pb-20 xl:pt-64">
+        <div className="relative section-wrap grid min-h-[86svh] grid-rows-[1fr_auto] gap-6 pb-8 pt-[7.75rem] sm:min-h-[92svh] sm:gap-12 sm:pb-[4.5rem] sm:pt-40 lg:gap-14 lg:pb-16 lg:pt-56 xl:min-h-[100svh] xl:gap-16 xl:pb-20 xl:pt-64">
           <div className="flex items-center">
-            <div className="hero-panel max-w-[52rem] py-10 sm:py-14 lg:max-w-[54rem] xl:max-w-[58rem] xl:py-16">
+            <div className="hero-panel max-w-[32rem] py-6 sm:max-w-[52rem] sm:py-12 lg:max-w-[54rem] xl:max-w-[58rem] xl:py-16">
               <p className={heroLabelClass}>
                 {heroSlides[activeSlide]?.label}
               </p>
@@ -504,13 +504,13 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
               >
                 {heroSlides[activeSlide]?.title}
               </h1>
-              <p className="hero-copy mt-8 max-w-[46rem] text-[1.08rem] leading-8 text-[#4e5966] sm:text-[1.2rem] sm:leading-9 xl:max-w-[50rem] xl:text-[1.26rem]">
+              <p className="hero-copy mt-6 max-w-[26rem] text-[0.98rem] leading-7 text-[#4e5966] sm:mt-8 sm:max-w-[46rem] sm:text-[1.2rem] sm:leading-9 xl:max-w-[50rem] xl:text-[1.26rem]">
                 {heroSlides[activeSlide]?.description}
               </p>
-              <p className="mt-5 max-w-[48rem] text-[0.96rem] leading-8 text-[#5d6773] sm:text-[1.02rem] xl:max-w-[52rem]">
+              <p className="mt-5 hidden max-w-[48rem] text-[0.96rem] leading-8 text-[#5d6773] sm:block sm:text-[1.02rem] xl:max-w-[52rem]">
                 {activeHeroGuide}
               </p>
-              <div className="mt-5 flex flex-wrap gap-2.5">
+              <div className="mt-4 flex flex-wrap gap-2">
                 {activeHeroTags.map((item) => (
                   <span key={item} className="summary-chip">
                     {item}
@@ -518,7 +518,7 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
                 ))}
               </div>
 
-              <div className="mt-10 flex flex-col gap-3 sm:mt-12 sm:flex-row sm:flex-wrap sm:gap-6">
+              <div className="mt-8 flex flex-col gap-2.5 sm:mt-12 sm:flex-row sm:flex-wrap sm:gap-6">
                 <Link
                   to={buildLocalizedPath(locale, 'inquiry')}
                   className={heroPrimaryButtonClass}
@@ -535,11 +535,11 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
             </div>
           </div>
 
-          <div className="grid gap-8 border-t border-[#d7cfbf] pt-6 lg:gap-9 lg:pt-7 xl:grid-cols-[1fr_auto] xl:items-end">
-            <div className="grid gap-6 sm:grid-cols-3">
+          <div className="grid gap-5 border-t border-[#d7cfbf] pt-5 sm:gap-8 sm:pt-6 lg:gap-9 lg:pt-7 xl:grid-cols-[1fr_auto] xl:items-end">
+            <div className="grid grid-cols-3 gap-3 sm:gap-6">
               {heroMetrics.map((metric) => (
                 <div key={`${metric.label}-${metric.value}`}>
-                  <p className="font-display text-[3.35rem] leading-none text-[#1f252d] sm:text-[3.7rem]">
+                  <p className="font-display text-[2.25rem] leading-none text-[#1f252d] sm:text-[3.7rem]">
                     {metric.value}
                   </p>
                   <p className="metric-label mt-2 text-[12px] sm:text-[13px]">
@@ -549,7 +549,7 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
               ))}
             </div>
 
-            <div className="flex items-center gap-5">
+            <div className="flex items-center justify-between gap-3 sm:justify-start sm:gap-5">
               {heroSlides.map((slide, index) => {
                 const active = index === activeSlide
                 return (
@@ -561,7 +561,7 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
                     aria-label={slide.title}
                   >
                     <span
-                      className={`block h-[2px] w-16 transition-all duration-300 ${
+                      className={`block h-[2px] w-10 transition-all duration-300 sm:w-16 ${
                         active ? 'bg-[#c89b45]' : 'bg-[#a3acb8] group-hover:bg-[#707987]'
                       }`}
                     />
@@ -573,7 +573,7 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
         </div>
       </section>
 
-      <section className="border-t border-[#d7cfbf]/75 py-20 sm:py-24 xl:py-32">
+      <section className="border-t border-[#d7cfbf]/75 py-16 sm:py-24 xl:py-32">
         <div className="section-wrap grid gap-12 xl:grid-cols-[0.42fr_0.58fr] 2xl:grid-cols-[0.4fr_0.6fr]">
           <div>
             <p className="eyebrow">{page.brandEssenceTitle}</p>
@@ -604,7 +604,7 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
           </div>
         </div>
 
-        <div className="-mx-4 mt-16 overflow-hidden bg-[#ebe4d7] sm:-mx-6 xl:-mx-8 2xl:-mx-10">
+        <div className="-mx-4 mt-12 overflow-hidden bg-[#ebe4d7] sm:-mx-6 sm:mt-16 xl:-mx-8 2xl:-mx-10">
           <div className="section-wrap grid gap-10 xl:grid-cols-[1.06fr_0.94fr] xl:items-center">
             <div className="min-h-[240px] xl:min-h-[520px]">
               <ZoomableImage
@@ -618,7 +618,7 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
               />
             </div>
 
-            <div className="py-10 sm:py-12 xl:py-16">
+            <div className="py-8 sm:py-12 xl:py-16">
               <p className="eyebrow">{page.brandFrameEyebrow}</p>
               <h3 className="subsection-title mt-4 max-w-[34rem]">
                 {page.brandFrameTitle}
@@ -626,7 +626,7 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
               <p className="section-copy section-copy-compact mt-6 max-w-none">
                 {brandSectionText}
               </p>
-              <div className="mt-10 flex flex-wrap gap-6">
+              <div className="mt-8 flex flex-col gap-3 sm:mt-10 sm:flex-row sm:flex-wrap sm:gap-6">
                 <Link
                   to={`/${locale}/${portalSections.products.segment}`}
                   className="cta-link cta-link-primary"
@@ -645,7 +645,7 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
         </div>
       </section>
 
-      <section className="border-t border-[#d7cfbf]/75 py-20 sm:py-24 xl:py-32">
+      <section className="border-t border-[#d7cfbf]/75 py-16 sm:py-24 xl:py-32">
         <div className="section-wrap">
           <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
             <div>
@@ -662,18 +662,18 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
             </Link>
           </div>
 
-          <div className="mt-10 space-y-12 sm:mt-12 sm:space-y-[4.5rem]">
+          <div className="mt-8 space-y-10 sm:mt-12 sm:space-y-[4.5rem]">
             {showcase.map((product, index) => {
               const reverse = index % 2 === 1
               return (
                 <article
                   key={product.id}
-                  className={`grid gap-8 border-t border-[#d7cfbf] pt-10 xl:grid-cols-[1.04fr_0.96fr] xl:items-center ${
+                  className={`grid gap-6 border-t border-[#d7cfbf] pt-8 sm:gap-8 sm:pt-10 xl:grid-cols-[1.04fr_0.96fr] xl:items-center ${
                     reverse ? 'xl:[&>*:first-child]:order-2 xl:[&>*:last-child]:order-1' : ''
                   }`}
                 >
                   <div className="art-image-frame">
-                    <div className="aspect-[15/10] xl:min-h-[420px]">
+                    <div className="aspect-[15/10] min-h-[220px] xl:min-h-[420px]">
                       <ZoomableImage
                         src={product.image}
                         alt={product.name}
@@ -696,7 +696,7 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
                     <p className="section-copy section-copy-compact mt-5 max-w-none copy-clamp-3">
                       {featuredProductNotes[index]}
                     </p>
-                    <div className="mt-8 flex flex-wrap gap-5">
+                    <div className="mt-7 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:flex-wrap sm:gap-5">
                       <Link
                         to={buildLocalizedPath(locale, 'inquiry')}
                         className="cta-link cta-link-primary"
@@ -718,7 +718,7 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
         </div>
       </section>
 
-      <section className="border-t border-[#d7cfbf]/75 py-14 sm:py-16 xl:py-20">
+      <section className="border-t border-[#d7cfbf]/75 py-12 sm:py-16 xl:py-20">
         <div className="section-wrap">
           <div className="action-panel px-6 py-8 sm:px-8 sm:py-9 xl:px-10">
             <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
@@ -737,7 +737,7 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
               </p>
             </div>
 
-            <div className="mt-8 grid gap-5 sm:gap-6 xl:grid-cols-3">
+            <div className="mt-7 grid gap-4 sm:mt-8 sm:gap-6 xl:grid-cols-3">
               {quickActions.map((action) => (
                 <Link key={action.title} to={action.to} className="info-card content-card block transition-colors hover:border-[#c89b45]/30">
                   <p className="meta-label">{action.title}</p>
@@ -752,10 +752,10 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
         </div>
       </section>
 
-      <section className="border-t border-[#d7cfbf]/75 py-20 sm:py-24 xl:py-32">
+      <section className="border-t border-[#d7cfbf]/75 py-16 sm:py-24 xl:py-32">
         <div className="-mx-4 overflow-hidden bg-[#ece4d7] sm:-mx-6 xl:-mx-8 2xl:-mx-10">
           <div className="section-wrap grid gap-10 xl:grid-cols-[0.92fr_1.08fr] xl:items-stretch">
-            <div className="py-8 sm:py-12 xl:py-16">
+            <div className="py-7 sm:py-12 xl:py-16">
               <p className="eyebrow">{page.nextMoveEyebrow}</p>
               <h2 className="section-title-xl mt-4 max-w-[34rem]">
                 {page.nextMoveTitle}
@@ -764,7 +764,7 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
                 {processSectionText}
               </p>
 
-              <div className="mt-10 space-y-8">
+              <div className="mt-8 space-y-6 sm:mt-10 sm:space-y-8">
                 {page.processSteps.slice(0, 3).map((step, index) => (
                   <article
                     key={step.step}
@@ -799,7 +799,7 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
         </div>
       </section>
 
-      <section className="border-t border-[#d7cfbf]/75 pt-20 sm:pt-24 xl:pt-32">
+      <section className="border-t border-[#d7cfbf]/75 pt-16 sm:pt-24 xl:pt-32">
         <div className="relative -mx-4 overflow-hidden sm:-mx-6 xl:-mx-8 2xl:-mx-10">
           <ZoomableImage
             src={visualAssets.factoryFloor}
@@ -814,7 +814,7 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
           <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(251,248,242,0.94)_0%,rgba(251,248,242,0.8)_42%,rgba(251,248,242,0.42)_100%)]" />
           <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(251,248,242,0.16)_0%,rgba(251,248,242,0.08)_30%,rgba(251,248,242,0.58)_100%)]" />
 
-          <div className="section-wrap relative py-16 sm:py-[5.5rem] xl:py-24">
+          <div className="section-wrap relative py-12 sm:py-[5.5rem] xl:py-24">
             <div className="max-w-3xl">
               <p className="eyebrow">{isZh ? '项目沟通' : 'Project Contact'}</p>
               <h2 className="section-title-xl mt-4 max-w-[42rem]">
@@ -824,7 +824,7 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
                 {processSectionText}
               </p>
 
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-4">
+              <div className="mt-7 flex flex-col gap-2.5 sm:flex-row sm:flex-wrap sm:gap-4">
                 <Link to={buildLocalizedPath(locale, 'inquiry')} className="btn-primary w-full sm:w-auto">
                   {page.requestQuoteButton}
                 </Link>
@@ -837,7 +837,7 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
         </div>
       </section>
 
-      <section className="border-t border-[#d7cfbf]/75 py-[4.5rem] sm:py-[5.5rem] xl:py-28">
+      <section className="border-t border-[#d7cfbf]/75 py-16 sm:py-[5.5rem] xl:py-28">
         <div className="section-wrap grid gap-6 xl:grid-cols-[0.92fr_1.08fr]">
           <div className="panel content-card">
             <p className="eyebrow">{isZh ? '资料摘要' : 'Resource Summary'}</p>
