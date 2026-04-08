@@ -293,18 +293,6 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
     }
   }, [locale])
 
-  useEffect(() => {
-    if (heroSlides.length <= 1) {
-      return
-    }
-
-    const timer = window.setInterval(() => {
-      setActiveSlide((current) => (current + 1) % heroSlides.length)
-    }, 5500)
-
-    return () => window.clearInterval(timer)
-  }, [heroSlides.length])
-
   usePageSeo(locale, copy.seo.home)
 
   const messageRuleText = (() => {
@@ -386,8 +374,10 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
   const imagePreviewLabel = isZh ? '查看原图' : 'View Full Image'
   const imageCloseLabel = isZh ? '关闭原图' : 'Close Image'
   const heroLabelClass = 'label-accent text-[13px] sm:text-[14px]'
-  const heroPrimaryButtonClass = 'btn-primary min-h-[56px] w-full px-6 text-[14px] leading-[1.25] sm:min-h-[64px] sm:w-auto sm:px-9 sm:text-[16px]'
-  const heroSecondaryButtonClass = 'btn-secondary min-h-[56px] w-full px-6 text-[14px] leading-[1.25] sm:min-h-[64px] sm:w-auto sm:px-9 sm:text-[16px]'
+  const heroPrimaryButtonClass =
+    'btn-primary min-h-[56px] w-full px-6 text-[14px] leading-[1.25] sm:min-h-[60px] sm:w-auto sm:px-8 sm:text-[15px]'
+  const heroSecondaryButtonClass =
+    'btn-secondary min-h-[56px] w-full px-6 text-[14px] leading-[1.25] sm:min-h-[60px] sm:w-auto sm:px-8 sm:text-[15px]'
   const activeHeroGuide = (() => {
     const activeHeroId = heroSlides[activeSlide]?.id
     if (activeHeroId === 'capability') {
@@ -464,54 +454,26 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
 
   return (
     <div className="pb-16 sm:pb-20">
-      <section className="relative -mt-[7rem] min-h-[100svh] overflow-hidden bg-[#f6f1e8] sm:-mt-[7.6rem] sm:min-h-[92svh] xl:-mt-[10.4rem] xl:min-h-[100svh] 2xl:-mt-[10.8rem]">
-        {heroSlides.map((slide, index) => {
-          const active = index === activeSlide
-          return (
-            <div
-              key={slide.id}
-              className={`absolute inset-0 transition-opacity duration-700 ${
-                active ? 'opacity-100' : 'pointer-events-none opacity-0'
-              }`}
-            >
-              <ZoomableImage
-                src={slide.image}
-                alt={slide.title}
-                showHint={false}
-                hintVisibility="always"
-                previewLabel={imagePreviewLabel}
-                closeLabel={imageCloseLabel}
-                wrapperClassName="h-full w-full"
-                className={`day-hero-image h-full w-full object-cover ${slide.focusClass}`}
-              />
-              <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(251,248,242,0.94)_0%,rgba(251,248,242,0.78)_42%,rgba(251,248,242,0.22)_100%)]" />
-              <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(251,248,242,0.22)_0%,rgba(251,248,242,0)_28%,rgba(251,248,242,0.56)_100%)]" />
-            </div>
-          )
-        })}
-
-        <div className="absolute inset-x-0 bottom-0 h-px bg-[#d7cfbf]" />
-
-        <div className="relative section-wrap grid min-h-[100svh] grid-rows-[1fr_auto] gap-6 pb-8 pt-[7.25rem] sm:min-h-[92svh] sm:gap-12 sm:pb-[4.5rem] sm:pt-40 lg:gap-14 lg:pb-16 lg:pt-56 xl:min-h-[100svh] xl:gap-16 xl:pb-20 xl:pt-64">
-          <div className="flex items-center">
-            <div className="hero-panel w-full max-w-none py-6 sm:max-w-[52rem] sm:py-12 lg:max-w-[54rem] xl:max-w-[58rem] xl:py-16">
-              <p className={heroLabelClass}>
-                {heroSlides[activeSlide]?.label}
-              </p>
+      <section className="section-wrap pt-4 sm:pt-6 xl:pt-8">
+        <div className="panel panel-block overflow-hidden px-5 py-6 sm:px-8 sm:py-8 xl:px-10 xl:py-10">
+          <div className="grid gap-8 xl:grid-cols-[0.9fr_1.1fr] xl:items-center">
+            <div className="max-w-[40rem]">
+              <p className={heroLabelClass}>{heroSlides[activeSlide]?.label}</p>
               <h1
-                className={`mt-6 max-w-[calc(100vw-4.75rem)] hero-display hero-display-home text-[#1f252d] sm:max-w-none ${
-                  isZh ? 'hero-title-nowrap' : ''
+                className={`mt-5 hero-display hero-display-home text-[#1f252d] ${
+                  isZh ? '' : 'max-w-[15ch]'
                 }`}
               >
                 {heroSlides[activeSlide]?.title}
               </h1>
-              <p className="hero-copy mt-6 max-w-[calc(100vw-4rem)] text-[0.98rem] leading-7 text-[#4e5966] sm:mt-8 sm:max-w-[46rem] sm:text-[1.2rem] sm:leading-9 xl:max-w-[50rem] xl:text-[1.26rem]">
+              <p className="hero-copy mt-5 max-w-[44rem] text-[1rem] leading-8 text-[#4f5a67] sm:mt-6 sm:text-[1.12rem] sm:leading-9">
                 {heroSlides[activeSlide]?.description}
               </p>
-              <p className="mt-5 hidden max-w-[48rem] text-[0.96rem] leading-8 text-[#5d6773] sm:block sm:text-[1.02rem] xl:max-w-[52rem]">
+              <p className="mt-5 max-w-[44rem] text-[0.96rem] leading-8 text-[#616b76] sm:text-[1rem]">
                 {activeHeroGuide}
               </p>
-              <div className="mt-4 flex flex-wrap gap-2">
+
+              <div className="mt-5 flex flex-wrap gap-2.5">
                 {activeHeroTags.map((item) => (
                   <span key={item} className="summary-chip">
                     {item}
@@ -519,11 +481,8 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
                 ))}
               </div>
 
-              <div className="mt-8 flex flex-col gap-2.5 sm:mt-12 sm:flex-row sm:flex-wrap sm:gap-6">
-                <Link
-                  to={buildLocalizedPath(locale, 'inquiry')}
-                  className={heroPrimaryButtonClass}
-                >
+              <div className="mt-8 grid gap-3 sm:flex sm:flex-wrap sm:gap-4">
+                <Link to={buildLocalizedPath(locale, 'inquiry')} className={heroPrimaryButtonClass}>
                   {page.requestQuoteButton}
                 </Link>
                 <Link
@@ -533,45 +492,58 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
                   {page.viewProductsButton}
                 </Link>
               </div>
-            </div>
-          </div>
 
-          <div className="grid gap-5 border-t border-[#d7cfbf] pt-5 sm:gap-8 sm:pt-6 lg:gap-9 lg:pt-7 xl:grid-cols-[1fr_auto] xl:items-end">
-            <div className="grid gap-4 sm:grid-cols-3 sm:gap-6">
-              {heroMetrics.map((metric) => (
-                <div
-                  key={`${metric.label}-${metric.value}`}
-                  className="grid gap-1.5 border-b border-[#d7cfbf]/70 pb-3 last:border-b-0 last:pb-0 sm:block sm:border-b-0 sm:pb-0"
-                >
-                  <p className="font-display text-[2.25rem] leading-none text-[#1f252d] sm:text-[3.7rem]">
-                    {metric.value}
-                  </p>
-                  <p className="metric-label mt-2 text-[12px] sm:text-[13px]">
-                    {metric.label}
-                  </p>
+              <div className="mt-8 grid gap-3 sm:grid-cols-3">
+                {heroMetrics.map((metric) => (
+                  <article key={`${metric.label}-${metric.value}`} className="art-stat px-4 py-4 sm:px-5 sm:py-5">
+                    <p className="font-display text-[2rem] leading-none text-[#1f252d] sm:text-[2.7rem]">
+                      {metric.value}
+                    </p>
+                    <p className="metric-label mt-3 text-[12px] sm:text-[13px]">{metric.label}</p>
+                  </article>
+                ))}
+              </div>
+            </div>
+
+            <div className="grid gap-4">
+              <div className="art-image-frame">
+                <div className="aspect-[11/8] min-h-[260px] sm:min-h-[360px] xl:min-h-[460px]">
+                  <ZoomableImage
+                    src={heroSlides[activeSlide]?.image}
+                    alt={heroSlides[activeSlide]?.title}
+                    showHint={false}
+                    hintVisibility="always"
+                    previewLabel={imagePreviewLabel}
+                    closeLabel={imageCloseLabel}
+                    wrapperClassName="h-full w-full"
+                    className={`day-hero-image h-full w-full object-cover ${heroSlides[activeSlide]?.focusClass}`}
+                  />
                 </div>
-              ))}
-            </div>
+              </div>
 
-            <div className="flex items-center justify-between gap-3 sm:justify-start sm:gap-5">
-              {heroSlides.map((slide, index) => {
-                const active = index === activeSlide
-                return (
-                  <button
-                    key={slide.id}
-                    type="button"
-                    onClick={() => setActiveSlide(index)}
-                    className="group text-left"
-                    aria-label={slide.title}
-                  >
-                    <span
-                      className={`block h-[2px] w-10 transition-all duration-300 sm:w-16 ${
-                        active ? 'bg-[#c89b45]' : 'bg-[#a3acb8] group-hover:bg-[#707987]'
+              <div className="grid gap-3 sm:grid-cols-3">
+                {heroSlides.map((slide, index) => {
+                  const active = index === activeSlide
+                  return (
+                    <button
+                      key={slide.id}
+                      type="button"
+                      onClick={() => setActiveSlide(index)}
+                      aria-label={slide.title}
+                      className={`art-card px-4 py-4 text-left transition-all sm:px-5 ${
+                        active
+                          ? 'border-[#405765]/24 bg-[rgba(64,87,101,0.08)] shadow-[0_14px_30px_rgba(64,87,101,0.08)]'
+                          : 'hover:border-[#405765]/18'
                       }`}
-                    />
-                  </button>
-                )
-              })}
+                    >
+                      <p className="label-accent text-[11px]">{slide.label}</p>
+                      <p className="mt-3 text-[1rem] font-semibold leading-6 text-[#1f252d] sm:text-[1.04rem]">
+                        {slide.title}
+                      </p>
+                    </button>
+                  )
+                })}
+              </div>
             </div>
           </div>
         </div>
@@ -608,39 +580,31 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
           </div>
         </div>
 
-        <div className="-mx-4 mt-12 overflow-hidden bg-[#ebe4d7] sm:-mx-6 sm:mt-16 xl:-mx-8 2xl:-mx-10">
-          <div className="section-wrap grid gap-10 xl:grid-cols-[1.06fr_0.94fr] xl:items-center">
-            <div className="min-h-[240px] xl:min-h-[520px]">
-              <ZoomableImage
-                src={featureSpotlight}
-                alt={page.brandFrameTitle}
-                previewLabel={imagePreviewLabel}
-                closeLabel={imageCloseLabel}
-                wrapperClassName="h-full w-full"
-                className="day-section-image h-full w-full bg-[#efe6d7] object-contain p-3 sm:bg-transparent sm:p-0 sm:object-cover"
-                loading="lazy"
-              />
+        <div className="panel mt-12 overflow-hidden sm:mt-16">
+          <div className="grid gap-8 xl:grid-cols-[1.02fr_0.98fr] xl:items-center">
+            <div className="art-image-frame m-4 sm:m-6 xl:m-8">
+              <div className="min-h-[240px] xl:min-h-[460px]">
+                <ZoomableImage
+                  src={featureSpotlight}
+                  alt={page.brandFrameTitle}
+                  previewLabel={imagePreviewLabel}
+                  closeLabel={imageCloseLabel}
+                  wrapperClassName="h-full w-full"
+                  className="day-section-image h-full w-full bg-[#f3f0ea] object-contain p-3 sm:bg-transparent sm:p-0 sm:object-cover"
+                  loading="lazy"
+                />
+              </div>
             </div>
 
-            <div className="py-8 sm:py-12 xl:py-16">
+            <div className="px-5 pb-6 sm:px-8 sm:pb-8 xl:px-10 xl:pb-10 xl:pr-12 xl:pt-10">
               <p className="eyebrow">{page.brandFrameEyebrow}</p>
-              <h3 className="subsection-title mt-4 max-w-[34rem]">
-                {page.brandFrameTitle}
-              </h3>
-              <p className="section-copy section-copy-compact mt-6 max-w-none">
-                {brandSectionText}
-              </p>
+              <h3 className="subsection-title mt-4 max-w-[34rem]">{page.brandFrameTitle}</h3>
+              <p className="section-copy section-copy-compact mt-6 max-w-none">{brandSectionText}</p>
               <div className="mt-8 flex flex-col gap-3 sm:mt-10 sm:flex-row sm:flex-wrap sm:gap-6">
-                <Link
-                  to={`/${locale}/${portalSections.products.segment}`}
-                  className="cta-link cta-link-primary"
-                >
+                <Link to={`/${locale}/${portalSections.products.segment}`} className="cta-link cta-link-primary">
                   {page.viewProductsButton}
                 </Link>
-                <Link
-                  to={buildLocalizedPath(locale, 'inquiry')}
-                  className="cta-link cta-link-secondary"
-                >
+                <Link to={buildLocalizedPath(locale, 'inquiry')} className="cta-link cta-link-secondary">
                   {page.requestQuoteButton}
                 </Link>
               </div>
@@ -757,9 +721,9 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
       </section>
 
       <section className="border-t border-[#d7cfbf]/75 py-16 sm:py-24 xl:py-32">
-        <div className="-mx-4 overflow-hidden bg-[#ece4d7] sm:-mx-6 xl:-mx-8 2xl:-mx-10">
-          <div className="section-wrap grid gap-10 xl:grid-cols-[0.92fr_1.08fr] xl:items-stretch">
-            <div className="py-7 sm:py-12 xl:py-16">
+        <div className="panel overflow-hidden">
+          <div className="grid gap-8 xl:grid-cols-[0.92fr_1.08fr] xl:items-stretch">
+            <div className="px-5 py-7 sm:px-8 sm:py-10 xl:px-10 xl:py-12">
               <p className="eyebrow">{page.nextMoveEyebrow}</p>
               <h2 className="section-title-xl mt-4 max-w-[34rem]">
                 {page.nextMoveTitle}
@@ -788,39 +752,28 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
               </div>
             </div>
 
-            <div className="min-h-[240px] xl:min-h-[620px]">
-              <ZoomableImage
-                src={processSpotlight}
-                alt={page.nextMoveTitle}
-                previewLabel={imagePreviewLabel}
-                closeLabel={imageCloseLabel}
-                wrapperClassName="h-full w-full"
-                className="day-section-image h-full w-full bg-[#efe6d7] object-contain p-3 sm:bg-transparent sm:p-0 sm:object-cover"
-                loading="lazy"
-              />
+            <div className="art-image-frame m-4 sm:m-6 xl:m-8">
+              <div className="min-h-[240px] xl:min-h-[540px]">
+                <ZoomableImage
+                  src={processSpotlight}
+                  alt={page.nextMoveTitle}
+                  previewLabel={imagePreviewLabel}
+                  closeLabel={imageCloseLabel}
+                  wrapperClassName="h-full w-full"
+                  className="day-section-image h-full w-full bg-[#f3f0ea] object-contain p-3 sm:bg-transparent sm:p-0 sm:object-cover"
+                  loading="lazy"
+                />
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       <section className="border-t border-[#d7cfbf]/75 pt-16 sm:pt-24 xl:pt-32">
-        <div className="relative -mx-4 overflow-hidden sm:-mx-6 xl:-mx-8 2xl:-mx-10">
-          <ZoomableImage
-            src={visualAssets.factoryFloor}
-            alt={copy.header.brandName}
-            showHint={false}
-            hintVisibility="always"
-            previewLabel={imagePreviewLabel}
-            closeLabel={imageCloseLabel}
-            wrapperClassName="absolute inset-0 h-full w-full"
-            className="day-hero-image-soft hero-focus-footer absolute inset-0 h-full w-full object-cover"
-            loading="lazy"
-          />
-          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(251,248,242,0.94)_0%,rgba(251,248,242,0.8)_42%,rgba(251,248,242,0.42)_100%)]" />
-          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(251,248,242,0.16)_0%,rgba(251,248,242,0.08)_30%,rgba(251,248,242,0.58)_100%)]" />
-
-          <div className="section-wrap relative py-12 sm:py-[5.5rem] xl:py-24">
-            <div className="max-w-3xl">
+        <div className="section-wrap">
+          <div className="panel overflow-hidden">
+            <div className="grid gap-8 xl:grid-cols-[0.92fr_1.08fr] xl:items-center">
+              <div className="px-5 py-8 sm:px-8 sm:py-10 xl:px-10 xl:py-12">
               <p className="eyebrow">{isZh ? '项目沟通' : 'Project Contact'}</p>
               <h2 className="section-title-xl mt-4 max-w-[42rem]">
                 {isZh ? '提交工况，进入技术或商务对接。' : 'Submit your operating condition for technical or commercial follow-up.'}
@@ -836,6 +789,23 @@ const HomeView = ({ locale, copy }: HomeViewProps) => {
                 <Link to={buildLocalizedPath(locale, 'contact')} className="btn-secondary w-full sm:w-auto">
                   {page.contactButtonLabel}
                 </Link>
+              </div>
+              </div>
+
+              <div className="art-image-frame m-4 sm:m-6 xl:m-8">
+                <div className="min-h-[240px] xl:min-h-[420px]">
+                  <ZoomableImage
+                    src={visualAssets.factoryFloor}
+                    alt={copy.header.brandName}
+                    showHint={false}
+                    hintVisibility="always"
+                    previewLabel={imagePreviewLabel}
+                    closeLabel={imageCloseLabel}
+                    wrapperClassName="h-full w-full"
+                    className="day-hero-image-soft hero-focus-footer h-full w-full object-cover"
+                    loading="lazy"
+                  />
+                </div>
               </div>
             </div>
           </div>

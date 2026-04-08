@@ -98,8 +98,8 @@ const Header = ({ locale, copy }: HeaderProps) => {
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
         scrolled
-          ? 'bg-[rgba(251,248,242,0.96)] shadow-[0_18px_40px_rgba(74,82,94,0.1)] backdrop-blur-xl'
-          : 'bg-[rgba(251,248,242,0.88)] backdrop-blur-xl'
+          ? 'bg-[rgba(255,255,255,0.94)] shadow-[0_14px_30px_rgba(74,82,94,0.08)] backdrop-blur-xl'
+          : 'bg-[rgba(255,255,255,0.84)] backdrop-blur-xl'
       }`}
     >
       <div className="border-b border-[#d7cfbf]">
@@ -125,7 +125,7 @@ const Header = ({ locale, copy }: HeaderProps) => {
               <Link
                 to={switchPath}
                 onClick={() => setStoredLocale(switchTo)}
-                className="text-[#8f672b] transition-colors hover:text-[#1f252d]"
+                className="text-[#F15A24] transition-colors hover:text-[#0A2E5C]"
               >
                 {copy.header.switchLanguageLabel}
               </Link>
@@ -138,7 +138,7 @@ const Header = ({ locale, copy }: HeaderProps) => {
         <div className="section-wrap">
           <div className="flex h-[78px] items-center justify-between gap-3 sm:h-[92px] sm:gap-4 xl:h-[112px] 2xl:h-[118px]">
             <Link to={`/${locale}`} className="flex min-w-0 items-center gap-2.5 sm:gap-4">
-              <div className="grid h-10 w-10 flex-shrink-0 place-items-center rounded-[10px] border border-[#d7cfbf] bg-[linear-gradient(145deg,rgba(255,255,255,0.96),rgba(238,230,215,0.88))] text-[#8f672b] shadow-[0_10px_20px_rgba(88,98,112,0.12)] sm:h-12 sm:w-12 2xl:h-14 2xl:w-14">
+              <div className="grid h-10 w-10 flex-shrink-0 place-items-center rounded-[10px] border border-[#d9dfe4] bg-[linear-gradient(145deg,rgba(255,255,255,0.98),rgba(244,242,238,0.94))] text-[#405765] shadow-[0_8px_18px_rgba(88,98,112,0.08)] sm:h-12 sm:w-12 2xl:h-14 2xl:w-14">
                 <span className="font-display text-[1.38rem] leading-none sm:text-[1.66rem] 2xl:text-[1.92rem]">H</span>
               </div>
               <div className="min-w-0">
@@ -193,7 +193,7 @@ const Header = ({ locale, copy }: HeaderProps) => {
               <button
                 type="button"
                 onClick={() => setMenuOpen((open) => !open)}
-                className="grid h-[42px] w-[42px] place-items-center rounded-[12px] border border-[#d7cfbf] bg-[rgba(255,255,255,0.82)] text-[#1f252d] transition-colors hover:bg-white sm:h-12 sm:w-12"
+                className="grid h-[42px] w-[42px] place-items-center rounded-[12px] border border-[#d9dfe4] bg-[rgba(255,255,255,0.92)] text-[#1f252d] transition-colors hover:bg-white sm:h-12 sm:w-12"
                 aria-label={menuOpen ? copy.header.closeMenuLabel : copy.header.openMenuLabel}
                 aria-expanded={menuOpen}
                 aria-controls="mobile-site-menu"
@@ -224,9 +224,9 @@ const Header = ({ locale, copy }: HeaderProps) => {
       </div>
 
       {menuOpen && (
-        <div className="border-b border-[#d7cfbf] bg-[rgba(251,248,242,0.97)] xl:hidden">
+        <div className="border-b border-[#d7cfbf] bg-[rgba(255,255,255,0.97)] xl:hidden">
           <div className="section-wrap pb-6 pt-5 sm:pb-7 sm:pt-6">
-            <div className="rounded-[24px] border border-[#ded4c4] bg-[linear-gradient(180deg,rgba(252,248,241,0.94),rgba(243,236,226,0.9))] p-4 shadow-[0_16px_34px_rgba(82,92,106,0.1)] sm:p-5">
+            <div className="rounded-[24px] border border-[#d9dfe4] bg-[linear-gradient(180deg,rgba(255,255,255,0.96),rgba(247,245,241,0.92))] p-4 shadow-[0_14px_28px_rgba(82,92,106,0.08)] sm:p-5">
               <div className="border-b border-[#d7cfbf] pb-4">
                 <p className="brand-tagline text-[12px]">
                   {copy.header.brandTagline}
@@ -250,8 +250,8 @@ const Header = ({ locale, copy }: HeaderProps) => {
                     to={item.path}
                     className={`header-mobile-nav-item flex min-h-[86px] items-end rounded-[18px] border px-4 py-4 transition-all ${mobileNavLocaleClass} ${
                       active
-                        ? 'border-[#c89b45]/65 bg-[linear-gradient(180deg,rgba(244,230,191,0.76),rgba(255,255,255,0.92))] text-[#8f672b] shadow-[0_14px_28px_rgba(182,141,63,0.14)]'
-                        : 'border-[#dfd6c8] bg-[rgba(255,255,255,0.72)] text-[#55616d] hover:border-[#c89b45]/35 hover:text-[#1f252d]'
+                        ? 'border-[#F15A24]/26 bg-[rgba(241,90,36,0.08)] text-[#0A2E5C] shadow-[0_12px_24px_rgba(241,90,36,0.12)]'
+                        : 'border-[#d9dfe4] bg-[rgba(255,255,255,0.86)] text-[#55616d] hover:border-[#0A2E5C]/18 hover:text-[#1f252d]'
                     }`}
                   >
                     {item.label}

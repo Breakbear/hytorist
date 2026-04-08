@@ -895,76 +895,88 @@ const renderArticle = (locale: Locale, page: Extract<PortalPageData, { kind: 'ar
   )
 }
 
-const renderGrid = (locale: Locale, page: Extract<PortalPageData, { kind: 'grid' }>) => (
-  <div className="space-y-8 sm:space-y-10">
-    {page.summary && (
-      <div className="section-copy section-copy-wide max-w-none copy-clamp-4 copy-unclamp-lg">
-        {page.summary}
-      </div>
-    )}
+const renderGrid = (
+  locale: Locale,
+  page: Extract<PortalPageData, { kind: 'grid' }>,
+  sectionKey: PortalSectionKey
+) => {
+  const isProductGrid = sectionKey === 'products'
+  const indexLabel = locale === 'zh' ? (isProductGrid ? '产品系列' : '应用场景') : isProductGrid ? 'Product Series' : 'Application'
 
+  return (
     <div className="space-y-8 sm:space-y-10">
-      {page.items.map((item, index) => {
-        const leadText =
-          item.description ||
-          (locale === 'zh'
-            ? '该条目聚焦当前业务方向，详细配置与交付范围可通过项目沟通进一步确认。'
-            : 'This entry focuses on the current business direction. Detailed configuration and delivery scope can be confirmed during project coordination.')
+      {page.summary && (
+        <div className="panel content-card">
+          <p className="eyebrow">{indexLabel}</p>
+          <p className="section-copy section-copy-wide mt-4 max-w-none copy-clamp-4 copy-unclamp-lg">
+            {page.summary}
+          </p>
+        </div>
+      )}
 
-        return (
-          <article
-            key={item.id}
-            className={`grid gap-5 border-t border-[#d7cfbf] pt-7 sm:gap-6 sm:pt-8 xl:grid-cols-[1.04fr_0.96fr] xl:items-center ${
-              index % 2 === 1 ? 'xl:[&>*:first-child]:order-2 xl:[&>*:last-child]:order-1' : ''
-            }`}
-          >
-            <div className="art-image-frame">
-              <div className="aspect-[16/10] sm:aspect-[15/10] xl:min-h-[320px]">
-                <ZoomableImage
-                  src={item.image}
-                  alt={item.title}
-                  previewLabel={getImagePreviewLabel(locale)}
-                  closeLabel={getImageCloseLabel(locale)}
-                  wrapperClassName="h-full w-full"
-                  className="day-section-image mobile-content-image h-full w-full object-cover transition-transform duration-700 hover:scale-105"
-                  loading="lazy"
-                />
-              </div>
-            </div>
+      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+        {page.items.map((item, index) => {
+          const leadText =
+            item.description ||
+            (locale === 'zh'
+              ? '该条目聚焦当前业务方向，详细配置与交付范围可通过项目沟通进一步确认。'
+              : 'This entry focuses on the current business direction. Detailed configuration and delivery scope can be confirmed during project coordination.')
 
-            <div className="max-w-xl">
-              <p className="label-muted text-[11px]">
-                {locale === 'zh' ? '分类标签' : 'Category'}
-              </p>
-              <h3 className="subsection-title mt-3 max-w-[32rem]">
-                {item.title}
-              </h3>
-              <p className="mt-4 max-w-[34rem] text-[0.95rem] leading-7 text-[#58616d] sm:text-[1rem] sm:leading-[1.86rem] copy-clamp-3">
-                {getHeroLeadText(leadText, leadText)}
-              </p>
-              <div className="mt-5 flex flex-wrap gap-3 sm:mt-6 sm:gap-4">
-                <Link
-                  to={buildLocalizedPath(locale, 'inquiry')}
-                  className="cta-link cta-link-primary"
-                >
-                  {locale === 'zh' ? '提交项目需求' : 'Submit Requirement'}
-                </Link>
-                <Link
-                  to={buildLocalizedPath(locale, 'contact')}
-                  className="cta-link cta-link-secondary"
-                >
-                  {locale === 'zh' ? '联系服务台' : 'Contact Service Desk'}
-                </Link>
+          return (
+            <article
+              key={item.id}
+              className="overflow-hidden rounded-[20px] border border-[#E2E8F0] bg-white shadow-[0_4px_12px_rgba(0,0,0,0.04)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_28px_rgba(15,23,42,0.08)]"
+            >
+              <div className="border-b border-[#E2E8F0] bg-[#F8FAFC] p-4">
+                <div className="mb-4 flex items-center justify-between gap-3">
+                  <span className="rounded-full bg-[rgba(241,90,36,0.08)] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#F15A24]">
+                    {indexLabel}
+                  </span>
+                  <span className="text-[1.1rem] font-semibold text-[#F15A24]">
+                    {String(index + 1).padStart(2, '0')}
+                  </span>
+                </div>
+
+                <div className="art-image-frame !rounded-[18px] !border-0 !bg-white !p-0 !shadow-none">
+                  <div className="aspect-[16/10]">
+                    <ZoomableImage
+                      src={item.image}
+                      alt={item.title}
+                      previewLabel={getImagePreviewLabel(locale)}
+                      closeLabel={getImageCloseLabel(locale)}
+                      wrapperClassName="h-full w-full"
+                      className="day-section-image mobile-content-image h-full w-full bg-[#F8FAFC] object-contain p-4"
+                      loading="lazy"
+                    />
+                  </div>
+                </div>
               </div>
-            </div>
-          </article>
-        )
-      })}
+
+              <div className="p-5">
+                <h3 className="text-[1.22rem] font-semibold leading-7 text-[#0A2E5C]">
+                  {item.title}
+                </h3>
+                <p className="mt-3 text-[0.95rem] leading-7 text-[#64748B] copy-clamp-3">
+                  {getHeroLeadText(leadText, leadText)}
+                </p>
+                <div className="mt-5 flex flex-wrap gap-3">
+                  <Link to={buildLocalizedPath(locale, 'inquiry')} className="cta-link cta-link-primary">
+                    {locale === 'zh' ? '提交项目需求' : 'Submit Requirement'}
+                  </Link>
+                  <Link to={buildLocalizedPath(locale, 'contact')} className="cta-link cta-link-secondary">
+                    {locale === 'zh' ? '联系服务台' : 'Contact Service Desk'}
+                  </Link>
+                </div>
+              </div>
+            </article>
+          )
+        })}
+      </div>
+
+      {renderPager(page.pager)}
     </div>
-
-    {renderPager(page.pager)}
-  </div>
-)
+  )
+}
 
 const renderNews = (
   locale: Locale,
@@ -1373,63 +1385,73 @@ const PortalSectionView = ({ locale, sectionKey }: PortalSectionViewProps) => {
   return (
     <div className="section-wrap pb-16 pt-3 sm:pt-7 sm:pb-24">
       <section className="space-y-6 sm:space-y-8">
-        <div className="-mx-4 overflow-hidden bg-[#f3eee4] sm:-mx-6 xl:-mx-8 2xl:-mx-10">
-          <div className="relative min-h-[360px] sm:min-h-[560px] xl:min-h-[640px]">
-            <ZoomableImage
-              src={activeHero.image}
-              alt={activeHero.title}
-              showHint={false}
-              hintVisibility="always"
-              previewLabel={getImagePreviewLabel(locale)}
-              closeLabel={getImageCloseLabel(locale)}
-              wrapperClassName="absolute inset-0 h-full w-full"
-              className={`day-hero-image absolute inset-0 h-full w-full object-cover ${activeHeroFocusClass}`}
-              loading="lazy"
-            />
-            <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(251,248,242,0.95)_0%,rgba(251,248,242,0.8)_40%,rgba(251,248,242,0.36)_100%)]" />
-            <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(251,248,242,0.18)_0%,rgba(251,248,242,0)_28%,rgba(251,248,242,0.62)_100%)]" />
+        <div className="panel panel-block overflow-hidden px-5 py-6 sm:px-8 sm:py-8 xl:px-10 xl:py-10">
+          <div className="grid gap-8 xl:grid-cols-[0.9fr_1.1fr] xl:items-center">
+            <div className="max-w-[40rem]">
+              <p className="eyebrow">{section.navLabel}</p>
+              <h1
+                className={`mt-5 hero-display hero-display-section text-[#1f252d] ${
+                  locale === 'zh' ? '' : 'max-w-[15ch]'
+                }`}
+              >
+                {activeHero.title}
+              </h1>
+              <p className="hero-copy mt-5 max-w-[44rem] text-[1rem] leading-8 text-[#4f5a67] sm:text-[1.12rem] sm:leading-9">
+                {activeHeroSubtitle}
+              </p>
+              <p className="mt-5 text-[0.98rem] leading-8 text-[#5a6572] sm:text-[1.02rem]">
+                {sectionThemeGuide.lead}
+              </p>
+              <div className="mt-5 flex flex-wrap gap-2.5">
+                {sectionThemeGuide.tags.map((item) => (
+                  <span key={item} className="summary-chip">
+                    {item}
+                  </span>
+                ))}
+              </div>
 
-            <div className="section-wrap relative grid min-h-[360px] grid-rows-[1fr_auto] gap-6 pb-8 pt-[7.75rem] text-[#1f252d] sm:min-h-[560px] sm:gap-12 sm:pb-14 sm:pt-40 lg:min-h-[600px] lg:gap-[3.25rem] lg:pb-[3.75rem] lg:pt-52 xl:min-h-[640px] xl:gap-14 xl:pb-16 xl:pt-56">
-              <div className="flex items-center">
-                <div className="hero-panel w-full max-w-none lg:max-w-[54rem] xl:max-w-[60rem]">
-                  <p className="eyebrow">{section.navLabel}</p>
-                  <h1
-                    className={`mt-6 max-w-[calc(100vw-2rem)] hero-display hero-display-section text-[#1f252d] sm:max-w-none ${
-                      locale === 'zh' ? 'hero-title-nowrap' : ''
-                    }`}
-                  >
-                    {activeHero.title}
-                  </h1>
-                  <p className="hero-copy mt-6 max-w-[calc(100vw-2rem)] text-[0.98rem] leading-7 text-[#4f5a67] sm:mt-7 sm:max-w-[54rem] sm:text-[1.2rem] sm:leading-9 xl:text-[1.24rem]">
-                    {activeHeroSubtitle}
-                  </p>
+              <div className="mt-8 grid gap-3 sm:flex sm:flex-wrap sm:gap-4">
+                <Link to={buildLocalizedPath(locale, 'inquiry')} className="btn-primary w-full sm:w-auto">
+                  {locale === 'zh' ? '提交项目需求' : 'Submit Requirement'}
+                </Link>
+                <Link to={buildLocalizedPath(locale, 'contact')} className="btn-secondary w-full sm:w-auto">
+                  {contactActionLabel}
+                </Link>
+              </div>
+            </div>
 
-                  <div className="mt-8 flex flex-col gap-2.5 sm:mt-11 sm:flex-row sm:flex-wrap sm:gap-5">
-                    <Link to={buildLocalizedPath(locale, 'inquiry')} className="btn-primary w-full sm:w-auto">
-                      {locale === 'zh' ? '提交项目需求' : 'Submit Requirement'}
-                    </Link>
-                    <Link to={buildLocalizedPath(locale, 'contact')} className="btn-secondary w-full sm:w-auto">
-                      {contactActionLabel}
-                    </Link>
-                  </div>
+            <div className="grid gap-4">
+              <div className="art-image-frame">
+                <div className="min-h-[260px] sm:min-h-[360px] xl:min-h-[460px]">
+                  <ZoomableImage
+                    src={activeHero.image}
+                    alt={activeHero.title}
+                    showHint={false}
+                    hintVisibility="always"
+                    previewLabel={getImagePreviewLabel(locale)}
+                    closeLabel={getImageCloseLabel(locale)}
+                    wrapperClassName="h-full w-full"
+                    className={`day-hero-image h-full w-full object-cover ${activeHeroFocusClass}`}
+                    loading="lazy"
+                  />
                 </div>
               </div>
 
-              <div className="grid max-w-3xl grid-cols-3 gap-3 border-t border-[#d7cfbf] pt-5 sm:gap-7 sm:pt-7">
+              <div className="grid gap-3 sm:grid-cols-3">
                 {activeHero.metrics.slice(0, 3).map((metric) => (
-                  <div key={`${metric.label}-${metric.value}`}>
-                    <p className="font-display text-[2.15rem] leading-none text-[#1f252d] sm:text-[3.2rem]">{metric.value}</p>
-                    <p className="metric-label mt-2 text-[12px]">
-                      {metric.label}
+                  <article key={`${metric.label}-${metric.value}`} className="art-stat px-4 py-4 sm:px-5 sm:py-5">
+                    <p className="font-display text-[2rem] leading-none text-[#1f252d] sm:text-[2.6rem]">
+                      {metric.value}
                     </p>
-                  </div>
+                    <p className="metric-label mt-3 text-[12px]">{metric.label}</p>
+                  </article>
                 ))}
               </div>
             </div>
           </div>
         </div>
 
-        <div className="-mx-4 overflow-x-auto border-y border-[#d7cfbf] px-4 py-3 sm:-mx-6 sm:px-6 sm:py-4 xl:-mx-8 xl:px-8 2xl:-mx-10 2xl:px-10">
+        <div className="panel overflow-x-auto px-4 py-3 sm:px-6 sm:py-4">
           <nav>
             <div className="machine-nav-shell min-w-max">
               {section.menu.map((menuItem) => {
@@ -1451,31 +1473,31 @@ const PortalSectionView = ({ locale, sectionKey }: PortalSectionViewProps) => {
 
         <div className="grid gap-8 sm:gap-12 xl:grid-cols-[minmax(0,1fr)_280px] 2xl:grid-cols-[minmax(0,1fr)_320px]">
           <div key={location.pathname} className="animate-fade-up">
-            <div className="grid gap-5 border-b border-[#d7cfbf] pb-8 sm:gap-7 sm:pb-12 xl:grid-cols-[0.38fr_0.62fr] xl:items-start 2xl:grid-cols-[0.34fr_0.66fr]">
-              <div>
-                <p className="eyebrow">{section.navLabel}</p>
-                <h2 className="section-title-lg mt-4">{activePage.title}</h2>
-              </div>
-              <div className="space-y-4">
-                <p className="section-copy section-copy-wide max-w-none">
-                  {activeDescriptionLead}
-                </p>
-                <p className="text-[0.98rem] leading-8 text-[#5a6572] sm:text-[1.04rem]">
-                  {sectionThemeGuide.lead}
-                </p>
-                <div className="flex flex-wrap gap-2.5">
-                  {sectionThemeGuide.tags.map((item) => (
-                    <span key={item} className="summary-chip">
-                      {item}
-                    </span>
-                  ))}
+            <div className="panel px-5 py-6 sm:px-8 sm:py-8">
+              <div className="grid gap-5 xl:grid-cols-[0.38fr_0.62fr] xl:items-start 2xl:grid-cols-[0.34fr_0.66fr]">
+                <div>
+                  <p className="eyebrow">{section.navLabel}</p>
+                  <h2 className="section-title-lg mt-4">{activePage.title}</h2>
+                </div>
+                <div className="space-y-4">
+                  <p className="section-copy section-copy-wide max-w-none">{activeDescriptionLead}</p>
+                  <p className="text-[0.98rem] leading-8 text-[#5a6572] sm:text-[1.04rem]">
+                    {referenceNote}
+                  </p>
+                  <div className="flex flex-wrap gap-2.5">
+                    {sectionSummaryTags.map((item, index) => (
+                      <span key={`${item}-${index}`} className="summary-chip">
+                        {item}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div className="mt-10 sm:mt-12">
+            <div className="mt-8 sm:mt-10">
               {activePage.kind === 'article' && renderArticle(locale, activePage)}
-              {activePage.kind === 'grid' && renderGrid(locale, activePage)}
+              {activePage.kind === 'grid' && renderGrid(locale, activePage, sectionKey)}
               {activePage.kind === 'news' && renderNews(locale, section.segment, section.defaultPageId, activePage)}
               {activePage.kind === 'contact' && renderContact(locale, activePage)}
             </div>
@@ -1491,7 +1513,7 @@ const PortalSectionView = ({ locale, sectionKey }: PortalSectionViewProps) => {
                 <div className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-1 xl:gap-5">
                   <Link
                     to={primaryAsideLink.to}
-                    className="info-card content-card block transition-colors hover:border-[#c89b45]/30"
+                    className="info-card content-card block transition-colors hover:border-[#405765]/24"
                   >
                     <p className="meta-label">{primaryAsideLink.label}</p>
                     <p className="meta-copy meta-copy-compact mt-3 copy-clamp-3">
@@ -1500,7 +1522,7 @@ const PortalSectionView = ({ locale, sectionKey }: PortalSectionViewProps) => {
                   </Link>
                   <Link
                     to={contextualAsideLink.to}
-                    className="info-card content-card block transition-colors hover:border-[#c89b45]/30"
+                    className="info-card content-card block transition-colors hover:border-[#405765]/24"
                   >
                     <p className="meta-label">{contextualAsideLink.label}</p>
                     <p className="meta-copy meta-copy-compact mt-3 copy-clamp-3">
@@ -1509,7 +1531,7 @@ const PortalSectionView = ({ locale, sectionKey }: PortalSectionViewProps) => {
                   </Link>
                   <Link
                     to={buildLocalizedPath(locale, 'inquiry')}
-                    className="info-card content-card block transition-colors hover:border-[#c89b45]/30"
+                    className="info-card content-card block transition-colors hover:border-[#405765]/24"
                   >
                     <p className="meta-label">{locale === 'zh' ? '提交项目需求' : 'Submit Requirement'}</p>
                     <p className="meta-copy meta-copy-compact mt-3 copy-clamp-3">

@@ -34,7 +34,7 @@ const DetailCardList = ({
             <a
               key={`${item.label}-${item.value}-${item.href}`}
               href={item.href}
-              className={`${itemClassName} block transition-colors hover:border-[#c89b45]/30`}
+              className={`${itemClassName} block transition-colors hover:border-[#F15A24]/26`}
             >
               {content}
             </a>

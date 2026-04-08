@@ -95,25 +95,26 @@ const Footer = ({ locale, copy }: FooterProps) => {
         '我们提供液压工具、工程服务与项目支持，欢迎通过询盘或联系方式与我们对接。'
       : footerNarrative?.statementEn ||
         'We provide hydraulic tools, engineering services, and project support. Contact us through inquiry or direct channels for follow-up.')
-  const footerBlockTitleClass = 'label-accent text-[14px]'
-  const footerBlockListClass = 'mt-5 space-y-3 text-[1rem] text-[#4d5763] sm:space-y-4 sm:text-[1.04rem]'
+  const footerBlockTitleClass = 'text-[13px] font-semibold uppercase tracking-[0.18em] text-[#f15a24]'
+  const footerBlockListClass =
+    'mt-5 space-y-3 text-[1rem] text-[rgba(255,255,255,0.82)] sm:space-y-4 sm:text-[1.04rem]'
   const footerSectionCardClass =
-    'rounded-[22px] bg-[rgba(255,255,255,0.48)] px-5 py-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.5)] sm:bg-transparent sm:px-0 sm:py-0 sm:shadow-none'
+    'rounded-[22px] border border-white/10 bg-[rgba(255,255,255,0.04)] px-5 py-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] sm:px-5 sm:py-5'
 
   return (
-    <footer className="mt-16 pb-8 text-[#1f252d] sm:mt-24 xl:mt-28">
+    <footer className="mt-16 bg-[#0A2E5C] pb-8 pt-10 text-white sm:mt-24 sm:pt-12 xl:mt-28 xl:pt-14">
       <div className="section-wrap">
-        <div className="overflow-hidden border-t border-[#d7cfbf] px-0 py-9 sm:px-0 sm:py-16 xl:py-[4.8rem]">
+        <div className="overflow-hidden px-0 py-4 sm:py-10 xl:py-[4.2rem]">
           <div className="grid gap-8 sm:gap-12 lg:grid-cols-[1.08fr_0.92fr] lg:items-start">
-            <div className="max-w-2xl rounded-[28px] bg-[rgba(255,255,255,0.42)] px-5 py-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.56)] sm:bg-transparent sm:px-0 sm:py-0 sm:shadow-none">
-              <p className="eyebrow">{locale === 'zh' ? '工业服务网络' : 'Industrial Service Network'}</p>
-              <h2 className="section-title-lg mt-4 max-w-[32rem]">
+            <div className="max-w-2xl rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.04))] px-5 py-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] sm:px-7 sm:py-7">
+              <p className={footerBlockTitleClass}>{locale === 'zh' ? '工业服务网络' : 'Industrial Service Network'}</p>
+              <h2 className="section-title-lg mt-4 max-w-[32rem] text-white">
                 {copy.header.brandName}
               </h2>
-              <p className="brand-tagline mt-3 text-[12px] sm:mt-4 sm:text-[13px]">
+              <p className="mt-3 text-[12px] uppercase tracking-[0.14em] text-[rgba(255,255,255,0.64)] sm:mt-4 sm:text-[13px]">
                 {copy.header.brandTagline}
               </p>
-              <p className="section-copy section-copy-compact mt-6 max-w-none copy-clamp-4">
+              <p className="mt-6 max-w-none text-[1rem] leading-8 text-[rgba(255,255,255,0.82)] sm:text-[1.04rem] sm:leading-8">
                 {footerAboutText}
               </p>
 
@@ -121,14 +122,14 @@ const Footer = ({ locale, copy }: FooterProps) => {
                 {sectorItems.map((item) => (
                   <span
                     key={item}
-                    className="rounded-full border border-[#d7cfbf]/75 bg-[rgba(250,245,236,0.72)] px-3 py-1.5 text-[12px] font-semibold text-[#3b4652] sm:px-4 sm:py-2.5 sm:text-[14px]"
+                    className="rounded-full border border-white/12 bg-[rgba(255,255,255,0.08)] px-3 py-1.5 text-[12px] font-semibold text-white sm:px-4 sm:py-2.5 sm:text-[14px]"
                   >
                     {item}
                   </span>
                 ))}
               </div>
 
-              <p className="label-muted mt-6 text-[12px]">
+              <p className="mt-6 text-[12px] uppercase tracking-[0.14em] text-[rgba(255,255,255,0.56)]">
                 {locale === 'zh'
                   ? '欢迎提交项目需求，我们将尽快安排专人对接。'
                   : 'Submit your project requirements and our team will follow up shortly.'}
@@ -152,7 +153,7 @@ const Footer = ({ locale, copy }: FooterProps) => {
                     <li key={key}>
                       <Link
                         to={buildLocalizedPath(locale, key)}
-                        className="transition-colors hover:text-[#1f252d]"
+                        className="transition-colors hover:text-white"
                       >
                         {copy.footer.quickLinks[key]}
                       </Link>
@@ -170,7 +171,7 @@ const Footer = ({ locale, copy }: FooterProps) => {
                     <li key={item} className={index > 2 ? 'hidden sm:list-item' : ''}>
                       <Link
                         to={buildLocalizedPath(locale, 'products')}
-                        className="transition-colors hover:text-[#1f252d]"
+                        className="transition-colors hover:text-white"
                       >
                         {item}
                       </Link>
@@ -196,7 +197,7 @@ const Footer = ({ locale, copy }: FooterProps) => {
                 <h3 className={footerBlockTitleClass}>
                   {locale === 'zh' ? '服务领域' : 'Service Coverage'}
                 </h3>
-                <p className="section-copy section-copy-compact mt-4 max-w-none text-[0.96rem] sm:text-[1rem] copy-clamp-4">
+                <p className="mt-4 max-w-none text-[0.96rem] leading-8 text-[rgba(255,255,255,0.76)] sm:text-[1rem] copy-clamp-4">
                   {locale === 'zh'
                     ? footerNarrative?.coverageZh ||
                       `重点覆盖 ${sectorItems.join('、')} 等工程方向，可按项目需求提供对应方案。`
@@ -207,15 +208,15 @@ const Footer = ({ locale, copy }: FooterProps) => {
             </div>
           </div>
 
-          <div className="art-divider mt-7 sm:mt-10" />
+          <div className="mt-7 h-px bg-white/10 sm:mt-10" />
 
-          <div className="mt-6 rounded-[22px] bg-[rgba(255,255,255,0.42)] px-5 py-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.5)] sm:mt-8 sm:bg-transparent sm:px-0 sm:py-0 sm:shadow-none">
-            <p className="section-copy section-copy-wide max-w-none text-[0.98rem] copy-clamp-4">
+          <div className="mt-6 rounded-[22px] border border-white/10 bg-[rgba(255,255,255,0.04)] px-5 py-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] sm:mt-8">
+            <p className="max-w-none text-[0.98rem] leading-8 text-[rgba(255,255,255,0.82)] copy-clamp-4">
               {footerStatement}
             </p>
           </div>
 
-          <div className="mt-5 flex flex-col gap-2 text-[13px] text-[#7b838f] sm:mt-6 sm:flex-row sm:items-center sm:justify-between">
+          <div className="mt-5 flex flex-col gap-2 text-[13px] text-[rgba(255,255,255,0.48)] sm:mt-6 sm:flex-row sm:items-center sm:justify-between">
             <p>{copy.footer.copyright}</p>
             <p>{copy.footer.icp}</p>
           </div>

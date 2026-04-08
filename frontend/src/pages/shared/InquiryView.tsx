@@ -362,11 +362,8 @@ const InquiryView = ({ locale, copy }: InquiryViewProps) => {
   return (
     <div className="space-y-14 pb-20 sm:space-y-18 sm:pb-24">
       <section className="section-wrap">
-        <div className="relative overflow-hidden rounded-[36px] px-5 py-7 sm:px-8 sm:py-10 xl:px-12 xl:py-14 art-surface-strong">
-          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(121,132,146,0.08)_1px,transparent_1px),linear-gradient(180deg,rgba(121,132,146,0.06)_1px,transparent_1px)] bg-[size:220px_220px] opacity-[0.1]" />
-          <div className="pointer-events-none absolute -right-20 top-0 h-80 w-80 rounded-full bg-[#d7b66c]/18 blur-3xl" />
-
-          <div className="relative grid gap-10 xl:grid-cols-[0.98fr_1.02fr] xl:items-center">
+        <div className="panel panel-block overflow-hidden px-5 py-7 sm:px-8 sm:py-10 xl:px-12 xl:py-14">
+          <div className="grid gap-10 xl:grid-cols-[0.98fr_1.02fr] xl:items-center">
             <div className="max-w-[44rem]">
               <div className="flex flex-wrap gap-2">
                 <span className="pill">{isZh ? '项目对接入口' : 'Project Intake Desk'}</span>
@@ -591,7 +588,7 @@ const InquiryView = ({ locale, copy }: InquiryViewProps) => {
                               key={option.value}
                               className={`flex min-h-[58px] cursor-pointer items-center gap-3 rounded-[20px] border px-5 py-4 text-[0.98rem] transition-colors ${
                                 active
-                                  ? 'border-[#c89b45]/30 bg-[#f6e9c8] text-[#1f252d] shadow-[0_14px_28px_rgba(123,89,34,0.08)]'
+                                  ? 'border-[#405765]/20 bg-[rgba(64,87,101,0.08)] text-[#1f252d] shadow-[0_12px_24px_rgba(64,87,101,0.08)]'
                                   : 'border-[#d7cfbf] bg-white/72 text-[#485260]'
                               }`}
                             >
@@ -629,7 +626,7 @@ const InquiryView = ({ locale, copy }: InquiryViewProps) => {
                 <section className="inquiry-group grid gap-4 border-t border-[#d7cfbf] pt-5 sm:pt-6">
                   <button
                     type="button"
-                    className="flex min-h-[54px] w-full items-center justify-between rounded-[16px] border border-[#d7cfbf] bg-[rgba(255,255,255,0.62)] px-4 py-3 text-left transition-colors hover:border-[#c89b45]/32 hover:bg-[rgba(255,255,255,0.9)] sm:px-5"
+                    className="flex min-h-[54px] w-full items-center justify-between rounded-[16px] border border-[#d7cfbf] bg-[rgba(255,255,255,0.72)] px-4 py-3 text-left transition-colors hover:border-[#405765]/22 hover:bg-[rgba(255,255,255,0.92)] sm:px-5"
                     onClick={() => setShowOptionalFields((current) => !current)}
                     aria-expanded={showOptionalFields}
                     aria-controls="inquiry-optional-fields"
