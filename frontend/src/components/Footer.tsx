@@ -9,6 +9,14 @@ interface FooterProps {
 }
 
 interface SiteResourcesResponse {
+  brandProfile?: {
+    brandTaglineZh?: string
+    brandTaglineEn?: string
+    quoteLeadZh?: string
+    quoteLeadEn?: string
+    sectorItemsZh?: string[]
+    sectorItemsEn?: string[]
+  }
   contacts?: {
     address?: string
     email?: string
@@ -65,11 +73,20 @@ const getVerifiedSummary = (
 
 const Footer = ({ locale, copy }: FooterProps) => {
   const siteResources = useSiteResources<SiteResourcesResponse>()
+  const brandProfile = siteResources?.brandProfile
 
   const sectorItems =
     locale === 'zh'
-      ? ['风电运维', '石化检修', '水电工程', '轨交与非标装备']
-      : ['Wind O&M', 'Petrochemical', 'Hydropower Projects', 'Rail and Custom Machinery']
+      ? brandProfile?.sectorItemsZh?.length
+        ? brandProfile.sectorItemsZh
+        : ['风电运维', '石化检修', '水电工程', '轨交与非标装备']
+      : brandProfile?.sectorItemsEn?.length
+        ? brandProfile.sectorItemsEn
+        : ['Wind O&M', 'Petrochemical', 'Hydropower Projects', 'Rail and Custom Machinery']
+  const footerTagline =
+    locale === 'zh'
+      ? brandProfile?.brandTaglineZh || copy.header.brandTagline
+      : brandProfile?.brandTaglineEn || copy.header.brandTagline
 
   const footerContactItems = siteResources?.contacts
     ? [
@@ -95,6 +112,12 @@ const Footer = ({ locale, copy }: FooterProps) => {
         '我们提供液压工具、工程服务与项目支持，欢迎通过询盘或联系方式与我们对接。'
       : footerNarrative?.statementEn ||
         'We provide hydraulic tools, engineering services, and project support. Contact us through inquiry or direct channels for follow-up.')
+  const footerQuoteLead =
+    locale === 'zh'
+      ? brandProfile?.quoteLeadZh ||
+        '欢迎提交项目需求，我们将尽快安排技术或商务人员对接。'
+      : brandProfile?.quoteLeadEn ||
+        'Submit your project requirements and our technical or commercial team will follow up shortly.'
   const footerBlockTitleClass = 'text-[13px] font-semibold uppercase tracking-[0.18em] text-[#f15a24]'
   const footerBlockListClass =
     'mt-5 space-y-3 text-[1rem] text-[rgba(255,255,255,0.82)] sm:space-y-4 sm:text-[1.04rem]'
@@ -112,7 +135,7 @@ const Footer = ({ locale, copy }: FooterProps) => {
                 {copy.header.brandName}
               </h2>
               <p className="mt-3 text-[12px] uppercase tracking-[0.14em] text-[rgba(255,255,255,0.64)] sm:mt-4 sm:text-[13px]">
-                {copy.header.brandTagline}
+                {footerTagline}
               </p>
               <p className="mt-6 max-w-none text-[1rem] leading-8 text-[rgba(255,255,255,0.82)] sm:text-[1.04rem] sm:leading-8">
                 {footerAboutText}
@@ -130,9 +153,7 @@ const Footer = ({ locale, copy }: FooterProps) => {
               </div>
 
               <p className="mt-6 text-[12px] uppercase tracking-[0.14em] text-[rgba(255,255,255,0.56)]">
-                {locale === 'zh'
-                  ? '欢迎提交项目需求，我们将尽快安排专人对接。'
-                  : 'Submit your project requirements and our team will follow up shortly.'}
+                {footerQuoteLead}
               </p>
 
               <Link

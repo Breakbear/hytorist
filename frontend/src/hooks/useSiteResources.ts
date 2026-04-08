@@ -3,6 +3,16 @@ import axios from 'axios'
 
 let siteResourcesCache: unknown = null
 let siteResourcesPromise: Promise<unknown> | null = null
+const siteResourcesListeners = new Set<(value: unknown | null) => void>()
+
+const publishSiteResources = (value: unknown | null) => {
+  siteResourcesCache = value
+  siteResourcesListeners.forEach((listener) => listener(value))
+}
+
+export const syncSiteResourcesCache = (value: unknown | null) => {
+  publishSiteResources(value)
+}
 
 const loadSiteResources = async () => {
   if (siteResourcesCache !== null) {
@@ -13,7 +23,7 @@ const loadSiteResources = async () => {
     siteResourcesPromise = axios
       .get('/api/site-resources')
       .then((response) => {
-        siteResourcesCache = response.data
+        publishSiteResources(response.data)
         return response.data
       })
       .finally(() => {
@@ -31,10 +41,18 @@ const useSiteResources = <TData = Record<string, unknown>>() => {
 
   useEffect(() => {
     let cancelled = false
+    const handleUpdate = (value: unknown | null) => {
+      if (!cancelled) {
+        setData(value !== null ? (value as TData) : null)
+      }
+    }
+
+    siteResourcesListeners.add(handleUpdate)
 
     if (siteResourcesCache !== null) {
       return () => {
         cancelled = true
+        siteResourcesListeners.delete(handleUpdate)
       }
     }
 
@@ -55,6 +73,7 @@ const useSiteResources = <TData = Record<string, unknown>>() => {
 
     return () => {
       cancelled = true
+      siteResourcesListeners.delete(handleUpdate)
     }
   }, [])
 

@@ -72,11 +72,11 @@ const InvalidLocaleRedirect = () => {
 const AdminShell = () => {
   return (
     <div className="page-shell min-h-screen flex flex-col">
-      <Header locale="en" copy={enCopy} />
+      <Header locale="zh" copy={zhCopy} />
       <main className="flex-grow pt-[7rem] sm:pt-[7.6rem] xl:pt-[10.4rem] 2xl:pt-[10.8rem]">
         <Admin />
       </main>
-      <Footer locale="en" copy={enCopy} />
+      <Footer locale="zh" copy={zhCopy} />
     </div>
   )
 }

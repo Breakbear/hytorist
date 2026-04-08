@@ -277,8 +277,141 @@ const loadMergedSiteResources = (callback) => {
   )
 }
 
+const dbGetAsync = (sql, params = []) =>
+  new Promise((resolve, reject) => {
+    db.get(sql, params, (err, row) => {
+      if (err) {
+        reject(err)
+        return
+      }
+
+      resolve(row)
+    })
+  })
+
+const dbAllAsync = (sql, params = []) =>
+  new Promise((resolve, reject) => {
+    db.all(sql, params, (err, rows) => {
+      if (err) {
+        reject(err)
+        return
+      }
+
+      resolve(rows)
+    })
+  })
+
+const loadMergedSiteResourcesAsync = () =>
+  new Promise((resolve, reject) => {
+    loadMergedSiteResources((err, result) => {
+      if (err) {
+        reject(err)
+        return
+      }
+
+      resolve(result)
+    })
+  })
+
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Hytorist API is running' })
+})
+
+app.get('/api/admin/overview', requireAdmin, async (req, res) => {
+  try {
+    const inquiryRow = (await dbGetAsync(
+      `
+        SELECT
+          COUNT(*) AS total,
+          SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END) AS pending,
+          SUM(CASE WHEN status = 'reviewed' THEN 1 ELSE 0 END) AS reviewed,
+          SUM(CASE WHEN status = 'contacted' THEN 1 ELSE 0 END) AS contacted,
+          SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) AS completed,
+          SUM(CASE WHEN status = 'rejected' THEN 1 ELSE 0 END) AS rejected,
+          SUM(CASE WHEN date(created_at) = date('now', 'localtime') THEN 1 ELSE 0 END) AS todayCount,
+          MAX(created_at) AS newestAt
+        FROM inquiries
+      `
+    )) || {}
+
+    const cmsRow = (await dbGetAsync(
+      `
+        SELECT
+          COUNT(*) AS totalOverrides,
+          SUM(CASE WHEN locale = 'zh' THEN 1 ELSE 0 END) AS zhCount,
+          SUM(CASE WHEN locale = 'en' THEN 1 ELSE 0 END) AS enCount,
+          COUNT(DISTINCT section_key) AS sectionCount,
+          MAX(updated_at) AS lastUpdatedAt
+        FROM cms_page_overrides
+      `
+    )) || {}
+
+    const cmsTopSections = await dbAllAsync(
+      `
+        SELECT section_key AS sectionKey, COUNT(*) AS count
+        FROM cms_page_overrides
+        GROUP BY section_key
+        ORDER BY count DESC, section_key ASC
+        LIMIT 6
+      `
+    )
+
+    const siteResourceResult = await loadMergedSiteResourcesAsync()
+    const resourceContent = siteResourceResult.content || {}
+    const productCategories = Array.isArray(resourceContent.productCategories)
+      ? resourceContent.productCategories
+      : []
+    const caseCategories = Array.isArray(resourceContent.caseCategories) ? resourceContent.caseCategories : []
+    const mailboxes =
+      resourceContent.contacts && Array.isArray(resourceContent.contacts.mailboxes)
+        ? resourceContent.contacts.mailboxes
+        : []
+    const newsArticles =
+      resourceContent.newsArticles && typeof resourceContent.newsArticles === 'object'
+        ? Object.keys(resourceContent.newsArticles)
+        : []
+
+    res.json({
+      server: {
+        adminConfigured: Boolean(ADMIN_TOKEN),
+        port: PORT
+      },
+      inquiries: {
+        total: Number(inquiryRow.total || 0),
+        pending: Number(inquiryRow.pending || 0),
+        reviewed: Number(inquiryRow.reviewed || 0),
+        contacted: Number(inquiryRow.contacted || 0),
+        completed: Number(inquiryRow.completed || 0),
+        rejected: Number(inquiryRow.rejected || 0),
+        todayCount: Number(inquiryRow.todayCount || 0),
+        newestAt: inquiryRow.newestAt || null
+      },
+      cms: {
+        totalOverrides: Number(cmsRow.totalOverrides || 0),
+        zhCount: Number(cmsRow.zhCount || 0),
+        enCount: Number(cmsRow.enCount || 0),
+        sectionCount: Number(cmsRow.sectionCount || 0),
+        lastUpdatedAt: cmsRow.lastUpdatedAt || null,
+        topSections: Array.isArray(cmsTopSections)
+          ? cmsTopSections.map((item) => ({
+              sectionKey: item.sectionKey,
+              count: Number(item.count || 0)
+            }))
+          : []
+      },
+      resources: {
+        hasOverride: Boolean(siteResourceResult.hasOverride),
+        updatedAt: siteResourceResult.updatedAt || null,
+        productCategoryCount: productCategories.length,
+        caseCategoryCount: caseCategories.length,
+        mailboxCount: mailboxes.length,
+        newsArticleCount: newsArticles.length
+      }
+    })
+  } catch (error) {
+    console.error('Error loading admin overview:', error.message)
+    res.status(500).json({ error: 'Failed to load admin overview' })
+  }
 })
 
 app.get('/api/site-resources', (req, res) => {

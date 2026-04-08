@@ -7,6 +7,20 @@ const officialSiteData = {
     mapUrl: 'http://www.hytorist.com/map.asp',
     mailLoginUrl: 'http://mail.hytorist.com'
   },
+  brandProfile: {
+    brandName: '海拓斯特',
+    brandNameEn: 'Hytorist',
+    brandTaglineZh: '专业液压工具解决方案',
+    brandTaglineEn: 'Hydraulic Torque Tool Solutions',
+    serviceDeskZh: '工业服务控制台',
+    serviceDeskEn: 'Industrial Service Desk',
+    quoteLeadZh:
+      '欢迎提交工况、目标扭矩、交付周期和服务范围，我们将由技术或商务团队在一个工作日内安排对接。',
+    quoteLeadEn:
+      'Share your operating conditions, target torque, delivery schedule, and service scope. Our technical or commercial team will follow up within one business day.',
+    sectorItemsZh: ['风电运维', '石化检修', '水电工程', '轨交与非标装备'],
+    sectorItemsEn: ['Wind O&M', 'Petrochemical', 'Hydropower Projects', 'Rail and Custom Machinery']
+  },
   pageIndex: [
     {
       label: '关于我们',

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { getPrimaryNavigation } from '../content/portal'
+import useSiteResources from '../hooks/useSiteResources'
 import { setStoredLocale, switchLocalePathWithState } from '../i18n/routes'
 import type { Locale, SiteCopy } from '../i18n/types'
 
@@ -9,11 +10,21 @@ interface HeaderProps {
   copy: SiteCopy
 }
 
+interface SiteResourcesResponse {
+  brandProfile?: {
+    brandTaglineZh?: string
+    brandTaglineEn?: string
+    serviceDeskZh?: string
+    serviceDeskEn?: string
+  }
+}
+
 const Header = ({ locale, copy }: HeaderProps) => {
   const location = useLocation()
   const switchTo = locale === 'zh' ? 'en' : 'zh'
   const [menuOpen, setMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const siteResources = useSiteResources<SiteResourcesResponse>()
 
   const switchPath = switchLocalePathWithState(
     location.pathname,
@@ -54,6 +65,14 @@ const Header = ({ locale, copy }: HeaderProps) => {
   const phoneNumber =
     copy.footer.contactItems.find((item) => item.includes('+')) ?? '+86 13366668010'
   const mobileCallLabel = locale === 'zh' ? '拨打热线' : 'Call Hotline'
+  const brandTagline =
+    locale === 'zh'
+      ? siteResources?.brandProfile?.brandTaglineZh || copy.header.brandTagline
+      : siteResources?.brandProfile?.brandTaglineEn || copy.header.brandTagline
+  const serviceDeskLabel =
+    locale === 'zh'
+      ? siteResources?.brandProfile?.serviceDeskZh || '工业服务控制台'
+      : siteResources?.brandProfile?.serviceDeskEn || 'Industrial Service Desk'
   const desktopNavLocaleClass = locale === 'zh' ? 'header-nav-item-zh' : 'header-nav-item-en'
   const mobileNavLocaleClass =
     locale === 'zh' ? 'header-mobile-nav-item-zh' : 'header-mobile-nav-item-en'
@@ -106,9 +125,9 @@ const Header = ({ locale, copy }: HeaderProps) => {
         <div className="section-wrap hidden xl:block">
           <div className={`flex ${topBarClass}`}>
             <div className="flex items-center gap-6">
-              <span className="brand-tagline truncate text-[12px]">{copy.header.brandTagline}</span>
+              <span className="brand-tagline truncate text-[12px]">{brandTagline}</span>
               <span className="hidden 2xl:inline-flex text-[#97a0aa]">
-                {locale === 'zh' ? '企业工业服务站' : 'Enterprise Service Desk'}
+                {serviceDeskLabel}
               </span>
             </div>
 
@@ -146,7 +165,7 @@ const Header = ({ locale, copy }: HeaderProps) => {
                   {copy.header.brandName}
                 </p>
                 <p className="brand-tagline mt-1 hidden truncate text-[11px] sm:block 2xl:text-[12px]">
-                  {copy.header.brandTagline}
+                  {brandTagline}
                 </p>
               </div>
             </Link>
@@ -229,7 +248,7 @@ const Header = ({ locale, copy }: HeaderProps) => {
             <div className="rounded-[24px] border border-[#d9dfe4] bg-[linear-gradient(180deg,rgba(255,255,255,0.96),rgba(247,245,241,0.92))] p-4 shadow-[0_14px_28px_rgba(82,92,106,0.08)] sm:p-5">
               <div className="border-b border-[#d7cfbf] pb-4">
                 <p className="brand-tagline text-[12px]">
-                  {copy.header.brandTagline}
+                  {brandTagline}
                 </p>
                 <div className="mt-3 flex flex-wrap items-center gap-3">
                   <a

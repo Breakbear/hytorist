@@ -1,13 +1,14 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
 import axios from 'axios'
 import { getPortalSections, type PortalPageData, type PortalSectionKey } from '../content/portal'
+import { syncSiteResourcesCache } from '../hooks/useSiteResources'
 import type { HomeCopy, Locale } from '../i18n/types'
 import { zhCopy } from '../i18n/zh'
 import { enCopy } from '../i18n/en'
 
 type InquiryStatus = 'pending' | 'reviewed' | 'contacted' | 'completed' | 'rejected'
 type InquiryPrivacy = 'public' | 'confidential'
-type SiteResourceEditorTab = 'contacts' | 'message' | 'narratives' | 'verified' | 'raw'
+type SiteResourceEditorTab = 'brand' | 'contacts' | 'message' | 'narratives' | 'verified' | 'raw'
 
 interface Inquiry {
   id: number
@@ -40,6 +41,42 @@ interface SiteResourcesResponse {
   content: Record<string, unknown>
   hasOverride: boolean
   updatedAt?: string | null
+}
+
+interface AdminOverviewResponse {
+  server: {
+    adminConfigured: boolean
+    port: number
+  }
+  inquiries: {
+    total: number
+    pending: number
+    reviewed: number
+    contacted: number
+    completed: number
+    rejected: number
+    todayCount: number
+    newestAt?: string | null
+  }
+  cms: {
+    totalOverrides: number
+    zhCount: number
+    enCount: number
+    sectionCount: number
+    lastUpdatedAt?: string | null
+    topSections: Array<{
+      sectionKey: string
+      count: number
+    }>
+  }
+  resources: {
+    hasOverride: boolean
+    updatedAt?: string | null
+    productCategoryCount: number
+    caseCategoryCount: number
+    mailboxCount: number
+    newsArticleCount: number
+  }
 }
 
 const statusOptions: InquiryStatus[] = ['pending', 'reviewed', 'contacted', 'completed', 'rejected']
@@ -78,6 +115,7 @@ const homeJsonHints = [
 
 const siteResourceJsonHints = [
   'source',
+  'brandProfile',
   'contacts',
   'messageForm',
   'productCategories[]',
@@ -90,6 +128,7 @@ const siteResourceJsonHints = [
   'verifiedPages'
 ]
 const siteResourceEditorTabs: Array<{ id: SiteResourceEditorTab; label: string }> = [
+  { id: 'brand', label: '品牌资料' },
   { id: 'contacts', label: '联系方式' },
   { id: 'message', label: '留言规则' },
   { id: 'narratives', label: 'UI 文案' },
@@ -97,11 +136,19 @@ const siteResourceEditorTabs: Array<{ id: SiteResourceEditorTab; label: string }
   { id: 'raw', label: '原始 JSON' }
 ]
 
-const formLabelClass = 'block text-sm font-semibold text-[#e7dbc7]'
-const formHintClass = 'mt-2 text-xs leading-6 text-[#a79b8c]'
+const formLabelClass = 'block text-sm font-semibold text-[#0A2E5C]'
+const formHintClass = 'mt-2 text-xs leading-6 text-[#64748B]'
 const inputClass = 'art-form-field mt-2'
 const textAreaClass = `${inputClass} min-h-[220px] font-mono text-xs sm:text-sm`
 const compactTextAreaClass = `${inputClass} min-h-[120px] text-sm`
+const panelCardClass =
+  'rounded-[24px] border border-[#E2E8F0] bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(248,250,252,0.94))] px-5 py-5 shadow-[0_16px_34px_rgba(15,23,42,0.06)]'
+const subtlePanelCardClass =
+  'rounded-[22px] border border-[#E2E8F0] bg-[#F8FAFC] px-5 py-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]'
+const errorNoticeClass =
+  'rounded-[20px] border border-[#FCA5A5] bg-[#FEF2F2] px-4 py-3 text-sm text-[#B91C1C]'
+const successNoticeClass =
+  'rounded-[20px] border border-[#86EFAC] bg-[#F0FDF4] px-4 py-3 text-sm text-[#166534]'
 
 const isPortalPageData = (value: unknown): value is PortalPageData => {
   if (!value || typeof value !== 'object' || Array.isArray(value)) {
@@ -175,11 +222,11 @@ const formatDate = (dateString?: string) =>
 
 const getStatusBadgeClass = (status: InquiryStatus) => {
   const classes: Record<InquiryStatus, string> = {
-    pending: 'border-[#d7b66c]/28 bg-[#d7b66c]/12 text-[#f0dfb0]',
-    reviewed: 'border-[#7ca8ff]/28 bg-[#7ca8ff]/12 text-[#dbe8ff]',
-    contacted: 'border-[#c18cff]/28 bg-[#c18cff]/12 text-[#eddcff]',
-    completed: 'border-[#5acb98]/28 bg-[#5acb98]/12 text-[#d7fbe8]',
-    rejected: 'border-[#ef7b7b]/28 bg-[#ef7b7b]/12 text-[#ffd6d6]'
+    pending: 'border-[#F59E0B]/20 bg-[#FFF7ED] text-[#B45309]',
+    reviewed: 'border-[#3B82F6]/18 bg-[#EFF6FF] text-[#1D4ED8]',
+    contacted: 'border-[#8B5CF6]/18 bg-[#F5F3FF] text-[#6D28D9]',
+    completed: 'border-[#10B981]/18 bg-[#ECFDF5] text-[#047857]',
+    rejected: 'border-[#EF4444]/18 bg-[#FEF2F2] text-[#B91C1C]'
   }
 
   return classes[status]
@@ -187,10 +234,10 @@ const getStatusBadgeClass = (status: InquiryStatus) => {
 
 const getStatusActionClass = (status: InquiryStatus, active: boolean) => {
   if (active) {
-    return `border ${getStatusBadgeClass(status)} shadow-[0_12px_24px_rgba(0,0,0,0.18)]`
+    return `border ${getStatusBadgeClass(status)} shadow-[0_12px_24px_rgba(15,23,42,0.08)]`
   }
 
-  return 'border border-white/8 bg-white/[0.03] text-[#d7ccbd] hover:border-[#e8ce8e]/20 hover:bg-white/[0.06] hover:text-white'
+  return 'border border-[#E2E8F0] bg-white text-[#475569] hover:border-[#F15A24]/28 hover:bg-[#FFF7F4] hover:text-[#0A2E5C]'
 }
 
 const Admin = () => {
@@ -201,6 +248,8 @@ const Admin = () => {
   const [inquiryLoading, setInquiryLoading] = useState(false)
   const [inquiryError, setInquiryError] = useState<string | null>(null)
   const [showDetail, setShowDetail] = useState(false)
+  const [overview, setOverview] = useState<AdminOverviewResponse | null>(null)
+  const [overviewLoading, setOverviewLoading] = useState(false)
 
   const [adminToken, setAdminToken] = useState(localStorage.getItem('admin_token') || '')
   const [tokenInput, setTokenInput] = useState(localStorage.getItem('admin_token') || '')
@@ -308,6 +357,7 @@ const Admin = () => {
   }, [siteResourcesJson])
   const parsedSiteResources = parsedSiteResourcesResult.value
   const siteResourcesJsonError = parsedSiteResourcesResult.error
+  const brandProfileResource = toRecord(parsedSiteResources?.brandProfile)
   const contactResource = toRecord(parsedSiteResources?.contacts)
   const messageFormResource = toRecord(parsedSiteResources?.messageForm)
   const uiNarrativesResource = toRecord(parsedSiteResources?.uiNarratives)
@@ -337,6 +387,25 @@ const Admin = () => {
     applySiteResourceDraft((draft) => {
       const contacts = getOrCreateRecord(draft, 'contacts')
       contacts[field] = value
+    })
+  }
+
+  const updateBrandField = (field: string, value: string) => {
+    applySiteResourceDraft((draft) => {
+      const brandProfile = getOrCreateRecord(draft, 'brandProfile')
+      brandProfile[field] = value
+    })
+  }
+
+  const updateBrandListField = (field: string, value: string) => {
+    const items = value
+      .split(/\r?\n/)
+      .map((item) => item.trim())
+      .filter(Boolean)
+
+    applySiteResourceDraft((draft) => {
+      const brandProfile = getOrCreateRecord(draft, 'brandProfile')
+      brandProfile[field] = items
     })
   }
 
@@ -394,6 +463,19 @@ const Admin = () => {
     ? messageFormResource.categoryOptions.length
     : 0
   const requiredFieldsText = getStringArray(messageFormResource.requiredFields).join(', ')
+  const brandSectorItemsZhText = getStringArray(brandProfileResource.sectorItemsZh).join('\n')
+  const brandSectorItemsEnText = getStringArray(brandProfileResource.sectorItemsEn).join('\n')
+  const overviewPendingCount = overview?.inquiries.pending ?? pendingCount
+  const overviewTotalCount = overview?.inquiries.total ?? inquiries.length
+  const overviewTopSections = overview?.cms.topSections ?? []
+
+  useEffect(() => {
+    if (!adminToken) {
+      return
+    }
+
+    void fetchOverview()
+  }, [adminToken])
 
   useEffect(() => {
     if (!adminToken) {
@@ -459,6 +541,20 @@ const Admin = () => {
     }
   }, [showDetail])
 
+  const fetchOverview = async () => {
+    try {
+      setOverviewLoading(true)
+      const response = await axios.get<AdminOverviewResponse>('/api/admin/overview', {
+        headers: authHeaders
+      })
+      setOverview(response.data)
+    } catch {
+      setOverview(null)
+    } finally {
+      setOverviewLoading(false)
+    }
+  }
+
   const fetchInquiries = async () => {
     try {
       setInquiryLoading(true)
@@ -496,6 +592,7 @@ const Admin = () => {
       setSiteResourcesJson(JSON.stringify(response.data.content, null, 2))
       setSiteResourcesHasOverride(!!response.data.hasOverride)
       setSiteResourcesUpdatedAt(response.data.updatedAt || null)
+      syncSiteResourcesCache(response.data.content)
     } catch {
       setSiteResourcesJson('')
       setSiteResourcesHasOverride(false)
@@ -525,6 +622,7 @@ const Admin = () => {
       if (selectedInquiry && selectedInquiry.id === id) {
         setSelectedInquiry({ ...selectedInquiry, status })
       }
+      await fetchOverview()
     } catch {
       setInquiryError('更新状态失败。')
     }
@@ -574,6 +672,7 @@ const Admin = () => {
       )
       setCmsMessage('栏目页内容已保存。')
       await fetchCmsOverrides(cmsLocale)
+      await fetchOverview()
     } catch {
       setCmsError('保存栏目页内容失败。')
     }
@@ -588,6 +687,7 @@ const Admin = () => {
       })
       setCmsMessage('已恢复该栏目页的默认内容。')
       await fetchCmsOverrides(cmsLocale)
+      await fetchOverview()
     } catch {
       setCmsError('恢复默认内容失败，若未保存过覆盖内容会返回失败。')
     }
@@ -617,6 +717,7 @@ const Admin = () => {
       )
       setHomeCmsMessage('首页叙事内容已保存。')
       await fetchCmsOverrides(cmsLocale)
+      await fetchOverview()
     } catch {
       setHomeCmsError('保存首页配置失败。')
     }
@@ -631,6 +732,7 @@ const Admin = () => {
       })
       setHomeCmsMessage('首页已恢复为默认叙事内容。')
       await fetchCmsOverrides(cmsLocale)
+      await fetchOverview()
     } catch {
       setHomeCmsError('恢复首页默认内容失败，若未覆盖过会返回失败。')
     }
@@ -660,6 +762,7 @@ const Admin = () => {
       )
       setSiteResourcesMessage('共享资料池已保存。')
       await fetchSiteResources()
+      await fetchOverview()
     } catch {
       setSiteResourcesError('保存共享资料池失败。')
     }
@@ -672,6 +775,7 @@ const Admin = () => {
       await axios.delete('/api/cms/site-resources', { headers: authHeaders })
       setSiteResourcesMessage('共享资料池已恢复为默认资料。')
       await fetchSiteResources()
+      await fetchOverview()
     } catch {
       setSiteResourcesError('恢复共享资料池默认值失败，若未覆盖过会返回失败。')
     }
@@ -695,6 +799,8 @@ const Admin = () => {
     localStorage.removeItem('admin_token')
     setAdminToken('')
     setTokenInput('')
+    setOverview(null)
+    setOverviewLoading(false)
     setInquiries([])
     setSelectedInquiry(null)
     setShowDetail(false)
@@ -713,140 +819,211 @@ const Admin = () => {
     setSiteResourceEditorTab('contacts')
   }
 
+  const inquiryStatusSummary = statusOptions.map((status) => ({
+    status,
+    count:
+      overview?.inquiries[status] ??
+      inquiries.filter((item) => item.status === status).length
+  }))
+  const dashboardCards = [
+    {
+      label: 'Inquiry Total',
+      value: overviewTotalCount,
+      note: '累计询盘总量'
+    },
+    {
+      label: 'Pending',
+      value: overviewPendingCount,
+      note: '待跟进询盘'
+    },
+    {
+      label: 'Today',
+      value: overview?.inquiries.todayCount ?? 0,
+      note: '今日新增'
+    },
+    {
+      label: 'Overrides',
+      value: overview?.cms.totalOverrides ?? cmsOverrides.length,
+      note: 'CMS 覆盖记录'
+    }
+  ]
+  const resourceScopeText = `产品分类 ${overview?.resources.productCategoryCount ?? 0} / 应用分类 ${
+    overview?.resources.caseCategoryCount ?? 0
+  } / 邮箱路由 ${overview?.resources.mailboxCount ?? contactMailboxCount}`
+
   if (!adminToken) {
     return (
       <div className="section-wrap py-12 sm:py-16">
-        <div className="mx-auto max-w-3xl panel panel-block panel-block-dark overflow-hidden px-6 py-8 sm:px-10 sm:py-10">
-          <div className="pointer-events-none absolute -left-16 top-0 h-56 w-56 rounded-full bg-[#d7b66c]/16 blur-3xl" />
-          <div className="pointer-events-none absolute -right-16 bottom-0 h-64 w-64 rounded-full bg-[#8f672b]/22 blur-3xl" />
+        <section className="panel panel-block overflow-hidden px-6 py-8 sm:px-10 sm:py-10">
+          <div className="grid gap-8 xl:grid-cols-[1.08fr_0.92fr] xl:items-start">
+            <div>
+              <p className="eyebrow">Admin Access</p>
+              <h1 className="section-title-xl mt-4">后台管理入口</h1>
+              <p className="section-copy mt-5 max-w-2xl">
+                这里统一管理询盘状态、栏目页覆盖内容、首页叙事字段和全站共享资料。管理员令牌只存储在当前浏览器，不会写回站点内容。
+              </p>
 
-          <div className="relative">
-            <p className="eyebrow">Control Room</p>
-            <h1 className="mt-4 font-display text-5xl leading-none text-white sm:text-6xl">
-              后台管理入口
-            </h1>
-            <p className="mt-5 max-w-2xl text-sm leading-8 text-[#c8bcae] sm:text-base">
-              这里用于管理询盘、栏目页覆盖内容，以及首页叙事字段。令牌仅存储在当前浏览器，不会写回站点内容。
-            </p>
+              {inquiryError && <div className={`mt-6 ${errorNoticeClass}`}>{inquiryError}</div>}
 
-          {inquiryError && (
-            <div className="mt-6 rounded-[22px] border border-[#ef7b7b]/22 bg-[#ef7b7b]/10 px-4 py-3 text-sm text-[#ffd6d6]">
-              {inquiryError}
+              <form onSubmit={handleTokenSubmit} className="mt-8 grid max-w-xl gap-4">
+                <label className={formLabelClass}>
+                  管理员令牌
+                  <input
+                    type="password"
+                    value={tokenInput}
+                    onChange={(event) => setTokenInput(event.target.value)}
+                    placeholder="Admin token"
+                    className={inputClass}
+                  />
+                </label>
+
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <button type="submit" className="btn-primary min-h-[50px] px-6 py-3">
+                    进入后台
+                  </button>
+                  <p className="text-sm leading-7 text-[#64748B]">
+                    建议仅在受信环境中登录，完成操作后及时退出。
+                  </p>
+                </div>
+              </form>
             </div>
-          )}
 
-            <form onSubmit={handleTokenSubmit} className="mt-8 grid gap-4">
-              <label className={formLabelClass}>
-                管理员令牌
-                <input
-                  type="password"
-                  value={tokenInput}
-                  onChange={(event) => setTokenInput(event.target.value)}
-                  placeholder="Admin token"
-                  className={inputClass}
-                />
-              </label>
-
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <button type="submit" className="btn-primary min-h-[48px] px-6 py-3">
-                  进入后台
-                </button>
-                <p className="text-xs leading-6 text-[#a79b8c]">
-                  建议仅在受信环境中登录，完成操作后及时退出。
+            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-1">
+              <article className={panelCardClass}>
+                <p className="eyebrow">Inquiry Flow</p>
+                <h2 className="mt-3 text-2xl font-semibold text-[#0A2E5C]">询盘跟进</h2>
+                <p className="mt-3 text-sm leading-7 text-[#64748B]">
+                  在一个视图里查看联系人、需求说明、保密设置和当前状态。
                 </p>
-              </div>
-            </form>
+              </article>
+              <article className={panelCardClass}>
+                <p className="eyebrow">CMS Coverage</p>
+                <h2 className="mt-3 text-2xl font-semibold text-[#0A2E5C]">内容覆盖</h2>
+                <p className="mt-3 text-sm leading-7 text-[#64748B]">
+                  支持栏目页、首页叙事字段和共享资源池的实时维护。
+                </p>
+              </article>
+            </div>
           </div>
-        </div>
+        </section>
       </div>
     )
   }
 
   return (
     <div className="section-wrap space-y-8 py-10 sm:py-12">
-      <section className="panel panel-block panel-block-dark overflow-hidden px-6 py-8 sm:px-8 sm:py-9">
-        <div className="flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between">
+      <section className="panel panel-block overflow-hidden px-6 py-8 sm:px-8 sm:py-9">
+        <div className="grid gap-8 xl:grid-cols-[1.05fr_0.95fr] xl:items-start">
           <div>
             <p className="eyebrow">Admin Console</p>
-            <h1 className="mt-4 font-display text-5xl leading-none text-white sm:text-6xl">
-              内容与询盘总控台
-            </h1>
-            <p className="mt-5 max-w-3xl text-sm leading-8 text-[#c8bcae] sm:text-base">
-              前台已经切到更宽的工业化布局，后台也同步到同一套语言，并把首页叙事字段、栏目覆盖逻辑和询盘流转放到一个界面里管理。
+            <h1 className="section-title-xl mt-4">内容与询盘总控台</h1>
+            <p className="section-copy mt-5 max-w-3xl">
+              后台同步切到蓝橙工业风，并把询盘状态、栏目覆盖、首页叙事字段和共享资源池收进同一套控制台。现在改内容，不再只是改页面皮肤。
             </p>
+
+            <div className="mt-6 flex flex-wrap gap-2.5">
+              <span className="pill">{cmsLocale === 'zh' ? '中文内容池' : 'English Content Pool'}</span>
+              <span className="pill">{activeTab === 'inquiries' ? 'Inquiry Desk' : 'CMS Desk'}</span>
+              <span className="pill">
+                {siteResourcesHasOverride ? 'Shared Resources Overridden' : 'Using Default Shared Resources'}
+              </span>
+            </div>
+
+            <div className="mt-6 grid gap-3 sm:grid-cols-2">
+              <div className={subtlePanelCardClass}>
+                <p className="label-muted text-xs">最近询盘</p>
+                <p className="mt-3 text-sm leading-7 text-[#0F172A]">
+                  {formatDate(overview?.inquiries.newestAt || undefined)}
+                </p>
+              </div>
+              <div className={subtlePanelCardClass}>
+                <p className="label-muted text-xs">覆盖范围</p>
+                <p className="mt-3 text-sm leading-7 text-[#0F172A]">{resourceScopeText}</p>
+              </div>
+            </div>
+
+            {overviewTopSections.length > 0 && (
+              <div className="mt-6">
+                <p className="label-muted text-xs">Top Sections</p>
+                <div className="mt-3 flex flex-wrap gap-2.5">
+                  {overviewTopSections.map((item) => (
+                    <span key={item.sectionKey} className="summary-chip">
+                      {item.sectionKey} {item.count}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
-          <div className="flex flex-wrap items-center gap-3">
-            <span className="pill">{cmsLocale === 'zh' ? '中文内容池' : 'English Content Pool'}</span>
-            <span className="pill">{activeTab === 'inquiries' ? 'Inquiry Desk' : 'CMS Desk'}</span>
-            <button type="button" onClick={clearToken} className="btn-secondary min-h-[44px] px-5 py-2 text-sm">
-              退出登录
-            </button>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {dashboardCards.map((card) => (
+              <article key={card.label} className={panelCardClass}>
+                <p className="eyebrow">{card.label}</p>
+                <p className="mt-4 font-display text-4xl leading-none text-[#0A2E5C]">{card.value}</p>
+                <p className="mt-3 text-sm leading-7 text-[#64748B]">{card.note}</p>
+              </article>
+            ))}
           </div>
         </div>
 
-        <div className="mt-8 grid gap-4 md:grid-cols-3">
-          <article className="art-card px-5 py-5 sm:px-6">
-            <p className="eyebrow">Volume</p>
-            <p className="mt-4 font-display text-4xl leading-none text-white">{inquiries.length}</p>
-            <p className="mt-3 text-sm leading-7 text-[#b8ad9e]">当前询盘总量</p>
-          </article>
-          <article className="art-card px-5 py-5 sm:px-6">
-            <p className="eyebrow">Pending</p>
-            <p className="mt-4 font-display text-4xl leading-none text-white">{pendingCount}</p>
-            <p className="mt-3 text-sm leading-7 text-[#b8ad9e]">待处理询盘数</p>
-          </article>
-          <article className="art-card px-5 py-5 sm:px-6">
-            <p className="eyebrow">Overrides</p>
-            <p className="mt-4 font-display text-4xl leading-none text-white">{cmsOverrides.length}</p>
-            <p className="mt-3 text-sm leading-7 text-[#b8ad9e]">当前语言下的 CMS 覆盖记录</p>
-          </article>
+        <div className="mt-8 flex flex-wrap items-center gap-3 border-t border-[#E2E8F0] pt-6">
+          <button
+            type="button"
+            onClick={() => setActiveTab('inquiries')}
+            className={
+              activeTab === 'inquiries'
+                ? 'btn-primary min-h-[44px] px-5 py-2 text-sm'
+                : 'btn-secondary min-h-[44px] px-5 py-2 text-sm'
+            }
+          >
+            询盘管理
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('cms')}
+            className={
+              activeTab === 'cms'
+                ? 'btn-primary min-h-[44px] px-5 py-2 text-sm'
+                : 'btn-secondary min-h-[44px] px-5 py-2 text-sm'
+            }
+          >
+            页面内容管理
+          </button>
+          <button
+            type="button"
+            onClick={() => void fetchOverview()}
+            className="btn-secondary min-h-[44px] px-5 py-2 text-sm"
+            disabled={overviewLoading}
+          >
+            {overviewLoading ? '刷新总览中...' : '刷新总览'}
+          </button>
+          <button type="button" onClick={clearToken} className="btn-secondary min-h-[44px] px-5 py-2 text-sm">
+            退出登录
+          </button>
         </div>
       </section>
 
-      <div className="flex flex-wrap gap-3">
-        <button
-          type="button"
-          onClick={() => setActiveTab('inquiries')}
-          className={
-            activeTab === 'inquiries'
-              ? 'btn-primary min-h-[44px] px-5 py-2 text-sm'
-              : 'btn-secondary min-h-[44px] px-5 py-2 text-sm'
-          }
-        >
-          询盘管理
-        </button>
-        <button
-          type="button"
-          onClick={() => setActiveTab('cms')}
-          className={
-            activeTab === 'cms'
-              ? 'btn-primary min-h-[44px] px-5 py-2 text-sm'
-              : 'btn-secondary min-h-[44px] px-5 py-2 text-sm'
-          }
-        >
-          页面内容管理
-        </button>
-      </div>
-
       {activeTab === 'inquiries' ? (
-        <section className="panel overflow-hidden">
-          <div className="flex flex-col gap-4 border-b border-white/6 px-6 py-6 sm:flex-row sm:items-end sm:justify-between sm:px-8">
+        <section className="panel overflow-hidden px-6 py-6 sm:px-8">
+          <div className="flex flex-col gap-5 border-b border-[#E2E8F0] pb-6 lg:flex-row lg:items-end lg:justify-between">
             <div>
               <p className="eyebrow">Inquiry Desk</p>
-              <h2 className="mt-3 font-display text-4xl leading-none text-white sm:text-5xl">
-                询盘管理
-              </h2>
-              <p className="mt-3 text-sm leading-7 text-[#b8ad9e]">
-                查看详情、切换状态，并保持销售跟进链路清晰。
+              <h2 className="section-title-lg mt-3">询盘管理</h2>
+              <p className="mt-4 max-w-2xl text-sm leading-8 text-[#64748B] sm:text-base">
+                查看联系人、工况说明、保密设置和状态流转，保持销售与技术跟进链路清晰。
               </p>
             </div>
 
             <div className="flex flex-wrap items-center gap-3">
-              <span className="pill">待处理 {pendingCount}</span>
+              <span className="summary-chip">待处理 {overviewPendingCount}</span>
+              <span className="summary-chip">今日新增 {overview?.inquiries.todayCount ?? 0}</span>
               <button
                 type="button"
-                onClick={() => void fetchInquiries()}
+                onClick={() => {
+                  void fetchInquiries()
+                  void fetchOverview()
+                }}
                 className="btn-secondary min-h-[44px] px-5 py-2 text-sm"
                 disabled={inquiryLoading}
               >
@@ -855,15 +1032,24 @@ const Admin = () => {
             </div>
           </div>
 
-          {inquiryError && (
-            <div className="mx-6 mt-6 rounded-[22px] border border-[#ef7b7b]/22 bg-[#ef7b7b]/10 px-4 py-3 text-sm text-[#ffd6d6] sm:mx-8">
-              {inquiryError}
-            </div>
-          )}
+          <div className="mt-6 flex flex-wrap gap-2.5">
+            {inquiryStatusSummary.map((item) => (
+              <span
+                key={item.status}
+                className={`inline-flex rounded-full border px-3 py-1 text-xs font-semibold ${getStatusBadgeClass(
+                  item.status
+                )}`}
+              >
+                {statusLabels[item.status]} {item.count}
+              </span>
+            ))}
+          </div>
 
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[820px]">
-              <thead className="bg-white/[0.03]">
+          {inquiryError && <div className={`mt-6 ${errorNoticeClass}`}>{inquiryError}</div>}
+
+          <div className="mt-6 overflow-x-auto">
+            <table className="w-full min-w-[820px] overflow-hidden rounded-[22px] border border-[#E2E8F0]">
+              <thead className="bg-[#F8FAFC]">
                 <tr>
                   <th className="label-muted px-6 py-4 text-left text-[11px] sm:px-8">ID</th>
                   <th className="label-muted px-6 py-4 text-left text-[11px] sm:px-8">姓名</th>
@@ -873,23 +1059,23 @@ const Admin = () => {
                   <th className="label-muted px-6 py-4 text-left text-[11px] sm:px-8">操作</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/6">
+              <tbody className="divide-y divide-[#E2E8F0] bg-white">
                 {inquiries.map((inquiry) => (
-                  <tr key={inquiry.id} className="transition-colors hover:bg-white/[0.03]">
-                    <td className="px-6 py-4 text-sm text-[#d7ccbd] sm:px-8">{inquiry.id}</td>
-                    <td className="px-6 py-4 text-sm font-medium text-white sm:px-8">{inquiry.name}</td>
-                    <td className="px-6 py-4 text-sm text-[#c8bcae] sm:px-8">{inquiry.email}</td>
+                  <tr key={inquiry.id} className="transition-colors hover:bg-[#F8FAFC]">
+                    <td className="px-6 py-4 text-sm text-[#475569] sm:px-8">{inquiry.id}</td>
+                    <td className="px-6 py-4 text-sm font-semibold text-[#0F172A] sm:px-8">{inquiry.name}</td>
+                    <td className="px-6 py-4 text-sm text-[#475569] sm:px-8">{inquiry.email}</td>
                     <td className="px-6 py-4 text-sm sm:px-8">
                       <span className={`inline-flex rounded-full border px-3 py-1 text-xs font-semibold ${getStatusBadgeClass(inquiry.status)}`}>
                         {statusLabels[inquiry.status]}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-sm text-[#a79b8c] sm:px-8">{formatDate(inquiry.created_at)}</td>
+                    <td className="px-6 py-4 text-sm text-[#64748B] sm:px-8">{formatDate(inquiry.created_at)}</td>
                     <td className="px-6 py-4 text-sm sm:px-8">
                       <button
                         type="button"
                         onClick={() => handleViewDetail(inquiry.id)}
-                        className="font-semibold text-[#f0dfb0] transition-colors hover:text-white"
+                        className="font-semibold text-[#F15A24] transition-colors hover:text-[#0A2E5C]"
                       >
                         查看详情
                       </button>
@@ -900,16 +1086,20 @@ const Admin = () => {
             </table>
           </div>
 
-          {inquiryLoading && <p className="px-6 py-6 text-sm text-[#a79b8c] sm:px-8">询盘列表加载中...</p>}
-          {!inquiryLoading && inquiries.length === 0 && <p className="px-6 py-6 text-sm text-[#a79b8c] sm:px-8">暂无询盘数据。</p>}
+          {inquiryLoading && <p className="mt-5 text-sm text-[#64748B]">询盘列表加载中...</p>}
+          {!inquiryLoading && inquiries.length === 0 && (
+            <div className={`mt-6 ${subtlePanelCardClass}`}>
+              <p className="text-sm text-[#64748B]">暂无询盘数据。</p>
+            </div>
+          )}
 
           {showDetail && selectedInquiry && (
             <div
-              className="fixed inset-0 z-[70] flex items-center justify-center bg-black/72 p-4 backdrop-blur-md"
+              className="fixed inset-0 z-[70] flex items-center justify-center bg-[rgba(15,23,42,0.56)] p-4 backdrop-blur-md"
               onClick={() => setShowDetail(false)}
             >
               <div
-                className="panel panel-block panel-block-dark max-h-[90vh] w-full max-w-3xl overflow-y-auto px-6 py-6 sm:px-8"
+                className="panel max-h-[90vh] w-full max-w-4xl overflow-y-auto px-6 py-6 sm:px-8"
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby="admin-inquiry-title"
@@ -918,20 +1108,17 @@ const Admin = () => {
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <p className="eyebrow">Detail Sheet</p>
-                    <h2
-                      id="admin-inquiry-title"
-                      className="mt-3 font-display text-4xl leading-none text-white sm:text-5xl"
-                    >
+                    <h2 id="admin-inquiry-title" className="section-title-lg mt-3">
                       询盘详情
                     </h2>
-                    <p className="mt-3 text-sm leading-7 text-[#b8ad9e]">
+                    <p className="mt-3 text-sm leading-7 text-[#64748B]">
                       使用 `Esc` 或右上角按钮可快速关闭。
                     </p>
                   </div>
                   <button
                     type="button"
                     onClick={() => setShowDetail(false)}
-                    className="grid h-11 w-11 flex-shrink-0 place-items-center rounded-full border border-[#e8ce8e]/16 bg-white/[0.03] text-white transition-colors hover:bg-white/[0.07]"
+                    className="grid h-11 w-11 flex-shrink-0 place-items-center rounded-full border border-[#E2E8F0] bg-white text-[#0A2E5C] transition-colors hover:bg-[#F8FAFC]"
                     aria-label="关闭详情"
                   >
                     <span className="text-xl leading-none">&times;</span>
@@ -939,57 +1126,55 @@ const Admin = () => {
                 </div>
 
                 <div className="mt-5 flex flex-wrap items-center gap-3">
-                  <span className="pill">ID {selectedInquiry.id}</span>
+                  <span className="summary-chip">ID {selectedInquiry.id}</span>
                   <span className={`inline-flex rounded-full border px-3 py-1 text-xs font-semibold ${getStatusBadgeClass(selectedInquiry.status)}`}>
                     {statusLabels[selectedInquiry.status]}
                   </span>
-                  <span className="label-muted text-xs">
-                    {formatDate(selectedInquiry.created_at)}
-                  </span>
+                  <span className="label-muted text-xs">{formatDate(selectedInquiry.created_at)}</span>
                 </div>
 
                 <div className="art-divider my-6" />
 
                 <div className="grid gap-4 sm:grid-cols-2">
-                  <article className="art-card px-5 py-4">
+                  <article className={subtlePanelCardClass}>
                     <p className="eyebrow">Name</p>
-                    <p className="mt-3 text-sm text-white sm:text-base">{selectedInquiry.name}</p>
+                    <p className="mt-3 text-sm text-[#0F172A] sm:text-base">{selectedInquiry.name}</p>
                   </article>
-                  <article className="art-card px-5 py-4">
+                  <article className={subtlePanelCardClass}>
                     <p className="eyebrow">Email</p>
-                    <p className="mt-3 text-sm text-white sm:text-base">{selectedInquiry.email}</p>
+                    <p className="mt-3 text-sm text-[#0F172A] sm:text-base">{selectedInquiry.email}</p>
                   </article>
-                  <article className="art-card px-5 py-4">
+                  <article className={subtlePanelCardClass}>
                     <p className="eyebrow">Phone</p>
-                    <p className="mt-3 text-sm text-white sm:text-base">{selectedInquiry.phone || '-'}</p>
+                    <p className="mt-3 text-sm text-[#0F172A] sm:text-base">{selectedInquiry.phone || '-'}</p>
                   </article>
-                  <article className="art-card px-5 py-4">
+                  <article className={subtlePanelCardClass}>
                     <p className="eyebrow">Company</p>
-                    <p className="mt-3 text-sm text-white sm:text-base">{selectedInquiry.company || '-'}</p>
+                    <p className="mt-3 text-sm text-[#0F172A] sm:text-base">{selectedInquiry.company || '-'}</p>
                   </article>
-                  <article className="art-card px-5 py-4">
+                  <article className={subtlePanelCardClass}>
                     <p className="eyebrow">Category</p>
-                    <p className="mt-3 text-sm text-white sm:text-base">{selectedInquiry.category || '-'}</p>
+                    <p className="mt-3 text-sm text-[#0F172A] sm:text-base">{selectedInquiry.category || '-'}</p>
                   </article>
-                  <article className="art-card px-5 py-4">
+                  <article className={subtlePanelCardClass}>
                     <p className="eyebrow">Product</p>
-                    <p className="mt-3 text-sm text-white sm:text-base">{selectedInquiry.product || '-'}</p>
+                    <p className="mt-3 text-sm text-[#0F172A] sm:text-base">{selectedInquiry.product || '-'}</p>
                   </article>
-                  <article className="art-card px-5 py-4">
+                  <article className={subtlePanelCardClass}>
                     <p className="eyebrow">Quantity</p>
-                    <p className="mt-3 text-sm text-white sm:text-base">{selectedInquiry.quantity || '-'}</p>
+                    <p className="mt-3 text-sm text-[#0F172A] sm:text-base">{selectedInquiry.quantity || '-'}</p>
                   </article>
-                  <article className="art-card px-5 py-4">
+                  <article className={subtlePanelCardClass}>
                     <p className="eyebrow">Privacy</p>
-                    <p className="mt-3 text-sm text-white sm:text-base">
+                    <p className="mt-3 text-sm text-[#0F172A] sm:text-base">
                       {selectedInquiry.privacy ? privacyLabels[selectedInquiry.privacy] : '-'}
                     </p>
                   </article>
                 </div>
 
-                <article className="art-card mt-4 px-5 py-5">
+                <article className={`mt-4 ${subtlePanelCardClass}`}>
                   <p className="eyebrow">Message</p>
-                  <p className="mt-4 whitespace-pre-wrap text-sm leading-8 text-[#d7ccbd] sm:text-base">
+                  <p className="mt-4 whitespace-pre-wrap text-sm leading-8 text-[#475569] sm:text-base">
                     {selectedInquiry.message}
                   </p>
                 </article>
@@ -1022,22 +1207,20 @@ const Admin = () => {
             <div className="grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
               <div>
                 <p className="eyebrow">Portal CMS</p>
-                <h2 className="mt-3 font-display text-4xl leading-none text-white sm:text-5xl">
-                  栏目页内容配置
-                </h2>
-                <p className="mt-4 max-w-2xl text-sm leading-8 text-[#b8ad9e] sm:text-base">
+                <h2 className="section-title-lg mt-3">栏目页内容配置</h2>
+                <p className="mt-4 max-w-2xl text-sm leading-8 text-[#64748B] sm:text-base">
                   这里管理产品外的栏目页覆盖内容。标题、副标题和 JSON 主体会在保存后直接覆盖前台展示，恢复默认则删除覆盖记录。
                 </p>
               </div>
 
-              <div className="art-card px-5 py-5 sm:px-6">
+              <div className={panelCardClass}>
                 <p className="eyebrow">Current Scope</p>
-                <div className="mt-4 space-y-3 text-sm leading-7 text-[#d7ccbd]">
-                  <p><span className="text-[#9f9588]">语言：</span>{cmsLocale === 'zh' ? '中文' : 'English'}</p>
-                  <p><span className="text-[#9f9588]">栏目：</span>{currentSection?.navLabel || '-'}</p>
-                  <p><span className="text-[#9f9588]">页面：</span>{currentMenuItem?.label || cmsPageId || '-'}</p>
-                  <p><span className="text-[#9f9588]">状态：</span>{activeOverride ? '已启用覆盖' : '使用默认内容'}</p>
-                  <p><span className="text-[#9f9588]">最近更新：</span>{formatDate(activeOverride?.updatedAt)}</p>
+                <div className="mt-4 space-y-3 text-sm leading-7 text-[#334155]">
+                  <p><span className="text-[#64748B]">语言：</span>{cmsLocale === 'zh' ? '中文' : 'English'}</p>
+                  <p><span className="text-[#64748B]">栏目：</span>{currentSection?.navLabel || '-'}</p>
+                  <p><span className="text-[#64748B]">页面：</span>{currentMenuItem?.label || cmsPageId || '-'}</p>
+                  <p><span className="text-[#64748B]">状态：</span>{activeOverride ? '已启用覆盖' : '使用默认内容'}</p>
+                  <p><span className="text-[#64748B]">最近更新：</span>{formatDate(activeOverride?.updatedAt)}</p>
                 </div>
               </div>
             </div>
@@ -1082,18 +1265,14 @@ const Admin = () => {
               </label>
             </div>
 
-            <div className="mt-4 flex flex-wrap gap-2">
+            <div className="mt-4 flex flex-wrap gap-2.5">
               {portalJsonHints.map((field) => (
-                <span key={field} className="pill">{field}</span>
+                <span key={field} className="summary-chip">{field}</span>
               ))}
             </div>
 
-            {cmsError && (
-              <div className="mt-5 rounded-[22px] border border-[#ef7b7b]/22 bg-[#ef7b7b]/10 px-4 py-3 text-sm text-[#ffd6d6]">{cmsError}</div>
-            )}
-            {cmsMessage && (
-              <div className="mt-5 rounded-[22px] border border-[#5acb98]/22 bg-[#5acb98]/10 px-4 py-3 text-sm text-[#d7fbe8]">{cmsMessage}</div>
-            )}
+            {cmsError && <div className={`mt-5 ${errorNoticeClass}`}>{cmsError}</div>}
+            {cmsMessage && <div className={`mt-5 ${successNoticeClass}`}>{cmsMessage}</div>}
 
             {activeContent && (
               <div className="mt-6 grid gap-6 xl:grid-cols-[0.82fr_1.18fr]">
@@ -1119,10 +1298,10 @@ const Admin = () => {
                     <p className={formHintClass}>留空时不会写入 subtitle。</p>
                   </label>
 
-                  <div className="art-card px-5 py-5">
+                  <div className={subtlePanelCardClass}>
                     <p className="eyebrow">Write Rule</p>
-                    <p className="mt-4 text-sm leading-8 text-[#b8ad9e]">
-                    `title` 与 `kind` 会由后台保留，JSON 主体里只需要填写其余结构字段。`sourcePageUrl` 现在只作为内部资料溯源字段保留，前台不再直接展示外部原页入口，建议优先覆盖当前页面真正需要变化的区块，避免把默认内容整体复制进去。
+                    <p className="mt-4 text-sm leading-8 text-[#64748B]">
+                      `title` 与 `kind` 会由后台保留，JSON 主体里只需要填写其余结构字段。`sourcePageUrl` 现在只作为内部资料溯源字段保留，前台不再直接展示外部原页入口，建议优先覆盖当前页面真正需要变化的区块，避免把默认内容整体复制进去。
                     </p>
                   </div>
 
@@ -1152,31 +1331,25 @@ const Admin = () => {
             )}
           </section>
 
-          <section className="panel panel-block panel-block-signal overflow-hidden px-6 py-6 sm:px-8">
+          <section className="panel px-6 py-6 sm:px-8">
             <div className="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
               <div>
                 <p className="eyebrow">Home Narrative</p>
-                <h2 className="mt-3 font-display text-4xl leading-none text-white sm:text-5xl">
-                  首页叙事字段配置
-                </h2>
-                <p className="mt-4 max-w-3xl text-sm leading-8 text-[#c8bcae] sm:text-base">
+                <h2 className="section-title-lg mt-3">首页叙事字段配置</h2>
+                <p className="mt-4 max-w-3xl text-sm leading-8 text-[#64748B] sm:text-base">
                   这里管理首页的主叙事文本、精选产品说明、工序步骤和指标字段。对应覆盖键固定为 `sectionKey=home`、`pageId=index`。
                 </p>
               </div>
 
-              <div className="flex flex-wrap gap-2 xl:max-w-[440px] xl:justify-end">
+              <div className="flex flex-wrap gap-2.5 xl:max-w-[440px] xl:justify-end">
                 {homeJsonHints.map((field) => (
-                  <span key={field} className="pill">{field}</span>
+                  <span key={field} className="summary-chip">{field}</span>
                 ))}
               </div>
             </div>
 
-            {homeCmsError && (
-              <div className="mt-5 rounded-[22px] border border-[#ef7b7b]/22 bg-[#ef7b7b]/10 px-4 py-3 text-sm text-[#ffd6d6]">{homeCmsError}</div>
-            )}
-            {homeCmsMessage && (
-              <div className="mt-5 rounded-[22px] border border-[#5acb98]/22 bg-[#5acb98]/10 px-4 py-3 text-sm text-[#d7fbe8]">{homeCmsMessage}</div>
-            )}
+            {homeCmsError && <div className={`mt-5 ${errorNoticeClass}`}>{homeCmsError}</div>}
+            {homeCmsMessage && <div className={`mt-5 ${successNoticeClass}`}>{homeCmsMessage}</div>}
 
             <label className={`${formLabelClass} mt-6`}>
               首页 JSON
@@ -1189,12 +1362,12 @@ const Admin = () => {
             </label>
 
             <div className="mt-4 grid gap-4 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
-              <div className="art-card px-5 py-5">
+              <div className={subtlePanelCardClass}>
                 <p className="eyebrow">Editing Note</p>
-                <p className="mt-4 text-sm leading-8 text-[#c8bcae]">
+                <p className="mt-4 text-sm leading-8 text-[#64748B]">
                   首页 JSON 建议按完整数组写入，尤其是 `designNotes[]`、`processSteps[]` 和 `featuredProducts[]`。后台会校验这些结构，空数组不会覆盖默认内容。
                 </p>
-                <p className="mt-3 text-sm leading-8 text-[#b8ad9e]">
+                <p className="mt-3 text-sm leading-8 text-[#64748B]">
                   当前状态：{homeOverride ? '已启用首页覆盖' : '使用默认首页内容'}，最近更新 {formatDate(homeOverride?.updatedAt)}。
                 </p>
               </div>
@@ -1214,48 +1387,39 @@ const Admin = () => {
             <div className="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
               <div>
                 <p className="eyebrow">Shared Resource Pool</p>
-                <h2 className="mt-3 font-display text-4xl leading-none text-white sm:text-5xl">
-                  共享资料资源配置
-                </h2>
-                <p className="mt-4 max-w-3xl text-sm leading-8 text-[#c8bcae] sm:text-base">
-                  这里管理 `site-resources` 资源池，当前已被首页、栏目页、页脚、询盘页等前台模块直接消费。适合维护产品分类、应用分类、联系方式、留言字段、证书和栏目摘要等真实资料。
+                <h2 className="section-title-lg mt-3">共享资料资源配置</h2>
+                <p className="mt-4 max-w-3xl text-sm leading-8 text-[#64748B] sm:text-base">
+                  这里管理 `site-resources` 资源池，头部、页脚、首页、栏目页和询盘页都会直接消费这些字段，适合维护品牌资料、联系方式、留言规则和资料摘要。
                 </p>
               </div>
 
-              <div className="flex flex-wrap gap-2 xl:max-w-[460px] xl:justify-end">
+              <div className="flex flex-wrap gap-2.5 xl:max-w-[500px] xl:justify-end">
                 {siteResourceJsonHints.map((field) => (
-                  <span key={field} className="pill">{field}</span>
+                  <span key={field} className="summary-chip">{field}</span>
                 ))}
               </div>
             </div>
 
-            {siteResourcesError && (
-              <div className="mt-5 rounded-[22px] border border-[#ef7b7b]/22 bg-[#ef7b7b]/10 px-4 py-3 text-sm text-[#ffd6d6]">
-                {siteResourcesError}
-              </div>
-            )}
-            {siteResourcesMessage && (
-              <div className="mt-5 rounded-[22px] border border-[#5acb98]/22 bg-[#5acb98]/10 px-4 py-3 text-sm text-[#d7fbe8]">
-                {siteResourcesMessage}
-              </div>
-            )}
+            {siteResourcesError && <div className={`mt-5 ${errorNoticeClass}`}>{siteResourcesError}</div>}
+            {siteResourcesMessage && <div className={`mt-5 ${successNoticeClass}`}>{siteResourcesMessage}</div>}
 
             <div className="mt-6 grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
               <div className="space-y-5">
-                <div className="art-card px-5 py-5">
+                <div className={panelCardClass}>
                   <p className="eyebrow">Current Status</p>
-                  <div className="mt-4 space-y-3 text-sm leading-7 text-[#d7ccbd]">
-                    <p><span className="text-[#9f9588]">状态：</span>{siteResourcesHasOverride ? '已启用资源覆盖' : '使用默认共享资料'}</p>
-                    <p><span className="text-[#9f9588]">最近更新：</span>{formatDate(siteResourcesUpdatedAt || undefined)}</p>
-                    <p><span className="text-[#9f9588]">留言分类：</span>{messageCategoryCount} 项</p>
-                    <p><span className="text-[#9f9588]">联系人邮箱路由：</span>{contactMailboxCount} 项</p>
-                    <p><span className="text-[#9f9588]">影响范围：</span>首页摘要、栏目页摘要、产品分类、应用分类、新闻列表、询盘页留言字段与联系信息</p>
+                  <div className="mt-4 space-y-3 text-sm leading-7 text-[#334155]">
+                    <p><span className="text-[#64748B]">状态：</span>{siteResourcesHasOverride ? '已启用资源覆盖' : '使用默认共享资料'}</p>
+                    <p><span className="text-[#64748B]">最近更新：</span>{formatDate(siteResourcesUpdatedAt || undefined)}</p>
+                    <p><span className="text-[#64748B]">留言分类：</span>{messageCategoryCount} 项</p>
+                    <p><span className="text-[#64748B]">联系人邮箱路由：</span>{contactMailboxCount} 项</p>
+                    <p><span className="text-[#64748B]">新闻文章：</span>{overview?.resources.newsArticleCount ?? 0} 篇</p>
+                    <p><span className="text-[#64748B]">影响范围：</span>头部标语、页脚领域标签、首页摘要、栏目页摘要、产品分类、应用分类、新闻列表、询盘页留言字段与联系信息</p>
                   </div>
                 </div>
 
-                <div className="art-card px-5 py-5">
+                <div className={panelCardClass}>
                   <p className="eyebrow">Module Editor</p>
-                  <p className="mt-3 text-xs leading-6 text-[#9f9588]">
+                  <p className="mt-3 text-sm leading-7 text-[#64748B]">
                     先按模块维护高频字段，复杂结构仍可在右侧原始 JSON 区域编辑。
                   </p>
 
@@ -1267,8 +1431,8 @@ const Admin = () => {
                         onClick={() => setSiteResourceEditorTab(tab.id)}
                         className={
                           siteResourceEditorTab === tab.id
-                            ? 'rounded-full border border-[#d7b66c]/35 bg-[#d7b66c]/18 px-3 py-1.5 text-xs font-semibold text-[#f0dfb0]'
-                            : 'rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs font-semibold text-[#c8bcae] transition-colors hover:border-[#d7b66c]/28 hover:text-white'
+                            ? 'rounded-full border border-[#F15A24]/24 bg-[#FFF7F4] px-3 py-1.5 text-xs font-semibold text-[#C2410C]'
+                            : 'rounded-full border border-[#E2E8F0] bg-white px-3 py-1.5 text-xs font-semibold text-[#475569] transition-colors hover:border-[#F15A24]/24 hover:text-[#0A2E5C]'
                         }
                       >
                         {tab.label}
@@ -1277,11 +1441,94 @@ const Admin = () => {
                   </div>
 
                   {siteResourcesJsonError ? (
-                    <div className="mt-4 rounded-[16px] border border-[#ef7b7b]/22 bg-[#ef7b7b]/10 px-4 py-3 text-sm text-[#ffd6d6]">
-                      {siteResourcesJsonError}
-                    </div>
+                    <div className={`mt-4 ${errorNoticeClass}`}>{siteResourcesJsonError}</div>
                   ) : (
                     <div className="mt-5 space-y-4">
+                      {siteResourceEditorTab === 'brand' && (
+                        <div className="grid gap-4 sm:grid-cols-2">
+                          <label className={formLabelClass}>
+                            品牌名称
+                            <input
+                              value={getTextValue(brandProfileResource, 'brandName')}
+                              onChange={(event) => updateBrandField('brandName', event.target.value)}
+                              className={inputClass}
+                            />
+                          </label>
+                          <label className={formLabelClass}>
+                            English Brand Name
+                            <input
+                              value={getTextValue(brandProfileResource, 'brandNameEn')}
+                              onChange={(event) => updateBrandField('brandNameEn', event.target.value)}
+                              className={inputClass}
+                            />
+                          </label>
+                          <label className={formLabelClass}>
+                            中文品牌标语
+                            <input
+                              value={getTextValue(brandProfileResource, 'brandTaglineZh')}
+                              onChange={(event) => updateBrandField('brandTaglineZh', event.target.value)}
+                              className={inputClass}
+                            />
+                          </label>
+                          <label className={formLabelClass}>
+                            English Brand Tagline
+                            <input
+                              value={getTextValue(brandProfileResource, 'brandTaglineEn')}
+                              onChange={(event) => updateBrandField('brandTaglineEn', event.target.value)}
+                              className={inputClass}
+                            />
+                          </label>
+                          <label className={formLabelClass}>
+                            顶部服务台说明（中文）
+                            <input
+                              value={getTextValue(brandProfileResource, 'serviceDeskZh')}
+                              onChange={(event) => updateBrandField('serviceDeskZh', event.target.value)}
+                              className={inputClass}
+                            />
+                          </label>
+                          <label className={formLabelClass}>
+                            Topbar Service Label (EN)
+                            <input
+                              value={getTextValue(brandProfileResource, 'serviceDeskEn')}
+                              onChange={(event) => updateBrandField('serviceDeskEn', event.target.value)}
+                              className={inputClass}
+                            />
+                          </label>
+                          <label className={`${formLabelClass} sm:col-span-2`}>
+                            询盘引导语（中文）
+                            <textarea
+                              value={getTextValue(brandProfileResource, 'quoteLeadZh')}
+                              onChange={(event) => updateBrandField('quoteLeadZh', event.target.value)}
+                              className={compactTextAreaClass}
+                            />
+                          </label>
+                          <label className={`${formLabelClass} sm:col-span-2`}>
+                            Inquiry Lead (EN)
+                            <textarea
+                              value={getTextValue(brandProfileResource, 'quoteLeadEn')}
+                              onChange={(event) => updateBrandField('quoteLeadEn', event.target.value)}
+                              className={compactTextAreaClass}
+                            />
+                          </label>
+                          <label className={`${formLabelClass} sm:col-span-2`}>
+                            服务领域（中文，每行一项）
+                            <textarea
+                              value={brandSectorItemsZhText}
+                              onChange={(event) => updateBrandListField('sectorItemsZh', event.target.value)}
+                              className={compactTextAreaClass}
+                            />
+                          </label>
+                          <label className={`${formLabelClass} sm:col-span-2`}>
+                            Service Coverage (EN, one per line)
+                            <textarea
+                              value={brandSectorItemsEnText}
+                              onChange={(event) => updateBrandListField('sectorItemsEn', event.target.value)}
+                              className={compactTextAreaClass}
+                            />
+                          </label>
+                        </div>
+                      )}
+
                       {siteResourceEditorTab === 'contacts' && (
                         <div className="grid gap-3 sm:grid-cols-2">
                           <label className={formLabelClass}>
@@ -1466,7 +1713,7 @@ const Admin = () => {
                       )}
 
                       {siteResourceEditorTab === 'raw' && (
-                        <p className="rounded-[16px] border border-[#d7b66c]/22 bg-[#d7b66c]/8 px-4 py-3 text-sm leading-7 text-[#d7ccbd]">
+                        <p className="rounded-[16px] border border-[#F15A24]/16 bg-[#FFF7F4] px-4 py-3 text-sm leading-7 text-[#9A3412]">
                           当前已切到原始 JSON 模式，请在右侧编辑器中直接维护完整结构。
                         </p>
                       )}
@@ -1474,10 +1721,10 @@ const Admin = () => {
                   )}
                 </div>
 
-                <div className="art-card px-5 py-5">
+                <div className={subtlePanelCardClass}>
                   <p className="eyebrow">Editing Note</p>
-                  <p className="mt-4 text-sm leading-8 text-[#b8ad9e]">
-                    建议只写真实可核实资料。`site-resources` 是全站共享资源层，前台会直接读取并渲染，不适合放占位信息或推测内容。
+                  <p className="mt-4 text-sm leading-8 text-[#64748B]">
+                    建议只写真实可核实资料。`site-resources` 是全站共享资源层，头部、页脚和内容页会直接读取并渲染，不适合放占位信息或推测内容。
                   </p>
                 </div>
 
@@ -1510,7 +1757,7 @@ const Admin = () => {
                   className={textAreaClass}
                 />
                 <p className={formHintClass}>
-                  当前支持维护 `source`、`contacts`、`messageForm`、`uiNarratives`、`certificates`、`friendLinks`、`verifiedPages` 等字段，保存后前台共享资源会同步更新。
+                  当前支持维护 `brandProfile`、`source`、`contacts`、`messageForm`、`uiNarratives`、`certificates`、`friendLinks`、`verifiedPages` 等字段，保存后前台头部、页脚和共享资源模块会同步更新。
                 </p>
               </label>
             </div>
